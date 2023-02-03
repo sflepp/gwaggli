@@ -1,0 +1,8 @@
+node_modules
+dist
+
+.aws/credentials
+.aws/config.json
+
+generated
+
