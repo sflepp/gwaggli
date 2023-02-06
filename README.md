@@ -3,8 +3,8 @@
 Gwaggli is a simple voice processing tool. It consists of the following components:
 
 - gwaggli-insight: A web application to show the results of the processing
-- gwaggli-pipeline: A pipeline to process voice streams in real time
-- gwaggli-whisper: A wrapper for OpenAI whisper for voice transcription
+- gwaggli-pipeline: A pipeline to process voice streams in real time and output useful information
+- gwaggli-whisper: A wrapper for [OpenAI Whisper](https://github.com/openai/whisper) for voice transcription
 
 ## Installation & Usage
 
