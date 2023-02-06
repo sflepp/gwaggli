@@ -1,238 +1,274 @@
-import AWS from "aws-sdk";
-import {
-    AudioStream,
-    StartStreamTranscriptionCommand,
-    TranscribeStreamingClient
-} from "@aws-sdk/client-transcribe-streaming";
-import {AudioData, AudioDataRingBuffer} from "./audio-data";
+import EventEmitter from "events";
+import {Buffer} from "buffer";
+import {report} from "./reporter";
+import * as fs from "fs";
 
-const Lame = require("node-lame").Lame;
+const crypto = require('crypto');
+import WebSocket from 'ws';
+import {Configuration, OpenAIApi} from "openai";
+import {textToSpeech} from "./text-to-speech";
+import { WaveData } from "./domain/wave-data";
 
-interface VoiceActivationResult {
-    audio: AudioData
-    start: number
+interface VoiceActivationStartEvent {
+    waveData: WaveData;
+    startTime: number;
 }
 
-interface TranscriptionResult {
-    transcript: string
-    audio: AudioData
+interface VoiceActivationEndEvent {
+    waveData: WaveData;
+    startTime: number;
+    endTime: number;
 }
 
-interface ConversationResult {
-
-    character: string
-    audio: AudioData
-    transcript: string
+interface WhisperTranscribeEvent {
+    language: string;
+    segments: {
+        avg_logprob: number;
+        compression_ratio: number;
+        end: number;
+        id: number;
+        no_speech: number;
+        seek: number;
+        start: number;
+        text: string;
+        tokens: number[]
+    }[];
+    text: string;
 }
 
-export async function conversationPipeline(audioStream: AudioData) {
-    console.log("Starting conversation pipeline...")
-
-    const voiceActivationChunks = registerVoiceActivationTask(audioStream);
-
-    registerPersistAudioChunkTask(voiceActivationChunks);
-
-    const transcriptions = registerTranscriptionTask(voiceActivationChunks);
-    const conversationChunks = registerConversationProcessingTask(transcriptions)
-
-    for await (const conversationChunk of conversationChunks) {
-        console.log("Conversation chunk: " + conversationChunk.transcript)
-    }
+interface Gpt3TextCompletionEvent {
+    language: string;
+    prompt: string;
+    answer: string;
 }
 
-export async function* registerVoiceActivationTask(audioStream: AudioData): AsyncGenerator<VoiceActivationResult> {
+export interface ConversationChunkEvent {
+    language: string;
+    prompt: string;
+    answer: string;
+    fileName: string;
+}
 
-    console.log("Registering voice activation task...")
+export const reportAudioChunk = (pipeline: EventEmitter, audioChunk: Buffer) => {
+    pipeline.emit("audio-chunk", audioChunk);
+}
 
-    const activationSize = 0.25 * audioStream.getConfig().sampleRate * audioStream.getConfig().bytesPerSample
-    const deactivationSize = 2 * audioStream.getConfig().sampleRate * audioStream.getConfig().bytesPerSample
+export const reportStreamEnd = (pipeline: EventEmitter) => {
+    pipeline.emit("stream-end");
+}
 
-    console.log("Activation size: " + activationSize + " bytes, deactivation size: " + deactivationSize + " bytes")
+export const reportError = (pipeline: EventEmitter, error: any) => {
+    pipeline.emit("connection-error", error);
+}
 
-    const loudnessThreshold = 200;
+export const registerPipeline = (pipeline: EventEmitter) => {
+    registerBuffering(pipeline);
+    registerVoiceActivation(pipeline);
+    registerSliceVoiceActivation(pipeline);
+    registerPersistChunks(pipeline);
+    registerWhisperTranscribe(pipeline);
+    registerGpt3CompletionProcessing(pipeline);
+    registerPollyTextToSpeech(pipeline);
+}
 
-    let currentHead = 0;
-    let lastHead = 0;
+export const registerBuffering = (pipeline: EventEmitter) => {
+    let waveData: WaveData;
 
-    let currentSegment: VoiceActivationResult | undefined = undefined
-
-    while (!audioStream.isClosed()) {
-        await new Promise(resolve => setTimeout(resolve, 500))
-
-        currentHead = audioStream.currentHead();
-
-        if (audioStream.currentHead() < Math.max(activationSize, deactivationSize)) {
-            console.log("Waiting for audio stream to fill up... Current head time: " + currentHead + "")
-            continue;
+    pipeline.on("audio-chunk", (audioChunk: Buffer) => {
+        if (waveData === undefined) {
+            waveData = new WaveData(audioChunk)
+        } else {
+            waveData = waveData.merge(new WaveData(audioChunk));
         }
 
-        // Voice is currently disabled, check when to activate
-        if (currentSegment === undefined) {
-            const loudness = audioStream.averageLoudness(currentHead - activationSize, activationSize, 0.5);
-
-            if (loudness > loudnessThreshold) {
-                console.log("Loudness is high enough, starting voice activated segment")
-
-                currentSegment = {
-                    start: lastHead,
-                    audio: new AudioDataRingBuffer(audioStream.getConfig())
-                }
-
-                yield currentSegment;
-            }
-        }
-
-        // voice is currently enabled, check when to deactivate
-        if (currentSegment !== undefined) {
-            currentSegment.audio.write(audioStream.read(lastHead, currentHead - lastHead))
-
-            if (currentHead - currentSegment.start > deactivationSize) {
-                const loudness = audioStream.averageLoudness(currentHead - deactivationSize, deactivationSize, 0.5);
-
-                if (loudness < loudnessThreshold) {
-                    console.log("Loudness is low enough, ending voice activated segment")
-                    currentSegment.audio.close();
-                    currentSegment = undefined;
-                }
-            }
-        }
-
-        lastHead = currentHead;
-    }
-
-    console.log("Audio stream closed, ending voice activation stream")
-}
-
-export async function registerPersistAudioChunkTask(voiceActivatedSegments: AsyncGenerator<VoiceActivationResult>) {
-    console.log("Registering persist audio chunk task...")
-
-    const chunkSize = 16_000;
-
-    for await (const segment of voiceActivatedSegments) {
-        console.log("Start writing audio chunk to file...")
-        let offset = 0;
-        let buffer = Buffer.from([]);
-
-        while (!segment.audio.isClosed()) {
-            if (offset + chunkSize > segment.audio.currentHead()) {
-                await new Promise(resolve => setTimeout(resolve, 10))
-                continue;
-            }
-            
-            buffer = Buffer.concat([buffer, segment.audio.read(offset, chunkSize)])
-            offset += chunkSize;
-        }
-        
-        console.log(buffer.length)
-            
-
-        const encoder = new Lame({
-            "output": "./generated/voice-activation/audio-" + new Date().getTime() + ".mp3",
-            bitrate: 16,
-            bitwidth: 16,
-            raw: true,
-            mode: 'm'
-            
-        }).setBuffer(buffer);
-        
-        await encoder.encode();
-        
-        console.log("Completed writing audio chunk to file.")
-    }
-}
-
-export async function* registerTranscriptionTask(voiceActivatedSegments: AsyncGenerator<VoiceActivationResult>): AsyncGenerator<TranscriptionResult> {
-
-    console.log("Registering transcription task...")
-
-    const config = AWS.config.loadFromPath('.aws/config.json')
-
-    const transcribeClient = new TranscribeStreamingClient({
-        // @ts-ignore
-        credentials: config.credentials,
-        region: config.region
+        pipeline.emit("wave-data", waveData);
     });
+}
 
-    for await (const segment of voiceActivatedSegments) {
-        console.log("Start transcription task for audio chunk...")
+export const registerVoiceActivation = (pipeline: EventEmitter) => {
 
-        const audioStream = createAudioStream(segment, 8000);
+    let currentVoiceActivationStart: VoiceActivationStartEvent | undefined;
 
-        const command = new StartStreamTranscriptionCommand({
-            LanguageCode: "en-US",
-            MediaEncoding: segment.audio.getConfig().mediaFormat,
-            MediaSampleRateHertz: segment.audio.getConfig().sampleRate,
-            AudioStream: audioStream,
+    pipeline.on("wave-data", (waveData: WaveData) => {
+        let windowDuration = 2000; // milliseconds
+
+        const start = Math.max(waveData.getDuration() - windowDuration, 0);
+        const end = waveData.getDuration()
+
+        const samples = [];
+        for (let i = start; i <= end; i += 10) {
+            const loudness = waveData.getLoudnessAt(i)
+            samples.push(loudness);
+        }
+
+        const averageLoudness = samples.reduce((a, b) => a + b, 0) / samples.length;
+
+        report({
+            type: "progress",
+            message: "Average loudness",
+            data: averageLoudness,
+        })
+
+        if (!currentVoiceActivationStart && averageLoudness > 500) {
+            currentVoiceActivationStart = {
+                waveData,
+                startTime: start,
+            }
+
+            report({
+                type: "progress",
+                message: "Voice activation start",
+                data: currentVoiceActivationStart,
+            })
+
+            pipeline.emit("start-voice-activation", currentVoiceActivationStart);
+        }
+
+        if (currentVoiceActivationStart && averageLoudness < 100) {
+            const currentVoiceActivationEnd = {
+                waveData,
+                startTime: currentVoiceActivationStart.startTime,
+                endTime: end,
+            }
+
+            report({
+                type: "progress",
+                message: "Voice activation end",
+                data: currentVoiceActivationEnd,
+            })
+
+            pipeline.emit("end-voice-activation", currentVoiceActivationEnd);
+
+            currentVoiceActivationStart = undefined;
+        }
+    });
+}
+
+export const registerSliceVoiceActivation = (pipeline: EventEmitter) => {
+    pipeline.on("end-voice-activation", (voiceActivationEnd: VoiceActivationEndEvent) => {
+        const waveData = voiceActivationEnd.waveData;
+        const startTime = voiceActivationEnd.startTime;
+        const startIndex = waveData.getByteIndexAtTime(startTime);
+        const endTime = voiceActivationEnd.endTime;
+        const endIndex = waveData.getByteIndexAtTime(endTime);
+
+        const waveDataChunk = waveData.slice(startIndex, endIndex);
+
+        pipeline.emit("voice-activated-chunk", waveDataChunk);
+    });
+}
+
+export const registerPersistChunks = (pipeline: EventEmitter) => {
+    pipeline.on("voice-activated-chunk", (waveData: WaveData) => {
+        report({
+            type: "progress",
+            message: "Persisting chunk",
+            data: waveData,
+        })
+
+        const hash = crypto
+            .createHash('sha256')
+            .update(waveData.buffer)
+            .digest('hex');
+
+        const fileName = `audio-${new Date().getTime()}-${hash}.wav`
+        const path = `../gwaggli-whisper/data/${fileName}`;
+
+        fs.writeFileSync(path, waveData.buffer);
+
+        pipeline.emit("persisted-wav", fileName);
+    });
+}
+
+export const registerWhisperTranscribe = (pipeline: EventEmitter) => {
+    pipeline.on("persisted-wav", (fileName: string) => {
+        const whisperWS = new WebSocket("ws://localhost:8765");
+
+        whisperWS.addEventListener("open", () => {
+            whisperWS.send(fileName);
         });
 
-        const data = await transcribeClient.send(command);
+        whisperWS.addEventListener("message", (event: any) => {
+            const data = JSON.parse(event.data) as WhisperTranscribeEvent
 
-        for await (const event of data.TranscriptResultStream || []) {
+            report({
+                type: "progress",
+                message: "Transcription result from whisper...",
+                data,
+            });
 
-            if (event.TranscriptEvent?.Transcript?.Results === undefined) {
-                console.warn("No transcribe results found")
-                continue;
-            }
-
-            if (event.TranscriptEvent.Transcript.Results.length === 0) {
-                console.warn("No transcribe results found")
-                continue;
-            }
-
-            if (event.TranscriptEvent.Transcript.Results[0].IsPartial) {
-                console.log("Partial transcript found, skipping...")
-                continue;
-            }
-
-            if (event.TranscriptEvent.Transcript.Results[0].Alternatives === undefined
-                || event.TranscriptEvent.Transcript.Results[0].Alternatives.length === 0
-                || event.TranscriptEvent.Transcript.Results[0].Alternatives[0].Transcript === undefined) {
-                console.warn("No transcript found")
-                continue;
-            }
-
-            console.log("Transcription complete, yielding results...")
-
-            yield {
-                transcript: event.TranscriptEvent.Transcript.Results[0].Alternatives[0].Transcript,
-                audio: segment.audio,
-            }
-        }
-
-        console.log("Completed transcription task for audio chunk...")
-    }
+            pipeline.emit("transcription-result", data);
+            whisperWS.close();
+        });
+    })
 }
 
-async function* createAudioStream(segment: VoiceActivationResult, chunkSize: number): AsyncIterable<AudioStream> {
-    const audio = segment.audio;
+export const registerGpt3CompletionProcessing = (pipeline: EventEmitter) => {
 
-    let head = 0;
-    while (!audio.isClosed()) {
-        if (head + chunkSize > audio.currentHead()) {
-            await new Promise(resolve => setTimeout(resolve, 10))
-            continue;
+    const openAiConfig = JSON.parse(fs.readFileSync(".openai/config.json", "utf8"));
+
+    const configuration = new Configuration({
+        apiKey: openAiConfig.apiKey,
+    })
+
+    const openAi = new OpenAIApi(configuration);
+
+    pipeline.on("transcription-result", async (transcription: WhisperTranscribeEvent) => {
+        const prompt = `The following is a conversation with an AI assistant. The assistant is helpful, creative, clever, and very friendly. The assistant can speak all sorts of languages.
+
+            Human: Hello, who are you?
+            AI: I am very good today, may I introduce me to you: I am an assistant that can help you with all sorts of things.
+            Human: ${transcription.text}
+            AI: `
+
+
+        const response = await openAi.createCompletion({
+            model: "text-davinci-003",
+            prompt: prompt,
+            temperature: 0.6,
+            max_tokens: 500,
+        });
+
+        const data = response.data
+
+        report({
+            type: "progress",
+            message: "OpenAI response...",
+            data,
+        })
+
+        const answer = response.data.choices[0].text || '';
+
+        const event: Gpt3TextCompletionEvent = {
+            language: transcription.language,
+            prompt: transcription.text,
+            answer: answer
         }
 
-        const chunk = audio.read(head, chunkSize);
-        head += chunkSize;
-
-        yield {
-            AudioEvent: {
-                AudioChunk: chunk
-            }
-        }
-    }
+        pipeline.emit("gpt3-response", event);
+    });
 }
 
+export const registerPollyTextToSpeech = (pipeline: EventEmitter) => {
+    pipeline.on("gpt3-response", async (gpt3Event: Gpt3TextCompletionEvent) => {
+        const fileName = await textToSpeech(gpt3Event.answer, speakerForLanguage(gpt3Event.language));
 
-async function* registerConversationProcessingTask(transcriptions: AsyncGenerator<TranscriptionResult>) {
-    console.log("Registering conversation processing task...")
-
-    for await (const transcript of transcriptions) {
-        yield {
-            character: 'customer',
-            audio: transcript.audio,
-            transcript: transcript.transcript
+        const event: ConversationChunkEvent = {
+            ...gpt3Event,
+            fileName: fileName
         }
+
+        pipeline.emit("text-to-speech", event);
+    })
+}
+
+const speakerForLanguage = (language: string) => {
+    switch (language) {
+        case 'de':
+            return "Daniel"
+        case 'en':
+            return "Matthew"
+        default:
+            return "Matthew"
     }
 }

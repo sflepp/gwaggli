@@ -2,8 +2,9 @@ import express, {Express, Request, Response} from 'express';
 import dotenv from 'dotenv';
 import {textToSpeech} from "./text-to-speech";
 import {Buffer} from "buffer";
-import {conversationPipeline} from "./pipeline";
-import {AudioDataRingBuffer} from "./audio-data";
+import {reportEmitter} from "./reporter";
+import {ConversationChunkEvent, registerPipeline, reportAudioChunk, reportError, reportStreamEnd} from "./pipeline";
+import EventEmitter from "events";
 
 const WebSocketServer = require('ws');
 
@@ -28,6 +29,10 @@ app.get('/text-to-speech', async (req: Request, res: Response) => {
     res.send('Created text to speech');
 })
 
+app.get('/answers/:filename', async (req: Request, res: Response) => {
+   res.sendFile(`${process.cwd()}/generated/voices/${req.params.filename}`)
+});
+
 app.listen(webPort, () => {
     console.log(`⚡️[server]: Web server is running at http://localhost:${webPort}`);
 });
@@ -35,31 +40,38 @@ app.listen(webPort, () => {
 
 // Creating a new websocket server
 const wss = new WebSocketServer.Server({port: websocketPort})
-
 // Creating connection using websocket
 wss.on("connection", async (ws: WebSocket) => {
     console.log("new client connected");
 
-    const audioStream = new AudioDataRingBuffer({
-        sampleRate: 16_000,
-        bytesPerSample: 2,
-        mediaFormat: 'pcm'
-    });
+    const pipeline = new EventEmitter();
 
     ws.addEventListener("message", (event: MessageEvent<Buffer>) => {
-        audioStream.write(event.data);
+        reportAudioChunk(pipeline, event.data);
     });
 
     ws.addEventListener("close", () => {
-        audioStream.close();
+        reportStreamEnd(pipeline);
     });
 
     ws.addEventListener("error", (error) => {
         console.log("Websocket error", error)
-        audioStream.close();
+        reportError(pipeline, error);
     });
-    
-    const pipeline = conversationPipeline(audioStream);
+
+    pipeline.on("progress", (progressEvent: ProgressEvent) => {
+        ws.send(JSON.stringify(progressEvent))
+    });
+
+    pipeline.on("text-to-speech", (event: ConversationChunkEvent) => {
+        ws.send(JSON.stringify(event))
+    });
+
+    reportEmitter.on("progress", (progressEvent: ProgressEvent) => {
+        ws.send(JSON.stringify(progressEvent))
+    });
+
+    registerPipeline(pipeline);
 });
 console.log(`⚡️[server]: Websocket server is running at ws://localhost:${websocketPort}`);
 

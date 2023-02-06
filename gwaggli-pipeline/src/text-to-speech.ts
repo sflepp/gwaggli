@@ -1,7 +1,6 @@
-// Load the SDK
 import {AWSError} from "aws-sdk";
 import {SynthesizeSpeechOutput} from "aws-sdk/clients/polly";
-import {md5} from "./util/md5";
+import crypto from "crypto";
 
 const AWS = require('aws-sdk')
 const Fs = require('fs')
@@ -14,7 +13,14 @@ const Polly = new AWS.Polly({
 })
 
 export const textToSpeech = async (text: string, voiceId: string): Promise<string> => {
-    const fileName = `generated/voices/${voiceId}_${md5(text)}.mp3`
+
+    const hash = crypto
+        .createHash('sha256')
+        .update(text + voiceId)
+        .digest('hex');
+
+
+    const fileName = `generated/voices/${voiceId}_${new Date().getTime()}-${hash}.mp3`
 
     if (Fs.existsSync(fileName)) {
         console.log(`File ${fileName} already exists`)
@@ -47,6 +53,5 @@ export const textToSpeech = async (text: string, voiceId: string): Promise<strin
             }
         })
     })
-
 }
 

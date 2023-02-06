@@ -4,5 +4,7 @@ dist
 .aws/credentials
 .aws/config.json
 
+.openai/config.json
+
 generated
 
