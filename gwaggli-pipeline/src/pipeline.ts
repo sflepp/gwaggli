@@ -1,12 +1,12 @@
 import EventEmitter from "events";
 import {Buffer} from "buffer";
-import {report} from "./reporter";
+import {report, reportMessageProgress} from "./reporter";
 import * as fs from "fs";
 
 const crypto = require('crypto');
 import WebSocket from 'ws';
 import {Configuration, OpenAIApi} from "openai";
-import {textToSpeech} from "./text-to-speech";
+import {textToSpeech, textToSpeechFile} from "./text-to-speech-file";
 import { WaveData } from "./domain/wave-data";
 
 interface VoiceActivationStartEvent {
@@ -42,11 +42,12 @@ interface Gpt3TextCompletionEvent {
     answer: string;
 }
 
-export interface ConversationChunkEvent {
+export interface TextToSpeechEvent {
     language: string;
     prompt: string;
     answer: string;
-    fileName: string;
+    audio: WaveData;
+    voiceId: string;
 }
 
 export const reportAudioChunk = (pipeline: EventEmitter, audioChunk: Buffer) => {
@@ -69,6 +70,7 @@ export const registerPipeline = (pipeline: EventEmitter) => {
     registerWhisperTranscribe(pipeline);
     registerGpt3CompletionProcessing(pipeline);
     registerPollyTextToSpeech(pipeline);
+    registerTextToSpeechPersist(pipeline);
 }
 
 export const registerBuffering = (pipeline: EventEmitter) => {
@@ -90,7 +92,7 @@ export const registerVoiceActivation = (pipeline: EventEmitter) => {
     let currentVoiceActivationStart: VoiceActivationStartEvent | undefined;
 
     pipeline.on("wave-data", (waveData: WaveData) => {
-        let windowDuration = 2000; // milliseconds
+        let windowDuration = 1000; // milliseconds
 
         const start = Math.max(waveData.getDuration() - windowDuration, 0);
         const end = waveData.getDuration()
@@ -251,15 +253,33 @@ export const registerGpt3CompletionProcessing = (pipeline: EventEmitter) => {
 
 export const registerPollyTextToSpeech = (pipeline: EventEmitter) => {
     pipeline.on("gpt3-response", async (gpt3Event: Gpt3TextCompletionEvent) => {
-        const fileName = await textToSpeech(gpt3Event.answer, speakerForLanguage(gpt3Event.language));
+        const voiceId = speakerForLanguage(gpt3Event.language)
+        const audio = await textToSpeech(gpt3Event.answer, speakerForLanguage(gpt3Event.language));
 
-        const event: ConversationChunkEvent = {
-            ...gpt3Event,
-            fileName: fileName
+        const event: TextToSpeechEvent = {
+            voiceId: voiceId,
+            audio: audio,
+            language: gpt3Event.language,
+            prompt: gpt3Event.prompt,
+            answer: gpt3Event.answer
         }
 
         pipeline.emit("text-to-speech", event);
     })
+}
+
+export const registerTextToSpeechPersist = (pipeline: EventEmitter) => {
+    pipeline.on("text-to-speech", async (event: TextToSpeechEvent) => {
+        const fileName = `generated/voices/${event.voiceId}_${new Date().getTime()}.wav`
+
+        fs.writeFile(fileName, event.audio.getBuffer(), (err) => {
+
+            reportMessageProgress(`Persisted audio file to ${fileName}`)
+            if (err) {
+                console.log(err);
+            }
+        });
+    });
 }
 
 const speakerForLanguage = (language: string) => {

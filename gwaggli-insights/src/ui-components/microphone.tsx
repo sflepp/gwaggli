@@ -67,7 +67,7 @@ const Microphone = ({onAudioData}: MicrophoneProps) => {
 
     return (
         <div>
-            {!state.active ? <button onClick={start}>Start</button> : null}
+            {!state.active ? <button onClick={start}>Connect Audio</button> : null}
         </div>
     )
 }

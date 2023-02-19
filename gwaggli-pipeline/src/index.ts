@@ -1,10 +1,11 @@
 import express, {Express, Request, Response} from 'express';
 import dotenv from 'dotenv';
-import {textToSpeech} from "./text-to-speech";
+import {textToSpeechFile} from "./text-to-speech-file";
 import {Buffer} from "buffer";
-import {reportEmitter} from "./reporter";
-import {ConversationChunkEvent, registerPipeline, reportAudioChunk, reportError, reportStreamEnd} from "./pipeline";
+import {TextToSpeechEvent, registerPipeline, reportAudioChunk, reportError, reportStreamEnd} from "./pipeline";
 import EventEmitter from "events";
+import {reportEmitter, reportMessageProgress} from "./reporter";
+import {CharacterAnswerMessage} from "./domain/messaging/messages";
 
 const WebSocketServer = require('ws');
 
@@ -13,6 +14,7 @@ dotenv.config();
 const app: Express = express();
 const webPort = process.env.WEB_PORT;
 const websocketPort = process.env.WEBSOCKET_PORT;
+const websocketInsights = process.env.WEBSOCKET_INSIGHTS_PORT;
 
 app.get('/', (req: Request, res: Response) => {
     res.send('Express + TypeScript Server');
@@ -20,7 +22,7 @@ app.get('/', (req: Request, res: Response) => {
 
 app.get('/text-to-speech', async (req: Request, res: Response) => {
     if (req.query.text) {
-        const fileName = await textToSpeech(req.query.text as string, 'Daniel')
+        const fileName = await textToSpeechFile(req.query.text as string, 'Daniel')
         console.log(process.cwd())
         res.sendFile(`${process.cwd()}/${fileName}`)
         return
@@ -30,7 +32,7 @@ app.get('/text-to-speech', async (req: Request, res: Response) => {
 })
 
 app.get('/answers/:filename', async (req: Request, res: Response) => {
-   res.sendFile(`${process.cwd()}/generated/voices/${req.params.filename}`)
+    res.sendFile(`${process.cwd()}/generated/voices/${req.params.filename}`)
 });
 
 app.listen(webPort, () => {
@@ -46,8 +48,13 @@ wss.on("connection", async (ws: WebSocket) => {
 
     const pipeline = new EventEmitter();
 
-    ws.addEventListener("message", (event: MessageEvent<Buffer>) => {
-        reportAudioChunk(pipeline, event.data);
+    ws.addEventListener("message", (event: MessageEvent<string>) => {
+        const message = JSON.parse(event.data);
+
+        if (message.type === 'audio-chunk') {
+            reportAudioChunk(pipeline, Buffer.from(message.data, 'base64'));
+            return;
+        }
     });
 
     ws.addEventListener("close", () => {
@@ -59,19 +66,26 @@ wss.on("connection", async (ws: WebSocket) => {
         reportError(pipeline, error);
     });
 
-    pipeline.on("progress", (progressEvent: ProgressEvent) => {
-        ws.send(JSON.stringify(progressEvent))
-    });
+    pipeline.on("text-to-speech", (event: TextToSpeechEvent) => {
+        const message: CharacterAnswerMessage = {
+            type: 'character-answer',
+            data: event.audio.getBuffer().toString('base64'),
+            transcript: event.answer
+        }
 
-    pipeline.on("text-to-speech", (event: ConversationChunkEvent) => {
-        ws.send(JSON.stringify(event))
-    });
-
-    reportEmitter.on("progress", (progressEvent: ProgressEvent) => {
-        ws.send(JSON.stringify(progressEvent))
+        ws.send(JSON.stringify(message));
     });
 
     registerPipeline(pipeline);
 });
 console.log(`⚡️[server]: Websocket server is running at ws://localhost:${websocketPort}`);
+
+const wssInsights = new WebSocketServer.Server({port: websocketInsights})
+wssInsights.on("connection", async (ws: WebSocket) => {
+   console.log("new insight client connected");
+
+   reportEmitter.on("progress", (progressEvent: ProgressEvent) => {
+       ws.send(JSON.stringify(progressEvent))
+   });
+});
 

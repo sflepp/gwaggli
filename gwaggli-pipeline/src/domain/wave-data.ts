@@ -4,15 +4,24 @@ export interface WavHeader {
     sampleRate: number;
     mono: boolean;
     bitsPerSample: number;
-    chunkSize: number;
+    chunkSize?: number;
     channels: number;
 }
 
 export class WaveData {
     public readonly buffer: Buffer;
 
-    constructor(buffer: Buffer) {
-        this.buffer = buffer;
+    constructor(buffer: Buffer, header?: WavHeader) {
+        if (header) {
+            const headerData = WaveData.createWavHeader(buffer, header.sampleRate, header.channels === 1, false);
+            this.buffer = Buffer.concat([headerData, buffer]);
+        } else {
+            this.buffer = buffer;
+        }
+    }
+
+    getBuffer(): Buffer {
+        return this.buffer;
     }
 
     getHeader(): WavHeader {
@@ -27,26 +36,26 @@ export class WaveData {
         }
     }
 
-    getData(): Buffer {
+    getPayload(): Buffer {
         return this.buffer.subarray(WAV_HEADER_SIZE);
     }
 
     merge(other: WaveData): WaveData {
-        const newData = Buffer.concat([this.getData(), other.getData()]);
+        const newData = Buffer.concat([this.getPayload(), other.getPayload()]);
         const newHeader = WaveData.createWavHeader(newData, this.getHeader().sampleRate, this.getHeader().mono, false);
         return new WaveData(Buffer.concat([newHeader, newData]));
     }
 
     getLoudnessAt(time: number): number {
         const byteIndex = this.getByteIndexAtTime(time);
-        const data = this.getData();
+        const data = this.getPayload();
         const loudness = data.readInt16LE(byteIndex);
         return Math.abs(loudness);
     }
 
     getDuration(): number {
         const header = this.getHeader();
-        return this.getData().length / (header.sampleRate * header.channels * (header.bitsPerSample / 8)) * 1000;
+        return this.getPayload().length / (header.sampleRate * header.channels * (header.bitsPerSample / 8)) * 1000;
     }
 
     getByteIndexAtTime(time: number): number {
@@ -57,11 +66,11 @@ export class WaveData {
         const bytesPerSample = bitsPerSample / 8;
         const bytesPerChannel = bytesPerSample * channels;
         const sampleIndex = Math.floor(time / 1000 * sampleRate);
-        return Math.min(this.getData().length - bytesPerSample, sampleIndex * bytesPerChannel);
+        return Math.min(this.getPayload().length - bytesPerSample, sampleIndex * bytesPerChannel);
     }
 
     slice(startIndex: number, endIndex: number): WaveData {
-        const data = this.getData();
+        const data = this.getPayload();
         const newData = data.subarray(startIndex, endIndex);
         const newHeader = WaveData.createWavHeader(newData, this.getHeader().sampleRate, this.getHeader().mono, false);
         return new WaveData(Buffer.concat([newHeader, newData]));
