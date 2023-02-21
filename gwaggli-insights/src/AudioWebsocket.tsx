@@ -1,7 +1,8 @@
 import useWebSocket from "react-use-websocket";
 import ConnectionStatus from "./ui-components/connection-status";
 import Microphone from "./ui-components/microphone";
-import {AudioChunkMessage} from "./dto/messages";
+import {dispatch} from "./event-system/event-system";
+import {AudioChunk, ClientEventType} from "./event-system/events/client-events";
 
 const WS_URL = "ws://localhost:8001";
 
@@ -18,22 +19,27 @@ const encodeBase64 = (arrayBuffer: ArrayBuffer) => {
 const AudioWebsocket = () => {
     const {sendMessage, readyState} = useWebSocket(WS_URL, {
         onOpen: () => console.log("opened"),
-        onMessage: (event) => console.log("message", JSON.parse(event.data)),
+        onMessage: (event) => {
+            dispatch(JSON.parse(event.data))
+        },
     })
 
     const createMessageAndSend = (data: ArrayBuffer) => {
-        const message: AudioChunkMessage = {
-            type: 'audio-chunk',
-            data: encodeBase64(data)
+        const message: AudioChunk = {
+            type: ClientEventType.AudioChunk,
+            sid: '',
+            subsystem: "client",
+            timestamp: Date.now(),
+            audio: encodeBase64(data)
         }
 
         sendMessage(JSON.stringify(message));
     }
 
-    return (<div>
+    return (<>
             <ConnectionStatus readyState={readyState}></ConnectionStatus>
             <Microphone onAudioData={createMessageAndSend}></Microphone>
-        </div>
+        </>
     )
 }
 

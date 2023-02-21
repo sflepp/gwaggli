@@ -1,26 +1,23 @@
-import EventEmitter from "events";
-import {Buffer} from "buffer";
-import {report, reportMessageProgress} from "./reporter";
 import * as fs from "fs";
-
-const crypto = require('crypto');
 import WebSocket from 'ws';
 import {Configuration, OpenAIApi} from "openai";
-import {textToSpeech, textToSpeechFile} from "./text-to-speech-file";
-import { WaveData } from "./domain/wave-data";
+import {textToSpeech} from "./text-to-speech-file";
+import {WaveData} from "./domain/wave-data";
+import {dispatch, on} from "./event-system/event-system";
+import {
+    AudioBufferUpdate,
+    PipelineEventType, TextCompletionFinish, TextToVoiceFinish, TranscriptionComplete, VoiceActivationDataAvailable,
+    VoiceActivationEnd, VoiceActivationPersist,
+    VoiceActivationStart
+} from "./event-system/events/pipeline-events";
+import {AudioChunk, ClientEventType} from "./event-system/events/client-events";
+import {Buffer} from "buffer";
 
-interface VoiceActivationStartEvent {
-    waveData: WaveData;
-    startTime: number;
-}
-
-interface VoiceActivationEndEvent {
-    waveData: WaveData;
-    startTime: number;
-    endTime: number;
-}
+const crypto = require('crypto');
+const {v4: uuidv4} = require('uuid')
 
 interface WhisperTranscribeEvent {
+    trackId: string;
     language: string;
     segments: {
         avg_logprob: number;
@@ -36,176 +33,201 @@ interface WhisperTranscribeEvent {
     text: string;
 }
 
-interface Gpt3TextCompletionEvent {
-    language: string;
-    prompt: string;
-    answer: string;
+export const registerPipeline = () => {
+    registerAudioBuffering();
+    registerVoiceActivationDetection();
+    registerVoiceActivationDataProcessing();
+    registerVoiceActivationPersist();
+    registerWhisperTranscribe();
+    registerGpt3CompletionProcessing();
+    registerPollyTextToSpeech();
+    registerTextToSpeechPersist();
 }
 
-export interface TextToSpeechEvent {
-    language: string;
-    prompt: string;
-    answer: string;
-    audio: WaveData;
-    voiceId: string;
-}
+export const registerAudioBuffering = () => {
+    let buffers: Map<string, WaveData> = new Map<string, WaveData>();
 
-export const reportAudioChunk = (pipeline: EventEmitter, audioChunk: Buffer) => {
-    pipeline.emit("audio-chunk", audioChunk);
-}
+    on<AudioChunk>(ClientEventType.AudioChunk, (event) => {
+        let existingChunk = buffers.get(event.sid);
+        const newChunk = new WaveData(Buffer.from(event.audio, 'base64'));
 
-export const reportStreamEnd = (pipeline: EventEmitter) => {
-    pipeline.emit("stream-end");
-}
-
-export const reportError = (pipeline: EventEmitter, error: any) => {
-    pipeline.emit("connection-error", error);
-}
-
-export const registerPipeline = (pipeline: EventEmitter) => {
-    registerBuffering(pipeline);
-    registerVoiceActivation(pipeline);
-    registerSliceVoiceActivation(pipeline);
-    registerPersistChunks(pipeline);
-    registerWhisperTranscribe(pipeline);
-    registerGpt3CompletionProcessing(pipeline);
-    registerPollyTextToSpeech(pipeline);
-    registerTextToSpeechPersist(pipeline);
-}
-
-export const registerBuffering = (pipeline: EventEmitter) => {
-    let waveData: WaveData;
-
-    pipeline.on("audio-chunk", (audioChunk: Buffer) => {
-        if (waveData === undefined) {
-            waveData = new WaveData(audioChunk)
+        if (existingChunk === undefined) {
+            existingChunk = newChunk;
         } else {
-            waveData = waveData.merge(new WaveData(audioChunk));
+            existingChunk = existingChunk.merge(newChunk);
         }
 
-        pipeline.emit("wave-data", waveData);
+        buffers.set(event.sid, existingChunk);
+
+        dispatch({
+            type: PipelineEventType.AudioBufferUpdate,
+            subsystem: "pipeline",
+            sid: event.sid,
+            timestamp: Date.now(),
+            audio: existingChunk.buffer.toString('base64')
+        })
     });
 }
 
-export const registerVoiceActivation = (pipeline: EventEmitter) => {
+export const registerVoiceActivationDetection = () => {
+    const voiceActivation = new Map<string, VoiceActivationStart>()
 
-    let currentVoiceActivationStart: VoiceActivationStartEvent | undefined;
+    const voiceActivationStartLevel = 500;
+    const voiceActivationEndLevel = 200;
 
-    pipeline.on("wave-data", (waveData: WaveData) => {
+    on<AudioBufferUpdate>(PipelineEventType.AudioBufferUpdate, (event) => {
         let windowDuration = 1000; // milliseconds
 
-        const start = Math.max(waveData.getDuration() - windowDuration, 0);
-        const end = waveData.getDuration()
+        const audio = new WaveData(Buffer.from(event.audio, 'base64'));
+
+        const startMarker = Math.max(audio.getDuration() - windowDuration, 0);
+        const endMarker = audio.getDuration()
 
         const samples = [];
-        for (let i = start; i <= end; i += 10) {
-            const loudness = waveData.getLoudnessAt(i)
+        for (let i = startMarker; i <= endMarker; i += 10) {
+            const loudness = audio.getLoudnessAt(i)
             samples.push(loudness);
         }
 
         const averageLoudness = samples.reduce((a, b) => a + b, 0) / samples.length;
 
-        report({
-            type: "progress",
-            message: "Average loudness",
-            data: averageLoudness,
-        })
-
-        if (!currentVoiceActivationStart && averageLoudness > 500) {
-            currentVoiceActivationStart = {
-                waveData,
-                startTime: start,
-            }
-
-            report({
-                type: "progress",
-                message: "Voice activation start",
-                data: currentVoiceActivationStart,
+        if (voiceActivation.has(event.sid)) {
+            dispatch({
+                type: PipelineEventType.VoiceActivationLevelUpdate,
+                subsystem: "pipeline",
+                sid: event.sid,
+                timestamp: Date.now(),
+                level: 100
             })
-
-            pipeline.emit("start-voice-activation", currentVoiceActivationStart);
+        } else {
+            dispatch({
+                type: PipelineEventType.VoiceActivationLevelUpdate,
+                subsystem: "pipeline",
+                sid: event.sid,
+                timestamp: Date.now(),
+                level: Math.round(averageLoudness / voiceActivationStartLevel * 100)
+            })
         }
 
-        if (currentVoiceActivationStart && averageLoudness < 100) {
-            const currentVoiceActivationEnd = {
-                waveData,
-                startTime: currentVoiceActivationStart.startTime,
-                endTime: end,
+        if (!voiceActivation.has(event.sid) && averageLoudness > voiceActivationStartLevel) {
+
+            const trackId = uuidv4();
+
+            const voiceActivationStart: VoiceActivationStart = {
+                type: PipelineEventType.VoiceActivationStart,
+                subsystem: "pipeline",
+                sid: event.sid,
+                timestamp: Date.now(),
+                trackId: trackId,
+                startMarker: startMarker
             }
 
-            report({
-                type: "progress",
-                message: "Voice activation end",
-                data: currentVoiceActivationEnd,
+            voiceActivation.set(event.sid, voiceActivationStart)
+
+            dispatch(voiceActivationStart)
+        }
+
+        if (voiceActivation.has(event.sid) && averageLoudness < voiceActivationEndLevel) {
+
+            dispatch({
+                type: PipelineEventType.VoiceActivationEnd,
+                subsystem: "pipeline",
+                sid: event.sid,
+                timestamp: Date.now(),
+                trackId: (voiceActivation.get(event.sid) as VoiceActivationStart).trackId,
+                endMarker: endMarker
             })
 
-            pipeline.emit("end-voice-activation", currentVoiceActivationEnd);
-
-            currentVoiceActivationStart = undefined;
+            voiceActivation.delete(event.sid)
         }
     });
 }
 
-export const registerSliceVoiceActivation = (pipeline: EventEmitter) => {
-    pipeline.on("end-voice-activation", (voiceActivationEnd: VoiceActivationEndEvent) => {
-        const waveData = voiceActivationEnd.waveData;
-        const startTime = voiceActivationEnd.startTime;
-        const startIndex = waveData.getByteIndexAtTime(startTime);
-        const endTime = voiceActivationEnd.endTime;
-        const endIndex = waveData.getByteIndexAtTime(endTime);
+export const registerVoiceActivationDataProcessing = () => {
 
-        const waveDataChunk = waveData.slice(startIndex, endIndex);
+    let bufferedData: WaveData;
+    const startEvents: VoiceActivationStart[] = []
 
-        pipeline.emit("voice-activated-chunk", waveDataChunk);
+    on<AudioBufferUpdate>(PipelineEventType.AudioBufferUpdate, (event) => {
+        bufferedData = new WaveData(Buffer.from(event.audio, 'base64'));
+    });
+
+    on<VoiceActivationStart>(PipelineEventType.VoiceActivationStart, (startEvent) => {
+        startEvents.push(startEvent);
+    });
+
+    on<VoiceActivationEnd>(PipelineEventType.VoiceActivationEnd, (endEvent) => {
+        const startEvent = startEvents.find((startEvent) => startEvent.trackId === endEvent.trackId)
+
+        if (startEvent) {
+            const startIndex = bufferedData.getByteIndexAtTime(startEvent.startMarker);
+            const endIndex = bufferedData.getByteIndexAtTime(endEvent.endMarker);
+
+            const audio = bufferedData.slice(startIndex, endIndex);
+
+            dispatch({
+                type: PipelineEventType.VoiceActivationDataAvailable,
+                subsystem: "pipeline",
+                sid: startEvent.sid,
+                timestamp: Date.now(),
+                trackId: startEvent.trackId,
+                audio: audio.buffer.toString('base64')
+            })
+        }
     });
 }
 
-export const registerPersistChunks = (pipeline: EventEmitter) => {
-    pipeline.on("voice-activated-chunk", (waveData: WaveData) => {
-        report({
-            type: "progress",
-            message: "Persisting chunk",
-            data: waveData,
-        })
-
+export const registerVoiceActivationPersist = () => {
+    on<VoiceActivationDataAvailable>(PipelineEventType.VoiceActivationDataAvailable, (event) => {
         const hash = crypto
             .createHash('sha256')
-            .update(waveData.buffer)
+            .update(event.audio)
             .digest('hex');
 
         const fileName = `audio-${new Date().getTime()}-${hash}.wav`
         const path = `../gwaggli-whisper/data/${fileName}`;
 
-        fs.writeFileSync(path, waveData.buffer);
+        fs.writeFileSync(path, Buffer.from(event.audio, 'base64'));
 
-        pipeline.emit("persisted-wav", fileName);
+        dispatch({
+            type: PipelineEventType.VoiceActivationPersist,
+            subsystem: "pipeline",
+            sid: event.sid,
+            timestamp: Date.now(),
+            trackId: event.trackId,
+            fileName: fileName
+        });
     });
 }
 
-export const registerWhisperTranscribe = (pipeline: EventEmitter) => {
-    pipeline.on("persisted-wav", (fileName: string) => {
+// ToDo: Invert dependency
+export const registerWhisperTranscribe = () => {
+    on<VoiceActivationPersist>(PipelineEventType.VoiceActivationPersist, (event) => {
         const whisperWS = new WebSocket("ws://localhost:8765");
 
         whisperWS.addEventListener("open", () => {
-            whisperWS.send(fileName);
+            whisperWS.send(JSON.stringify(event));
         });
 
-        whisperWS.addEventListener("message", (event: any) => {
-            const data = JSON.parse(event.data) as WhisperTranscribeEvent
+        whisperWS.addEventListener("message", (whisperEvent: any) => {
+            const data = JSON.parse(whisperEvent.data) as WhisperTranscribeEvent
 
-            report({
-                type: "progress",
-                message: "Transcription result from whisper...",
-                data,
+            dispatch({
+                type: PipelineEventType.TranscriptionComplete,
+                subsystem: "pipeline",
+                sid: event.sid,
+                timestamp: Date.now(),
+                trackId: event.trackId,
+                language: data.language,
+                text: data.text,
             });
 
-            pipeline.emit("transcription-result", data);
             whisperWS.close();
         });
-    })
+    });
 }
 
-export const registerGpt3CompletionProcessing = (pipeline: EventEmitter) => {
+export const registerGpt3CompletionProcessing = () => {
 
     const openAiConfig = JSON.parse(fs.readFileSync(".openai/config.json", "utf8"));
 
@@ -215,68 +237,91 @@ export const registerGpt3CompletionProcessing = (pipeline: EventEmitter) => {
 
     const openAi = new OpenAIApi(configuration);
 
-    pipeline.on("transcription-result", async (transcription: WhisperTranscribeEvent) => {
-        const prompt = `The following is a conversation with an AI assistant. The assistant is helpful, creative, clever, and very friendly. The assistant can speak all sorts of languages.
-
-            Human: Hello, who are you?
-            AI: I am very good today, may I introduce me to you: I am an assistant that can help you with all sorts of things.
-            Human: ${transcription.text}
-            AI: `
+    const history = new Map<string, {
+        prompt: string,
+        answer: string
+    }[]>();
 
 
-        const response = await openAi.createCompletion({
-            model: "text-davinci-003",
-            prompt: prompt,
-            temperature: 0.6,
-            max_tokens: 500,
-        });
+    on<TranscriptionComplete>(PipelineEventType.TranscriptionComplete, async (event) => {
+        const currentHistory = history.get(event.sid) || [];
+        const historyPrompt = currentHistory.map((historyEntry) => {
+            return `Human: ${historyEntry.prompt}\nAI copilot: ${historyEntry.answer}\n`
+        }).join("\n") || '';
 
-        const data = response.data
+        const prompt = "The following is a conversation with an AI text copilot on the side of a human. The AI copilot listens to the conversation and tries to give interesting, funny, smart and clever inputs, which the human can use to improve the conversation" +
+            `${historyPrompt}\nHuman: ${event.text}\nAI copilot: `;
 
-        report({
-            type: "progress",
-            message: "OpenAI response...",
-            data,
-        })
+        console.log(prompt)
 
-        const answer = response.data.choices[0].text || '';
 
-        const event: Gpt3TextCompletionEvent = {
-            language: transcription.language,
-            prompt: transcription.text,
-            answer: answer
+        try {
+            const response = await openAi.createCompletion({
+                model: "text-davinci-003",
+                prompt: prompt,
+                temperature: 0.6,
+                max_tokens: 3000,
+            });
+
+
+            const answer = response.data.choices[0].text || '';
+
+            history.set(event.sid, [...currentHistory, {
+                prompt: event.text,
+                answer: answer
+            }]);
+
+            dispatch({
+                type: PipelineEventType.TextCompletionFinish,
+                subsystem: "pipeline",
+                sid: event.sid,
+                timestamp: Date.now(),
+                trackId: event.trackId,
+                language: event.language,
+                text: answer,
+            });
+        } catch (error) {
+            console.log(error)
         }
-
-        pipeline.emit("gpt3-response", event);
     });
 }
 
-export const registerPollyTextToSpeech = (pipeline: EventEmitter) => {
-    pipeline.on("gpt3-response", async (gpt3Event: Gpt3TextCompletionEvent) => {
-        const voiceId = speakerForLanguage(gpt3Event.language)
-        const audio = await textToSpeech(gpt3Event.answer, speakerForLanguage(gpt3Event.language));
+export const registerPollyTextToSpeech = () => {
+    on<TextCompletionFinish>(PipelineEventType.TextCompletionFinish, async (event) => {
+        const voiceId = speakerForLanguage(event.language)
+        const audio = await textToSpeech(event.text, speakerForLanguage(event.language));
 
-        const event: TextToSpeechEvent = {
+        dispatch({
+            type: PipelineEventType.TextToVoiceFinish,
+            subsystem: "pipeline",
+            sid: event.sid,
+            timestamp: Date.now(),
+            trackId: event.trackId,
+            language: event.language,
             voiceId: voiceId,
-            audio: audio,
-            language: gpt3Event.language,
-            prompt: gpt3Event.prompt,
-            answer: gpt3Event.answer
-        }
-
-        pipeline.emit("text-to-speech", event);
-    })
+            audio: audio.buffer.toString('base64'),
+        })
+    });
 }
 
-export const registerTextToSpeechPersist = (pipeline: EventEmitter) => {
-    pipeline.on("text-to-speech", async (event: TextToSpeechEvent) => {
-        const fileName = `generated/voices/${event.voiceId}_${new Date().getTime()}.wav`
+export const registerTextToSpeechPersist = () => {
+    on<TextToVoiceFinish>(PipelineEventType.TextToVoiceFinish, async (event) => {
+        const fileName = `${event.voiceId}_${new Date().getTime()}.wav`
+        const path = `generated/voices/${fileName}`
 
-        fs.writeFile(fileName, event.audio.getBuffer(), (err) => {
+        fs.writeFile(path, Buffer.from(event.audio, 'base64'), (err) => {
 
-            reportMessageProgress(`Persisted audio file to ${fileName}`)
+            dispatch({
+                type: PipelineEventType.VoicePersist,
+                subsystem: "pipeline",
+                timestamp: Date.now(),
+                sid: event.sid,
+                trackId: event.trackId,
+                fileName: fileName,
+            });
+
             if (err) {
-                console.log(err);
+                console.error(err);
             }
         });
     });

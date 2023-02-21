@@ -3,7 +3,7 @@ import websockets
 import whisper
 import json
 
-model_size = "small"
+model_size = "large"
 
 # https://github.com/openai/whisper/discussions/380
 print("Loading whisper model with size '" + model_size + "'...")
@@ -11,9 +11,11 @@ model = whisper.load_model(model_size)
 async def transcribe(websocket):
     try:
         async for message in websocket:
-            path = "./data/" + message
+            event = json.loads(message)
+            path = "./data/" + event["fileName"]
             print("Transcribing... path=" + path)
             result = model.transcribe(path, fp16=False)
+            result["trackId"] = event["trackId"]
             print("Transcription complete. text=" + result["text"])
             json_result = json.dumps(result)
             await websocket.send(json_result)
