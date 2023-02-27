@@ -7,6 +7,7 @@ export type PipelineEvents =
     VoiceActivationEnd |
     VoiceActivationDataAvailable |
     VoiceActivationPersist |
+    TrnascriptionProcessing |
     TranscriptionComplete |
     TextCompletionFinish |
     TextToVoiceFinish |
@@ -19,6 +20,7 @@ export enum PipelineEventType {
     VoiceActivationEnd = "voice-activation-end",
     VoiceActivationDataAvailable = "voice-active-data-available",
     VoiceActivationPersist = "voice-activation-persist",
+    TranscriptionProcessing = "transcription-processing",
     TranscriptionComplete = "transcription-complete",
     TextCompletionFinish = "text-completion-finish",
     TextToVoiceFinish = "text-to-voice-finish",
@@ -61,6 +63,12 @@ export interface VoiceActivationPersist extends PipelineBaseEvent {
     type: PipelineEventType.VoiceActivationPersist,
     trackId: string,
     fileName: string,
+}
+
+export interface TrnascriptionProcessing extends PipelineBaseEvent {
+    type: PipelineEventType.TranscriptionProcessing,
+    trackId: string,
+    status: string
 }
 
 export interface TranscriptionComplete extends PipelineBaseEvent {

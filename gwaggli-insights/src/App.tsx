@@ -2,10 +2,13 @@ import React from 'react';
 import './App.css';
 import Home from "./pages/home/Home";
 import useWebSocket from "react-use-websocket";
+import {BrowserRouter, Route, Routes} from "react-router-dom";
+import Chat from "./pages/chat/Chat";
+import AppLayout from "./pages/AppLayout";
 
-function App() {
+export default function App() {
 
-  useWebSocket("ws://localhost:8002", {
+  useWebSocket("ws://localhost:8888", {
     onOpen: () => console.log("opened"),
     onMessage: (event) => {
       console.log(JSON.parse(event.data))
@@ -13,8 +16,13 @@ function App() {
   })
 
   return (
-      <Home></Home>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<AppLayout />}>
+            <Route index element={<Home />} />
+            <Route path="chat" element={<Chat />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
   );
 }
-
-export default App;

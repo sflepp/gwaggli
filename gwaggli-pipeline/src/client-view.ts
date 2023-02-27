@@ -1,21 +1,18 @@
-import {dispatch, on} from "./event-system/event-system";
+import {ClientEventType, EventSystem, PipelineEventType} from "@gwaggli/events";
+import {ClientViewState, ConversationChunk} from "@gwaggli/events/dist/events/client-events";
 import {
-    ClientEventType,
-    ClientViewState,
-    ConversationChunk
-} from "./event-system/events/client-events";
-import {
-    PipelineEventType, TextCompletionFinish, TranscriptionComplete,
+    TextCompletionFinish,
+    TranscriptionComplete,
     VoiceActivationEnd, VoiceActivationLevelUpdate,
     VoiceActivationStart, VoicePersist
-} from "./event-system/events/pipeline-events";
+} from "@gwaggli/events/dist/events/pipeline-events";
 
 
-export const registerClientView = () => {
+export const registerClientView = (eventSystem: EventSystem) => {
 
     const views = new Map<string, ClientViewState>();
 
-    on<VoiceActivationStart>(PipelineEventType.VoiceActivationStart, (event) => {
+    eventSystem.on<VoiceActivationStart>(PipelineEventType.VoiceActivationStart, (event) => {
         if (!views.has(event.sid)) {
             views.set(event.sid, {sid: event.sid, conversation: []});
         }
@@ -31,10 +28,10 @@ export const registerClientView = () => {
 
         view.conversation.push(conversationChunk);
 
-        dispatchClientView(view)
+        dispatchClientView(eventSystem, view)
     });
 
-    on<VoiceActivationEnd>(PipelineEventType.VoiceActivationEnd, (event) => {
+    eventSystem.on<VoiceActivationEnd>(PipelineEventType.VoiceActivationEnd, (event) => {
         const view = views.get(event.sid) as ClientViewState;
 
         const conversationChunk = view.conversation.find((chunk) => chunk.id === event.trackId);
@@ -44,10 +41,10 @@ export const registerClientView = () => {
             conversationChunk.voiceActivationActive = false;
         }
 
-        dispatchClientView(view)
+        dispatchClientView(eventSystem, view)
     });
 
-    on<TranscriptionComplete>(PipelineEventType.TranscriptionComplete, (event) => {
+    eventSystem.on<TranscriptionComplete>(PipelineEventType.TranscriptionComplete, (event) => {
         console.log(event.sid)
         const view = views.get(event.sid) as ClientViewState;
 
@@ -59,10 +56,10 @@ export const registerClientView = () => {
             conversationChunk.prompt = event.text;
         }
 
-        dispatchClientView(view)
+        dispatchClientView(eventSystem, view)
     });
 
-    on<TextCompletionFinish>(PipelineEventType.TextCompletionFinish, (event) => {
+    eventSystem.on<TextCompletionFinish>(PipelineEventType.TextCompletionFinish, (event) => {
         const view = views.get(event.sid) as ClientViewState;
 
         const conversationChunk = view.conversation.find((chunk) => chunk.id === event.trackId);
@@ -73,10 +70,10 @@ export const registerClientView = () => {
             conversationChunk.answer = event.text;
         }
 
-        dispatchClientView(view)
+        dispatchClientView(eventSystem, view)
     });
 
-    on<VoicePersist>(PipelineEventType.VoicePersist, (event) => {
+    eventSystem.on<VoicePersist>(PipelineEventType.VoicePersist, (event) => {
         const view = views.get(event.sid) as ClientViewState;
 
         const conversationChunk = view.conversation.find((chunk) => chunk.id === event.trackId);
@@ -86,11 +83,11 @@ export const registerClientView = () => {
             conversationChunk.answerAudioUrl = event.fileName;
         }
 
-        dispatchClientView(view)
+        dispatchClientView(eventSystem, view)
     });
 
-    on<VoiceActivationLevelUpdate>(PipelineEventType.VoiceActivationLevelUpdate, (event) => {
-        dispatch({
+    eventSystem.on<VoiceActivationLevelUpdate>(PipelineEventType.VoiceActivationLevelUpdate, (event) => {
+        eventSystem.dispatch({
             type: ClientEventType.ClientViewVoiceActivation,
             subsystem: "client",
             timestamp: Date.now(),
@@ -100,8 +97,8 @@ export const registerClientView = () => {
     });
 }
 
-const dispatchClientView = (view: ClientViewState) => {
-    dispatch({
+const dispatchClientView = (eventSystem: EventSystem, view: ClientViewState) => {
+    eventSystem.dispatch({
         type: ClientEventType.ClientViewUpdate,
         subsystem: "client",
         timestamp: Date.now(),
@@ -110,8 +107,8 @@ const dispatchClientView = (view: ClientViewState) => {
     })
 }
 
-export const dispatchClientMessage = (sid: string, data: string) => {
-    dispatch({
+export const dispatchClientMessage = (eventSystem: EventSystem, sid: string, data: string) => {
+    eventSystem.dispatch({
         ...JSON.parse(data),
         sid: sid,
     })

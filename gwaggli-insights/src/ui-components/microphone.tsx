@@ -1,12 +1,6 @@
-// https://www.twilio.com/blog/audio-visualisation-web-audio-api--react
-
-
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {encodeWAV} from "../encoder/wav";
 import {Button} from "antd";
-
-
-// https://github.com/hmontazeri/microphone/blob/master/src/Microphone.js
 
 interface MicrophoneState {
     mediaStream?: MediaStream

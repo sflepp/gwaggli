@@ -2,11 +2,20 @@
 
 Gwaggli is a simple voice processing tool. It consists of the following components:
 
+- gwaggli-events: An event system that allows to read and write gwaggli events
 - gwaggli-insight: A web application to show the results of the processing
 - gwaggli-pipeline: A pipeline to process voice streams in real time and output useful information
-- gwaggli-whisper: A wrapper for [OpenAI Whisper](https://github.com/openai/whisper) for voice transcription
+
 
 ## Installation & Usage
+
+### gwaggli-events
+
+Build the gwaggli-events library with the following command:
+
+```bash
+cd gwaggli-events && npm install && npm run build
+```
 
 ### gwaggli-insights
 
@@ -23,6 +32,8 @@ The pipeline is a NodeJS application. To install and run it, do the following:
 cd gwaggli-pipeline && npm install && npm run dev
 ```
 
+
+#### Preparation
 Setup an AWS account with permissions to run [Amazon Polly](https://aws.amazon.com/de/polly/) and add the credentials into the following file:
 
 ```
@@ -45,17 +56,12 @@ Add the [OpenAI API-Key](https://platform.openai.com/account/api-keys) to the fo
 }
 ```
 
-### gwaggli-whisper
+Add the [Replicate API-Key](https://replicate.ai/) to the following file:
 
-The whisper wrapper is a Python application. To install and run it, do the following:
-
-Install ffmpeg:
-```bash
-brew install ffmpeg
 ```
+./gwaggli-pipeline/.replicate/config.json
 
-And start the application:
-
-```bash
-cd gwaggli-whisper && pip3 install -r requirements.txt && python3 main.py
+{
+  "apiKey": "<YOUR-API-KEY>
+}
 ```
