@@ -1,6 +1,9 @@
 import {EventSystem, PipelineEventType} from "@gwaggli/events";
 import {VoiceActivationDataAvailable} from "@gwaggli/events/dist/events/pipeline-events";
 import {transcribeUsingWhisper} from "../../integration/replicate/whisper";
+import openAi from "../../integration/openai/open-ai-client";
+import {Buffer} from "buffer";
+import {Readable} from "stream";
 
 export const registerReplicateWhisper = (eventSystem: EventSystem) => {
     eventSystem.on<VoiceActivationDataAvailable>(PipelineEventType.VoiceActivationDataAvailable, async (event) => {
@@ -35,6 +38,25 @@ export const registerReplicateWhisper = (eventSystem: EventSystem) => {
     });
 }
 
+export const registerOpenaiWhisper = (eventSystem: EventSystem) => {
+    eventSystem.on<VoiceActivationDataAvailable>(PipelineEventType.VoiceActivationDataAvailable, async (event) => {
+        const readable = Readable.from(Buffer.from(event.audio, 'base64')) as any
+        readable.path = 'in-memory.wav'; // workaround, see https://github.com/openai/openai-node/issues/77
+
+        const transcription = await openAi.createTranscription(readable, 'whisper-1')
+
+        eventSystem.dispatch({
+            type: PipelineEventType.TranscriptionComplete,
+            subsystem: "pipeline",
+            sid: event.sid,
+            timestamp: Date.now(),
+            trackId: event.trackId,
+            language: '',
+            text: transcription.data.text,
+        });
+    });
+}
+
 export const registerTranscription = (eventSystem: EventSystem) => {
-    registerReplicateWhisper(eventSystem);
+    registerOpenaiWhisper(eventSystem);
 }

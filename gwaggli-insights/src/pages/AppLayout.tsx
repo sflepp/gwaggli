@@ -24,6 +24,11 @@ const AppLayout: React.FC = () => {
                         key: 'Chat',
                         label: 'Chat',
                         onClick: () => navigate('/chat'),
+                    },
+                    {
+                        key: 'Copilot',
+                        label: 'Copilot',
+                        onClick: () => navigate('/copilot'),
                     }
                 ]} />
             </Header>

@@ -7,7 +7,7 @@ import {registerTranscription} from "./domain/task/transcription";
 import {
     registerTextToSpeech
 } from "./domain/task/text-to-speech";
-import {registerChatStyleTextCompletion, registerSuggestionStyleTextCompletion} from "./domain/task/text-completion";
+import {registerChatStyleTextCompletion, registerCopilotStyleTextCompletion} from "./domain/task/text-completion";
 
 export const registerChatPipeline = (eventSystem: EventSystem) => {
     registerAudioBuffering(eventSystem);
@@ -18,9 +18,9 @@ export const registerChatPipeline = (eventSystem: EventSystem) => {
 }
 
 
-export const registerSuggestionPipeline = (eventSystem: EventSystem) => {
+export const registerCopilotPipeline = (eventSystem: EventSystem) => {
     registerAudioBuffering(eventSystem)
     registerVoiceActivation(eventSystem)
     registerTranscription(eventSystem)
-    registerSuggestionStyleTextCompletion(eventSystem)
+    registerCopilotStyleTextCompletion(eventSystem)
 }

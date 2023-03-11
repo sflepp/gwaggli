@@ -5,6 +5,7 @@ import useWebSocket from "react-use-websocket";
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import Chat from "./pages/chat/Chat";
 import AppLayout from "./pages/AppLayout";
+import Copilot from "./pages/copilot/Copilot";
 
 export default function App() {
 
@@ -21,6 +22,7 @@ export default function App() {
           <Route path="/" element={<AppLayout />}>
             <Route index element={<Home />} />
             <Route path="chat" element={<Chat />} />
+            <Route path="copilot" element={<Copilot />} />
           </Route>
         </Routes>
       </BrowserRouter>

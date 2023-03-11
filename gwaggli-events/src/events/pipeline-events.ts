@@ -10,6 +10,7 @@ export type PipelineEvents =
     TrnascriptionProcessing |
     TranscriptionComplete |
     TextCompletionFinish |
+    CopilotProcessingComplete |
     TextToVoiceFinish |
     VoicePersist;
 
@@ -22,6 +23,7 @@ export enum PipelineEventType {
     VoiceActivationPersist = "voice-activation-persist",
     TranscriptionProcessing = "transcription-processing",
     TranscriptionComplete = "transcription-complete",
+    CopilotProcessingComplete = "copilot-processing-complete",
     TextCompletionFinish = "text-completion-finish",
     TextToVoiceFinish = "text-to-voice-finish",
     VoicePersist = "voice-persist",
@@ -84,6 +86,17 @@ export interface TextCompletionFinish extends PipelineBaseEvent {
     trackId: string,
     language: string,
     text: string,
+}
+
+export interface CopilotProcessingComplete extends PipelineBaseEvent {
+    type: PipelineEventType.CopilotProcessingComplete,
+    trackId: string,
+    language: string,
+    history: string,
+    summary: string,
+    facts: string,
+    questions: string,
+    buzzwords: string,
 }
 
 export interface TextToVoiceFinish extends PipelineBaseEvent {
