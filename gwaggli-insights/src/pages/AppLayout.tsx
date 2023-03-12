@@ -29,6 +29,11 @@ const AppLayout: React.FC = () => {
                         key: 'Copilot',
                         label: 'Copilot',
                         onClick: () => navigate('/copilot'),
+                    },
+                    {
+                        key: 'Debugger',
+                        label: 'Debugger',
+                        onClick: () => navigate('/debugger'),
                     }
                 ]} />
             </Header>
