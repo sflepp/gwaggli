@@ -111,5 +111,6 @@ export const dispatchClientMessage = (eventSystem: EventSystem, sid: string, dat
     eventSystem.dispatch({
         ...JSON.parse(data),
         sid: sid,
+        timestamp: new Date().getTime()
     })
 }

@@ -12,7 +12,8 @@ export type PipelineEvents =
     TextCompletionFinish |
     CopilotProcessingComplete |
     TextToVoiceFinish |
-    VoicePersist;
+    VoicePersist |
+    PipelineError;
 
 export enum PipelineEventType {
     AudioBufferUpdate = "audio-buffer-update",
@@ -27,6 +28,7 @@ export enum PipelineEventType {
     TextCompletionFinish = "text-completion-finish",
     TextToVoiceFinish = "text-to-voice-finish",
     VoicePersist = "voice-persist",
+    PipelineError = "pipeline-error",
 }
 
 interface PipelineBaseEvent extends BaseEvent {
@@ -111,4 +113,10 @@ export interface VoicePersist extends PipelineBaseEvent {
     type: PipelineEventType.VoicePersist,
     trackId: string,
     fileName: string,
+}
+
+export interface PipelineError extends PipelineBaseEvent {
+    type: PipelineEventType.PipelineError,
+    error: string
+    cause: any
 }

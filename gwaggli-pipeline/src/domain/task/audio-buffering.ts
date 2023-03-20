@@ -8,6 +8,7 @@ export const registerAudioBuffering = (eventSystem: EventSystem) => {
 
     eventSystem.on<AudioChunk>(ClientEventType.AudioChunk, (event) => {
         let existingChunk = buffers.get(event.sid);
+
         const newChunk = new WaveData(Buffer.from(event.audio, 'base64'));
 
         if (existingChunk === undefined) {

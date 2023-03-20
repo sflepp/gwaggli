@@ -8,6 +8,7 @@ import {
     registerTextToSpeech
 } from "./domain/task/text-to-speech";
 import {registerChatStyleTextCompletion, registerCopilotStyleTextCompletion} from "./domain/task/text-completion";
+import {registerAdvisoryProcessing} from "./domain/task/advisory-processing";
 
 export const registerChatPipeline = (eventSystem: EventSystem) => {
     registerAudioBuffering(eventSystem);
@@ -23,4 +24,12 @@ export const registerCopilotPipeline = (eventSystem: EventSystem) => {
     registerVoiceActivation(eventSystem)
     registerTranscription(eventSystem)
     registerCopilotStyleTextCompletion(eventSystem)
+}
+
+export const registerAdvisoryPipeline = (eventSystem: EventSystem) => {
+    registerAudioBuffering(eventSystem)
+    registerVoiceActivation(eventSystem)
+    registerTranscription(eventSystem)
+    registerAdvisoryProcessing(eventSystem)
+    registerTextToSpeech(eventSystem)
 }

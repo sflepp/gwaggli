@@ -1,15 +1,12 @@
-import {useState} from "react";
+import React, {useState} from "react";
 import useWebSocket from "react-use-websocket";
 import {GwaggliEvent, PipelineEventType} from "@gwaggli/events";
-import React from 'react';
-import {Table, TableColumnsType} from "antd";
+import {Table, TableColumnsType, Typography} from "antd";
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import {docco} from 'react-syntax-highlighter/dist/esm/styles/hljs';
-
-
-import {Typography} from 'antd';
 import Waveform from "../../ui-components/waveform";
 import UuidVisualize from "../../ui-components/uuid-visualize";
+import {DomainEventType} from "@gwaggli/events/dist/events/domain-events";
 
 const {Text, Link} = Typography;
 
@@ -72,7 +69,7 @@ const Debugger = () => {
             columns={columns}
             dataSource={items}
             expandable={{expandedRowRender: ExpandedRow}}
-            pagination={{ pageSize: 100 }}
+            pagination={{pageSize: 100}}
         >
         </Table>
     </>)
@@ -127,7 +124,7 @@ const Details = (value: any, record: DataType, index: number) => {
                 <Text code>text</Text><Text type="secondary">{shorten(record.event.text, 100)}</Text>
             </>
         case PipelineEventType.VoiceActivationStart:
-            return  <>
+            return <>
                 <Text code>startMarker</Text><Text type="secondary">{record.event.startMarker}</Text>
             </>
         case PipelineEventType.VoiceActivationEnd:
@@ -140,6 +137,15 @@ const Details = (value: any, record: DataType, index: number) => {
             </>
         case PipelineEventType.VoiceActivationDataAvailable:
             return <Waveform audio={'data:audio/wav;base64,' + record.event.audio}/>
+        case DomainEventType.AdvisorAnswer:
+            return <>
+                <Text code>text</Text><Text type="secondary">{shorten(record.event.text, 100)}</Text><br/>
+                <Waveform audio={'data:audio/wav;base64,' + record.event.audio}/>
+            </>
+        case PipelineEventType.PipelineError:
+            return <>
+                <Text code>error</Text><Text type="secondary">{shorten(record.event.error, 100)}</Text><br/>
+            </>
         default:
             return <div>Not implemented</div>
     }

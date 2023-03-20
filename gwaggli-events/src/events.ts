@@ -1,7 +1,8 @@
 import {PipelineEvents, PipelineEventType} from "./events/pipeline-events";
 import {ClientEvents, ClientEventType} from "./events/client-events";
+import {DomainEvents, DomainEventType} from "./events/domain-events";
 
-export type GwaggliEvent = PipelineEvents | ClientEvents
+export type GwaggliEvent = PipelineEvents | ClientEvents | DomainEvents
 
 export interface BaseEvent {
     type: GwaggliEventType;
@@ -10,7 +11,7 @@ export interface BaseEvent {
     subsystem: Subsystem;
 }
 
-export type Subsystem = "pipeline" | "client";
+export type Subsystem = "pipeline" | "client" | "domain"
 
-export type GwaggliEventType = PipelineEventType | ClientEventType;
+export type GwaggliEventType = PipelineEventType | ClientEventType | DomainEventType;
 
