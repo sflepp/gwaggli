@@ -7,7 +7,10 @@ import {registerTranscription} from "./domain/task/transcription";
 import {
     registerTextToSpeech
 } from "./domain/task/text-to-speech";
-import {registerChatStyleTextCompletion, registerCopilotStyleTextCompletion} from "./domain/task/text-completion";
+import {
+    registerChatStyleTextCompletion,
+    registerCopilotStyleTextCompletion
+} from "./domain/task/text-completion";
 import {registerAdvisoryProcessing} from "./domain/task/advisory-processing";
 
 export const registerChatPipeline = (eventSystem: EventSystem) => {

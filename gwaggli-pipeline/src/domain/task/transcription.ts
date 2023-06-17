@@ -40,10 +40,12 @@ export const registerReplicateWhisper = (eventSystem: EventSystem) => {
 
 export const registerOpenaiWhisper = (eventSystem: EventSystem) => {
     eventSystem.on<VoiceActivationDataAvailable>(PipelineEventType.VoiceActivationDataAvailable, async (event) => {
-        const readable = Readable.from(Buffer.from(event.audio, 'base64')) as any
-        readable.path = 'in-memory.wav'; // workaround, see https://github.com/openai/openai-node/issues/77
+        const audioFile = Readable.from(Buffer.from(event.audio, 'base64')) as any
+        audioFile.path = 'in-memory.wav'; // workaround, see https://github.com/openai/openai-node/issues/77
 
-        const transcription = await openAi.createTranscription(readable, 'whisper-1')
+        const language = 'de'
+
+        const transcription = await openAi.createTranscription(audioFile, 'whisper-1', undefined, undefined, undefined, language)
 
         eventSystem.dispatch({
             type: PipelineEventType.TranscriptionComplete,
@@ -51,7 +53,7 @@ export const registerOpenaiWhisper = (eventSystem: EventSystem) => {
             sid: event.sid,
             timestamp: Date.now(),
             trackId: event.trackId,
-            language: '',
+            language: language,
             text: transcription.data.text,
         });
     });

@@ -1,58 +1,54 @@
-import {TranscriptionComplete} from "@gwaggli/events/dist/events/pipeline-events";
-import openAi from "../../integration/openai/open-ai-client";
+import {PipelineError, TranscriptionComplete} from "@gwaggli/events/dist/events/pipeline-events";
+import openAi, {createChatCompletion} from "../../integration/openai/open-ai-client";
 import {EventSystem, PipelineEventType} from "@gwaggli/events";
+import {ChatCompletionRequestMessage} from "openai/api";
 
-const model = "text-davinci-003"
 const chatModel = "gpt-3.5-turbo"
+
 
 export const registerChatStyleTextCompletion = (eventSystem: EventSystem) => {
 
-    const history = new Map<string, {
-        prompt: string,
-        answer: string
-    }[]>();
+    const history: ChatCompletionRequestMessage[] = [];
 
 
     eventSystem.on<TranscriptionComplete>(PipelineEventType.TranscriptionComplete, async (event) => {
-        const currentHistory = history.get(event.sid) || [];
-        const historyPrompt = currentHistory.map((historyEntry) => {
-            return `Human: ${historyEntry.prompt}\nAI copilot: ${historyEntry.answer}\n`
-        }).join("\n") || '';
 
-        const prompt = "The following is a conversation with an AI text copilot on the side of a human. The AI copilot listens to the conversation and tries to give interesting, funny, smart and clever inputs, which the human can use to improve the conversation" +
-            `${historyPrompt}\nHuman: ${event.text}\nAI copilot: `;
+        history.push({
+            role: "user",
+            content: event.text
+        })
 
-        console.log(prompt)
-
-
+        let answer;
         try {
-            const response = await openAi.createCompletion({
-                model: model,
-                prompt: prompt,
-                temperature: 0.6,
-                max_tokens: 3000,
-            });
-
-            const answer = response.data.choices[0].text || '';
-
-            history.set(event.sid, [...currentHistory, {
-                prompt: event.text,
-                answer: answer
-            }]);
-
-            eventSystem.dispatch({
-                type: PipelineEventType.TextCompletionFinish,
-                subsystem: "pipeline",
-                sid: event.sid,
-                timestamp: Date.now(),
-                trackId: event.trackId,
-                language: event.language,
-                text: answer,
-            });
-        } catch (error) {
-            console.log(error)
+            answer = await createChatCompletion(event.sid,
+                [
+                    {
+                        role: "system",
+                        content: "Ich bin ein freundlicher, weltoffener Chatpartner. Ich heisse Gwaggli und beantworte gerne Fragen zu allen möglichen Themen. Ich gebe meistens gute und informierte Antworten."
+                    },
+                    ...history
+                ]
+            )
+        } catch (e: unknown) {
+            eventSystem.dispatch(e as PipelineError)
+            answer = "Ich habe gerade ein technisches Problem und kann dir nicht weiterhelfen. Bitte versuche es nocheinmal.";
         }
-    });
+
+        history.push({
+            role: "assistant",
+            content: answer
+        });
+
+        eventSystem.dispatch({
+            type: PipelineEventType.TextCompletionFinish,
+            subsystem: "pipeline",
+            sid: event.sid,
+            timestamp: Date.now(),
+            trackId: event.trackId,
+            language: event.language,
+            text: answer,
+        })
+    })
 }
 
 export const registerCopilotStyleTextCompletion = (eventSystem: EventSystem) => {
@@ -112,7 +108,7 @@ const createSummary = async (text: string) => {
         messages: [
             {
                 role: "system",
-                content: "Summarize the following text into one sentence."
+                content: "Erstelle eine kurze Zusammenfassung."
             },
             {
                 role: "user",
@@ -131,7 +127,7 @@ const createFacts = async (text: string) => {
         messages: [
             {
                 role: "system",
-                content: "Provide interesting facts as an addition to the following text."
+                content: "Liefere interessante Fakten."
             },
             {
                 role: "user",
@@ -151,7 +147,7 @@ const createQuestions = async (text: string) => {
         messages: [
             {
                 role: "system",
-                content: "Provide follow-up questions for the following text."
+                content: "Erstelle kurze Fragen, die die Diskussion weiterführen könnten."
             },
             {
                 role: "user",
@@ -170,7 +166,7 @@ const createBuzzwords = async (text: string) => {
         messages: [
             {
                 role: "system",
-                content: "You are going to generate a shortlist of buzzwords for the following text."
+                content: "Erstelle eine kurze Liste von Buzzwords und Schlagworten."
             },
             {
                 role: "user",

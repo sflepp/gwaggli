@@ -1,7 +1,7 @@
 import fs from "fs";
 import {Configuration, OpenAIApi} from "openai";
 import {ChatCompletionRequestMessage} from "openai/api";
-import {PipelineError, PipelineEventType} from "@gwaggli/events/dist/events/pipeline-events";
+import {PipelineEventType} from "@gwaggli/events/dist/events/pipeline-events";
 
 const openAiConfig = JSON.parse(fs.readFileSync(".openai/config.json", "utf8"));
 
@@ -17,7 +17,7 @@ export const createChatCompletion = async (sid: string, messages: Array<ChatComp
     try {
         const response = await openAi.createChatCompletion(
             {
-                model: 'gpt-3.5-turbo',
+                model: 'gpt-3.5-turbo-16k-0613',
                 messages: messages,
                 temperature: 0.5
             }

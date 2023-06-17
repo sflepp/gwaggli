@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import useWebSocket from "react-use-websocket";
-import {GwaggliEvent, PipelineEventType} from "@gwaggli/events";
+import {ClientEventType, GwaggliEvent, PipelineEventType} from "@gwaggli/events";
 import {Table, TableColumnsType, Typography} from "antd";
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import {docco} from 'react-syntax-highlighter/dist/esm/styles/hljs';
@@ -43,17 +43,24 @@ const Debugger = () => {
         }
     })
 
-    const items = events.map((event, index) => {
-        return {
-            key: index,
-            sid: event.sid,
-            timestamp: event.timestamp,
-            deltaTime: event.timestamp - (events[Math.max(0, index - 1)].timestamp),
-            type: event.type,
-            trackId: "trackId" in event ? event.trackId : undefined,
-            event: event
-        }
-    }).reverse()
+    const items = events
+        .map((event, index) => {
+            return {
+                key: index,
+                sid: event.sid,
+                timestamp: event.timestamp,
+                deltaTime: event.timestamp - (events[Math.max(0, index - 1)].timestamp),
+                type: event.type,
+                trackId: "trackId" in event ? event.trackId : undefined,
+                event: event
+            }
+        })
+        .filter(event =>
+            event.type !== ClientEventType.ClientViewUpdate &&
+            event.type !== PipelineEventType.VoicePersist &&
+            event.type !== PipelineEventType.VoiceActivationPersist
+        )
+        .reverse()
 
     const columns: TableColumnsType<DataType> = [
         {title: 'SID', dataIndex: 'sid', key: 'sid', render: SidRenderer},
@@ -145,6 +152,18 @@ const Details = (value: any, record: DataType, index: number) => {
         case PipelineEventType.PipelineError:
             return <>
                 <Text code>error</Text><Text type="secondary">{shorten(record.event.error, 100)}</Text><br/>
+            </>
+        case PipelineEventType.TextCompletionFinish:
+            return <>
+                <Text code>text</Text><Text type="secondary">{shorten(record.event.text, 100)}</Text><br/>
+            </>
+        case PipelineEventType.TextToVoiceFinish:
+            return <>
+                <Waveform audio={'data:audio/wav;base64,' + record.event.audio}/>
+            </>
+        case PipelineEventType.VoicePersist:
+            return <>
+                <Text code>filename</Text><Text type="secondary">{shorten(record.event.fileName, 100)}</Text>
             </>
         default:
             return <div>Not implemented</div>
