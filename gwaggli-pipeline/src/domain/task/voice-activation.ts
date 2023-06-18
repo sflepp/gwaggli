@@ -1,17 +1,17 @@
-import {EventSystem, PipelineEventType} from "@gwaggli/events";
+import { EventSystem, PipelineEventType } from "@gwaggli/events";
 import {
     AudioBufferUpdate,
     VoiceActivationDataAvailable,
     VoiceActivationEnd,
     VoiceActivationStart
 } from "@gwaggli/events/dist/events/pipeline-events";
-import {WaveData} from "../data/wave-data";
-import {Buffer} from "buffer";
+import { WaveData } from "../data/wave-data";
+import { Buffer } from "buffer";
 import crypto from "crypto";
 import fs from "fs";
 
 
-const {v4: uuidv4} = require('uuid')
+const { v4: uuidv4 } = require('uuid')
 
 export const registerVoiceActivationDetection = (eventSystem: EventSystem) => {
     const voiceActivation = new Map<string, VoiceActivationStart>()
@@ -129,7 +129,12 @@ export const registerVoiceActivationPersist = (eventSystem: EventSystem) => {
             .digest('hex');
 
         const fileName = `audio-${new Date().getTime()}-${hash}.wav`
-        const path = `./generated/voice-activation/${fileName}`;
+        const folder = `./generated/voice-activation`;
+        const path = `${folder}/${fileName}`;
+
+        if (!fs.existsSync(folder)) {
+            fs.mkdirSync(folder, { recursive: true });
+        }
 
         fs.writeFileSync(path, Buffer.from(event.audio, 'base64'));
 

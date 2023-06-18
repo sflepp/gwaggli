@@ -1,8 +1,8 @@
-import {EventSystem, PipelineEventType} from "@gwaggli/events";
-import {TextCompletionFinish, TextToVoiceFinish} from "@gwaggli/events/dist/events/pipeline-events";
+import { EventSystem, PipelineEventType } from "@gwaggli/events";
+import { TextCompletionFinish, TextToVoiceFinish } from "@gwaggli/events/dist/events/pipeline-events";
 import fs from "fs";
-import {Buffer} from "buffer";
-import {textToSpeech} from "../../integration/aws/aws-client";
+import { Buffer } from "buffer";
+import { textToSpeech } from "../../integration/aws/aws-client";
 
 export const registerPollyTextToSpeech = (eventSystem: EventSystem) => {
     eventSystem.on<TextCompletionFinish>(PipelineEventType.TextCompletionFinish, async (event) => {
@@ -25,7 +25,12 @@ export const registerPollyTextToSpeech = (eventSystem: EventSystem) => {
 export const registerTextToSpeechPersist = (eventSystem: EventSystem) => {
     eventSystem.on<TextToVoiceFinish>(PipelineEventType.TextToVoiceFinish, async (event) => {
         const fileName = `${event.voiceId}_${new Date().getTime()}.wav`
-        const path = `generated/voices/${fileName}`
+        const folder = `generated/voices`
+        const path = `${folder}/${fileName}`
+
+        if (!fs.existsSync(folder)) {
+            fs.mkdirSync(folder, { recursive: true });
+        }
 
         fs.writeFile(path, Buffer.from(event.audio, 'base64'), (err) => {
 
