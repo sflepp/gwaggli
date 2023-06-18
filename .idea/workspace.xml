@@ -6,6 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="f5c384cc-a39b-480a-bc43-a936d9016f85" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/gwaggli-pipeline/src/domain/task/text-to-speech.ts" beforeDir="false" afterPath="$PROJECT_DIR$/gwaggli-pipeline/src/domain/task/text-to-speech.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/gwaggli-pipeline/src/domain/task/voice-activation.ts" beforeDir="false" afterPath="$PROJECT_DIR$/gwaggli-pipeline/src/domain/task/voice-activation.ts" afterDir="false" />
     </list>
@@ -42,7 +43,7 @@
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_interpreter_path": "wsl://Ubuntu-22.04@/home/simon/.nvm/versions/node/v19.9.0/bin/node",
     "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "settings.editor.selected.configurable": "preferences.keymap",
     "ts.external.directory.path": "\\\\wsl$\\Ubuntu-22.04\\home\\simon\\prj\\gwaggli\\gwaggli-events\\node_modules\\typescript\\lib",
     "vue.rearranger.settings.migration": "true"
   }
@@ -84,7 +85,7 @@
       <workItem from="1687085610927" duration="1476000" />
       <workItem from="1687091527446" duration="64000" />
       <workItem from="1687091636952" duration="56000" />
-      <workItem from="1687091703000" duration="904000" />
+      <workItem from="1687091703000" duration="2035000" />
     </task>
     <servers />
   </component>
