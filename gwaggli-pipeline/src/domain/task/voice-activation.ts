@@ -16,8 +16,8 @@ const { v4: uuidv4 } = require('uuid')
 export const registerVoiceActivationDetection = (eventSystem: EventSystem) => {
     const voiceActivation = new Map<string, VoiceActivationStart>()
 
-    const voiceActivationStartLevel = 400;
-    const voiceActivationEndLevel = 100;
+    const voiceActivationStartLevel = 20;
+    const voiceActivationEndLevel = 15;
 
     eventSystem.on<AudioBufferUpdate>(PipelineEventType.AudioBufferUpdate, (event) => {
         let windowDuration = 1000; // milliseconds

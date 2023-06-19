@@ -19,7 +19,7 @@ export const createChatCompletion = async (sid: string, messages: Array<ChatComp
             {
                 model: 'gpt-3.5-turbo-16k-0613',
                 messages: messages,
-                temperature: 0.5
+                temperature: 0
             }
         )
 

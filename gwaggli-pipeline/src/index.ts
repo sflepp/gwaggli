@@ -107,7 +107,8 @@ advisoryWebsocket.on("connection", async (ws: WebSocket) => {
     const sid = uuidv4();
 
     const clientFilter = (event: GwaggliEvent) => event.sid === sid &&
-        event.type !== ClientEventType.AudioChunk;
+        event.type !== ClientEventType.AudioChunk &&
+        event.type !== PipelineEventType.AudioBufferUpdate;
 
     const listener = eventSystem.filter(clientFilter, (event) => {
         ws.send(JSON.stringify(event));

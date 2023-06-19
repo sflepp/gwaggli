@@ -5,10 +5,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f5c384cc-a39b-480a-bc43-a936d9016f85" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gwaggli-pipeline/src/domain/task/text-to-speech.ts" beforeDir="false" afterPath="$PROJECT_DIR$/gwaggli-pipeline/src/domain/task/text-to-speech.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gwaggli-pipeline/src/domain/task/advisory-processing.ts" beforeDir="false" afterPath="$PROJECT_DIR$/gwaggli-pipeline/src/domain/task/advisory-processing.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gwaggli-pipeline/src/domain/task/text-completion.ts" beforeDir="false" afterPath="$PROJECT_DIR$/gwaggli-pipeline/src/domain/task/text-completion.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gwaggli-pipeline/src/domain/task/transcription.ts" beforeDir="false" afterPath="$PROJECT_DIR$/gwaggli-pipeline/src/domain/task/speech-to-text.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/gwaggli-pipeline/src/domain/task/voice-activation.ts" beforeDir="false" afterPath="$PROJECT_DIR$/gwaggli-pipeline/src/domain/task/voice-activation.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gwaggli-pipeline/src/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/gwaggli-pipeline/src/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gwaggli-pipeline/src/integration/openai/open-ai-client.ts" beforeDir="false" afterPath="$PROJECT_DIR$/gwaggli-pipeline/src/integration/openai/open-ai-client.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gwaggli-pipeline/src/integration/replicate/whisper.ts" beforeDir="false" afterPath="$PROJECT_DIR$/gwaggli-pipeline/src/integration/replicate/whisper.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gwaggli-pipeline/src/pipeline.ts" beforeDir="false" afterPath="$PROJECT_DIR$/gwaggli-pipeline/src/pipeline.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -32,22 +37,24 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_interpreter_path": "wsl://Ubuntu-22.04@/home/simon/.nvm/versions/node/v19.9.0/bin/node",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "preferences.keymap",
-    "ts.external.directory.path": "\\\\wsl$\\Ubuntu-22.04\\home\\simon\\prj\\gwaggli\\gwaggli-events\\node_modules\\typescript\\lib",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_interpreter_path&quot;: &quot;wsl://Ubuntu-22.04@/home/simon/.nvm/versions/node/v19.9.0/bin/node&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.keymap&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;\\\\wsl$\\Ubuntu-22.04\\home\\simon\\prj\\gwaggli\\gwaggli-events\\node_modules\\typescript\\lib&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager" selected="npm.gwaggli-pipeline dev">
     <configuration name="gwaggli-insights start" type="js.build_tools.npm">
       <package-json value="$PROJECT_DIR$/gwaggli-insights/package.json" />
@@ -85,7 +92,12 @@
       <workItem from="1687085610927" duration="1476000" />
       <workItem from="1687091527446" duration="64000" />
       <workItem from="1687091636952" duration="56000" />
-      <workItem from="1687091703000" duration="2035000" />
+      <workItem from="1687091703000" duration="2175000" />
+      <workItem from="1687093983689" duration="24000" />
+      <workItem from="1687094109081" duration="298000" />
+      <workItem from="1687094429579" duration="1825000" />
+      <workItem from="1687180722532" duration="2481000" />
+      <workItem from="1687198505541" duration="3352000" />
     </task>
     <servers />
   </component>

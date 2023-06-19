@@ -1,10 +1,10 @@
-import {EventSystem, PipelineEventType} from "@gwaggli/events";
-import {AddAdvisorEvent, DomainEventType, JoinAdvisoryEvent} from "@gwaggli/events/dist/events/domain-events";
-import {advisoryRepository} from "../../repository/advisory-repository";
-import {PipelineError, TranscriptionComplete} from "@gwaggli/events/dist/events/pipeline-events";
-import {createChatCompletion} from "../../integration/openai/open-ai-client";
-import {ChatCompletionRequestMessageRoleEnum} from "openai";
-import {textToSpeech} from "../../integration/aws/aws-client";
+import { EventSystem, PipelineEventType } from "@gwaggli/events";
+import { AddAdvisorEvent, DomainEventType, JoinAdvisoryEvent } from "@gwaggli/events/dist/events/domain-events";
+import { advisoryRepository } from "../../repository/advisory-repository";
+import { PipelineError, TranscriptionComplete } from "@gwaggli/events/dist/events/pipeline-events";
+import { createChatCompletion } from "../../integration/openai/open-ai-client";
+import { ChatCompletionRequestMessageRoleEnum } from "openai";
+import { textToSpeech } from "../../integration/aws/aws-client";
 
 export const registerAdvisoryProcessing = (eventSystem: EventSystem) => {
 
@@ -32,15 +32,13 @@ export const registerAdvisoryProcessing = (eventSystem: EventSystem) => {
 
         advisory.advisors.push({
             sid: event.sid,
-            id: event.advisorId,
+            id: event.name,
             name: event.name,
             voice: event.voice,
             purpose: event.purpose,
         });
 
         advisoryRepository.save(advisory)
-
-        console.log(JSON.stringify(advisoryRepository.findAll()))
     });
 
     eventSystem.on<TranscriptionComplete>(PipelineEventType.TranscriptionComplete, async (event) => {
@@ -52,8 +50,6 @@ export const registerAdvisoryProcessing = (eventSystem: EventSystem) => {
         }
 
         const advisor = advisory.advisors.find((advisor) => advisor.sid === event.sid);
-
-        console.log(advisor)
 
         if (advisor === undefined) {
             return;
@@ -68,26 +64,29 @@ export const registerAdvisoryProcessing = (eventSystem: EventSystem) => {
 
         advisoryRepository.save(advisory)
 
+        console.log(advisory.conversation);
+
+        const prompt = [
+            {
+                role: ChatCompletionRequestMessageRoleEnum.System,
+                content: advisor.purpose
+            },
+            ...advisory.conversation
+                .filter(e => e.to === advisor.id || e.from === advisor.id)
+                .map((conversationEntry) => {
+                    return {
+                        role: conversationEntry.from === 'human' ?
+                            ChatCompletionRequestMessageRoleEnum.User :
+                            ChatCompletionRequestMessageRoleEnum.Assistant,
+                        content: conversationEntry.text,
+                    }
+                })
+        ]
+
 
         let answer;
         try {
-            answer = await createChatCompletion(event.sid,
-                [
-                    {
-                        role: "system",
-                        content: advisor.purpose
-                    },
-                    ...advisory.conversation
-                        .filter(e => e.to === advisor.id || e.from === advisory.id)
-                        .map((conversationEntry) => {
-                            return {
-                                role: conversationEntry.from === 'human' ?
-                                    ChatCompletionRequestMessageRoleEnum.User :
-                                    ChatCompletionRequestMessageRoleEnum.Assistant,
-                                content: conversationEntry.text,
-                            }
-                        })
-                ])
+            answer = await createChatCompletion(event.sid, prompt)
 
         } catch (e: unknown) {
             eventSystem.dispatch(e as PipelineError)

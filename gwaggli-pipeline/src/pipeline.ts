@@ -3,7 +3,7 @@ import {registerAudioBuffering} from "./domain/task/audio-buffering";
 import {
     registerVoiceActivation
 } from "./domain/task/voice-activation";
-import {registerTranscription} from "./domain/task/transcription";
+import {registerTranscription} from "./domain/task/speech-to-text";
 import {
     registerTextToSpeech
 } from "./domain/task/text-to-speech";

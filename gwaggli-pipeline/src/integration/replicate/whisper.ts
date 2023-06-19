@@ -82,7 +82,7 @@ export async function* transcribeUsingWhisper(audio: string): AsyncGenerator<Rep
             model: 'large-v1',
             transcription: 'plain text',
             translate: false,
-            temperature: 0.6,
+            temperature: 0,
             suppress_tokens: '-1',
             condition_on_previous_text: true,
             temperature_increment_on_fallback: 0.2,

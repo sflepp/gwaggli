@@ -45,17 +45,29 @@ export const registerOpenaiWhisper = (eventSystem: EventSystem) => {
 
         const language = 'de'
 
-        const transcription = await openAi.createTranscription(audioFile, 'whisper-1', undefined, undefined, undefined, language)
+        try {
+            const transcription = await openAi.createTranscription(audioFile, 'whisper-1', undefined, undefined, undefined, language)
 
-        eventSystem.dispatch({
-            type: PipelineEventType.TranscriptionComplete,
-            subsystem: "pipeline",
-            sid: event.sid,
-            timestamp: Date.now(),
-            trackId: event.trackId,
-            language: language,
-            text: transcription.data.text,
-        });
+            eventSystem.dispatch({
+                type: PipelineEventType.TranscriptionComplete,
+                subsystem: "pipeline",
+                sid: event.sid,
+                timestamp: Date.now(),
+                trackId: event.trackId,
+                language: language,
+                text: transcription.data.text,
+            });
+        } catch (e) {
+            eventSystem.dispatch({
+                type: PipelineEventType.TranscriptionComplete,
+                subsystem: "pipeline",
+                sid: event.sid,
+                timestamp: Date.now(),
+                trackId: event.trackId,
+                language: language,
+                text: 'Failed to process audio.',
+            });
+        }
     });
 }
 

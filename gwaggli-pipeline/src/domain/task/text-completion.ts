@@ -115,7 +115,7 @@ const createSummary = async (text: string) => {
                 content: text
             }
         ],
-        temperature: 0.6,
+        temperature: 0,
     });
 
     return (response.data.choices[0].message?.content || '').trim();
@@ -134,7 +134,7 @@ const createFacts = async (text: string) => {
                 content: text
             }
         ],
-        temperature: 0.6,
+        temperature: 0,
     });
 
     return (response.data.choices[0].message?.content || '').trim();
@@ -154,7 +154,7 @@ const createQuestions = async (text: string) => {
                 content: text
             }
         ],
-        temperature: 0.6,
+        temperature: 0,
     });
 
     return (response.data.choices[0].message?.content || '').trim();
@@ -173,7 +173,7 @@ const createBuzzwords = async (text: string) => {
                 content: text
             }
         ],
-        temperature: 0.6,
+        temperature: 0,
     });
 
     return (response.data.choices[0].message?.content || '').trim();
