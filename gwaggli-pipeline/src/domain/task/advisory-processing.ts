@@ -5,6 +5,8 @@ import { PipelineError, TranscriptionComplete } from "@gwaggli/events/dist/event
 import { createChatCompletion } from "../../integration/openai/open-ai-client";
 import { ChatCompletionRequestMessageRoleEnum } from "openai";
 import { textToSpeech } from "../../integration/aws/aws-client";
+import { AdvisorConfiguration } from "../model/advisory/advisory";
+import { advisorConfigurations } from "../model/advisory/advisor-configurations";
 
 export const registerAdvisoryProcessing = (eventSystem: EventSystem) => {
 
@@ -30,13 +32,23 @@ export const registerAdvisoryProcessing = (eventSystem: EventSystem) => {
             return;
         }
 
-        advisory.advisors.push({
-            sid: event.sid,
-            id: event.name,
-            name: event.name,
-            voice: event.voice,
-            purpose: event.purpose,
-        });
+        const predefinedConfig = advisorConfigurations.find((config) => config.name === event.name);
+
+        if (predefinedConfig === undefined) {
+            advisory.advisors.push({
+                sid: event.sid,
+                id: event.name,
+                name: event.name,
+                voice: event.voice,
+                purpose: event.purpose,
+            });
+        } else {
+            advisory.advisors.push({
+                sid: event.sid,
+                id: event.name,
+                ...predefinedConfig
+            });
+        }
 
         advisoryRepository.save(advisory)
     });

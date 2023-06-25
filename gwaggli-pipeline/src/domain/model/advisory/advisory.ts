@@ -19,3 +19,10 @@ export interface ConversationChunk {
     text: string;
     language: string;
 }
+
+export interface AdvisorConfiguration {
+    name: string;
+    voiceSystem: 'aws-polly'
+    voice: string;
+    purpose: string;
+}
