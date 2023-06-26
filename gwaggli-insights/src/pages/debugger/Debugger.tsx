@@ -7,6 +7,7 @@ import {docco} from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import Waveform from "../../ui-components/waveform";
 import UuidVisualize from "../../ui-components/uuid-visualize";
 import {DomainEventType} from "@gwaggli/events/dist/events/domain-events";
+import { pipelineHost } from "../../env";
 
 const {Text, Link} = Typography;
 
@@ -32,7 +33,7 @@ const Debugger = () => {
 
     const [events, setEvents] = useState<GwaggliEvent[]>([])
 
-    useWebSocket("ws://localhost:8888", {
+    useWebSocket(`ws://${pipelineHost}:8888`, {
         onOpen: () => console.log("opened"),
         onMessage: (message) => {
             const event = JSON.parse(message.data) as GwaggliEvent

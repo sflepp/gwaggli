@@ -7,12 +7,13 @@ import Microphone from "../../ui-components/microphone";
 import ConnectionStatus from "../../ui-components/connection-status";
 import {Card, Col, Progress, Row} from "antd";
 import {CopilotProcessingComplete, VoiceActivationLevelUpdate} from "@gwaggli/events/dist/events/pipeline-events";
+import { pipelineHost } from "../../env";
 
 const Copilot = () => {
 
     const [eventSystem] = useState(new EventSystem())
 
-    const {sendMessage, readyState} = useWebSocket(`ws://localhost:8002`, {
+    const {sendMessage, readyState} = useWebSocket(`ws://${pipelineHost}:8002`, {
         onOpen: () => console.log("opened"),
         onMessage: (event) => {
             eventSystem.dispatch(JSON.parse(event.data))

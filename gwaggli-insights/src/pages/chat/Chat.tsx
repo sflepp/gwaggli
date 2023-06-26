@@ -11,12 +11,13 @@ import {encodeBase64} from "../../encoder/base64";
 import Microphone from "../../ui-components/microphone";
 import ConnectionStatus from "../../ui-components/connection-status";
 import {Avatar, List, Progress, Skeleton} from "antd";
+import { pipelineHost } from "../../env";
 
 const Chat = () => {
 
     const [eventSystem] = useState(new EventSystem())
 
-    const {sendMessage, readyState} = useWebSocket(`ws://localhost:8001`, {
+    const {sendMessage, readyState} = useWebSocket(`ws://${pipelineHost}:8001`, {
         onOpen: () => console.log("opened"),
         onMessage: (event) => {
             eventSystem.dispatch(JSON.parse(event.data))
