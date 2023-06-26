@@ -1,1 +1,1 @@
-export const pipelineHost = "localhost"
+export const pipelineHost = "gwaggli.flepp.io"
