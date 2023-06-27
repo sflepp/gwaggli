@@ -4,10 +4,10 @@
   "description": "Consumes voice and generates conversations and other artefacts",
   "main": "dist/index.js",
   "scripts": {
-    "build": "npx tsc",
+    "build": "npx webpack --config=webpack.config.js",
     "start": "node dist/index.js",
-    "dev": "concurrently \"npx tsc --watch\" \"nodemon --enable-source-maps -q dist/index.js \"",
-    "test": "nodemon --ext ts --exec 'npm run build && jasmine'"
+    "dev": "concurrently \"npx webpack --config=webpack.config.js --mode=development --watch\" \"nodemon --enable-source-maps -q dist/index.js \"",
+    "test": "jasmine-ts --config=jasmine.json"
   },
   "author": "Simon Flepp",
   "license": "ISC",
@@ -20,7 +20,13 @@
     "jasmine": "4.5.0",
     "jasmine-ts": "0.4.0",
     "nodemon": "2.0.20",
-    "typescript": "4.9.4"
+    "ts-loader": "9.4.3",
+    "ts-node": "8.10.2",
+    "typescript": "4.9.4",
+    "webpack": "5.88.0",
+    "webpack-cli": "5.1.4",
+    "webpack-dev-server": "4.15.1",
+    "webpack-node-externals": "3.0.0"
   },
   "dependencies": {
     "@aws-sdk/client-cognito-identity": "3.259.0",
@@ -31,6 +37,7 @@
     "axios": "1.3.4",
     "dotenv": "16.0.3",
     "express": "4.18.2",
+    "jasmine-spec-reporter": "7.0.0",
     "node-lame": "1.3.2",
     "openai": "3.2.1",
     "uuid": "9.0.0",
