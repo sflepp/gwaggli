@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "npx webpack --config=webpack.config.js",
-    "start": "node dist/index.js",
+    "start": "NODE_OPTIONS=--max_old_space_size=4096 node dist/index.js",
     "dev": "concurrently \"npx webpack --config=webpack.config.js --mode=development --watch\" \"nodemon --enable-source-maps -q dist/index.js \"",
     "test": "jest",
     "test:watch": "jest --watchAll"
