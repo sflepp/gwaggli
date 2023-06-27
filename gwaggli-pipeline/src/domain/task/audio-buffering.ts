@@ -24,7 +24,7 @@ export const registerAudioBuffering = (eventSystem: EventSystem) => {
             subsystem: "pipeline",
             sid: event.sid,
             timestamp: Date.now(),
-            audio: existingChunk.buffer.toString('base64')
+            audio: existingChunk.buffer
         })
     });
 }

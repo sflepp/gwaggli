@@ -37,7 +37,7 @@ interface PipelineBaseEvent extends BaseEvent {
 
 export interface AudioBufferUpdate extends PipelineBaseEvent {
     type: PipelineEventType.AudioBufferUpdate,
-    audio: string
+    audio: ArrayBuffer
 }
 
 export interface VoiceActivationLevelUpdate extends PipelineBaseEvent {
