@@ -5,7 +5,6 @@ import { PipelineError, TranscriptionComplete } from "@gwaggli/events/dist/event
 import { createChatCompletion } from "../../integration/openai/open-ai-client";
 import { ChatCompletionRequestMessageRoleEnum } from "openai";
 import { textToSpeech } from "../../integration/aws/aws-client";
-import { AdvisorConfiguration } from "../model/advisory/advisory";
 import { advisorConfigurations } from "../model/advisory/advisor-configurations";
 
 export const registerAdvisoryProcessing = (eventSystem: EventSystem) => {
