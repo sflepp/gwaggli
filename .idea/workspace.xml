@@ -5,11 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="507b9911-af33-45e7-ac34-558464c5c311" name="Changes" comment="Migrate chat to gpt-3.5">
-      <change afterPath="$PROJECT_DIR$/gwaggli-pipeline/src/domain/data/wave-data-example.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gwaggli-events/src/events/pipeline-events.ts" beforeDir="false" afterPath="$PROJECT_DIR$/gwaggli-events/src/events/pipeline-events.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gwaggli-pipeline/src/domain/task/audio-buffering.spec.ts" beforeDir="false" afterPath="$PROJECT_DIR$/gwaggli-pipeline/src/domain/task/audio-buffering.spec.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gwaggli-pipeline/src/domain/task/audio-buffering.ts" beforeDir="false" afterPath="$PROJECT_DIR$/gwaggli-pipeline/src/domain/task/audio-buffering.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/connect-ssh.sh" beforeDir="false" afterPath="$PROJECT_DIR$/connect-ssh.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gwaggli-pipeline/src/domain/model/advisory/advisor-configurations.ts" beforeDir="false" afterPath="$PROJECT_DIR$/gwaggli-pipeline/src/domain/model/advisory/advisor-configurations.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -39,27 +37,27 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "git-widget-placeholder": "main",
-    "ignore.virus.scanning.warn.message": "true",
-    "javascript.nodejs.core.library.configured.version": "19.2.0",
-    "javascript.nodejs.core.library.typings.version": "20.3.2",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_interpreter_path": "/Users/simonflepp/.nvm/versions/node/v19.2.0/bin/node",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "settings.nodejs",
-    "ts.external.directory.path": "/Users/simonflepp/mini-projects/gwaggli/gwaggli-events/node_modules/typescript/lib",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;javascript.nodejs.core.library.configured.version&quot;: &quot;19.2.0&quot;,
+    &quot;javascript.nodejs.core.library.typings.version&quot;: &quot;20.3.2&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_interpreter_path&quot;: &quot;/Users/simonflepp/.nvm/versions/node/v19.2.0/bin/node&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;settings.nodejs&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;/Users/simonflepp/mini-projects/gwaggli/gwaggli-events/node_modules/typescript/lib&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="\\wsl$\Ubuntu-22.04\home\simon\prj\gwaggli" />
@@ -116,6 +114,8 @@
       <workItem from="1687872952519" duration="573000" />
       <workItem from="1687891483161" duration="71000" />
       <workItem from="1687891605612" duration="5705000" />
+      <workItem from="1688029261038" duration="1000" />
+      <workItem from="1688112919733" duration="1735000" />
     </task>
     <servers />
   </component>

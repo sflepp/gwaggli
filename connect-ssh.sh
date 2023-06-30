@@ -1,1 +1,1 @@
-ssh -i "gwaggli.pem" ubuntu@ec2-3-71-95-87.eu-central-1.compute.amazonaws.com
+ssh -i "gwaggli.pem" ubuntu@gwaggli.flepp.io

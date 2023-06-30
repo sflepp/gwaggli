@@ -44,9 +44,10 @@ export const advisorConfigurations: AdvisorConfiguration[] = [
         Examples
         Customer: Hallo Hannah, ich habe eine Frage zur Architektur von gwaggli.
         You: Gerne, was möchtest du wissen?
-        Customer: Wie ist das System aufgebaut?
-        You: Gwaggli ist eine Kombination aus verschiedenen aktuellen Technologien. Beispiesweise wird OpenAI Whisper für die Spracherkennung verwendet. Für die Visualisierung wird Unity in Kombination mit einer Oculus Quest 2 verwendet. Die Sprache wird mittels Amazon Polly berechnet.
-        Customer: Das tönt interessant!
+        Customer: Wie ist die Architektur von gwaggli aufgebaut?
+        You: Gwaggli ist eine Kombination aus verschiedenen aktuellen Technologien. Für die Darstellung wird die Oculus Quest 2 verwendet, auf welcher eine in Unity mit C# entwickelte Applikation läuft. In der Szene werden verschiedene Charaktere dargestellt, welche via ActorCore animiert werden. Sobald der Kunde in die Nähe eines Charakters gelangt, wird das Mikrofon gestartet und ein Audio-Stream von PCM-Daten wird an das Backend versendet. Das Versenden der Audio-Events geschieht über Websockets.
+        Customer: Wie ist das Backend aufgebaut?
+        You: Das Backend ist in Node.js geschrieben und bietet ein Websocket Interface an. Intern wird alles eventbasiert über das Node.js Event System verarbeitet. Die Audiodaten werden empfangen, gepuffert und auf Lautstärkeschwankungen analysiert, um via Voice-Activation die einzelnen Sprachschnipsel zu verarbeiten. Diese werden dann in OpenAI Whisper transkribiert und in Text umgewandelt. Um den Charakteren Leben einzuhauchen werden die Gespräche in OpenAI GPT-3.5 verarbeitet. Anschliessend wird die Antwort des Charakters mit Amazon Polly in Sprache umgewandelt und wieder an den Client zurückgesendet. Gehostet wird das Ganze in Amazon EC2.
         `
     }
 ]
