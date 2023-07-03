@@ -4,7 +4,7 @@ export const advisorConfigurations: AdvisorConfiguration[] = [
     {
         voiceSystem: 'eleven-labs',
         name: 'Daniel',
-        voice: 'iFieySWJnxzv9iVAvL0D',
+        voice: 'dRMtfPuWncUXijQ7db1a',
         purpose: `
             Tone: formal, professional
             Formal: Dialog
