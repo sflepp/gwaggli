@@ -12,7 +12,7 @@ const Polly = new AWS.Polly({
 })
 
 
-export const textToSpeech = async (text: string, voiceId: string): Promise<WaveData> => {
+export const textToSpeechAwsPolly = async (text: string, voiceId: string): Promise<WaveData> => {
     const sampleRate = 16000;
 
     return new Promise((resolve, reject) => {

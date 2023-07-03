@@ -33,4 +33,5 @@ export interface AdvisorAnswerEvent extends DomainBaseEvent {
     advisorId: string,
     text: string,
     audio: string,
+    audioType: 'audio/wav' | 'audio/mpeg'
 }

@@ -10,6 +10,7 @@ export interface Advisor {
     id: string;
     name: string;
     voice: string;
+    voiceSystem: 'aws-polly' | 'eleven-labs';
     purpose: string;
 }
 
@@ -22,7 +23,7 @@ export interface ConversationChunk {
 
 export interface AdvisorConfiguration {
     name: string;
-    voiceSystem: 'aws-polly'
+    voiceSystem: 'aws-polly' | 'eleven-labs';
     voice: string;
     purpose: string;
 }

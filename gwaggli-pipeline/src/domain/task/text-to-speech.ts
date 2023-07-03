@@ -2,12 +2,12 @@ import { EventSystem, PipelineEventType } from "@gwaggli/events";
 import { TextCompletionFinish, TextToVoiceFinish } from "@gwaggli/events/dist/events/pipeline-events";
 import fs from "fs";
 import { Buffer } from "buffer";
-import { textToSpeech } from "../../integration/aws/aws-client";
+import { textToSpeechAwsPolly } from "../../integration/aws/aws-client";
 
 export const registerPollyTextToSpeech = (eventSystem: EventSystem) => {
     eventSystem.on<TextCompletionFinish>(PipelineEventType.TextCompletionFinish, async (event) => {
         const voiceId = speakerForLanguage(event.language)
-        const audio = await textToSpeech(event.text, speakerForLanguage(event.language));
+        const audio = await textToSpeechAwsPolly(event.text, speakerForLanguage(event.language));
 
         eventSystem.dispatch({
             type: PipelineEventType.TextToVoiceFinish,

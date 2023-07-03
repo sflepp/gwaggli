@@ -1,10 +1,10 @@
-import { Advisor, AdvisorConfiguration } from "./advisory";
+import { AdvisorConfiguration } from "./advisory";
 
 export const advisorConfigurations: AdvisorConfiguration[] = [
     {
-        voiceSystem: 'aws-polly',
+        voiceSystem: 'eleven-labs',
         name: 'Daniel',
-        voice: 'Daniel',
+        voice: 'TxGEqnHWrfWFTfGW9XjX', // premade/Josh
         purpose: `
             Tone: formal, professional
             Formal: Dialog
@@ -26,9 +26,9 @@ export const advisorConfigurations: AdvisorConfiguration[] = [
         `,
     },
     {
-        voiceSystem: 'aws-polly',
+        voiceSystem: 'eleven-labs',
         name: 'Hannah',
-        voice: 'Hannah',
+        voice: '21m00Tcm4TlvDq8ikWAM', // premade/Rachel
         purpose: `
         Tone: informal, professional, and academic
         Formal: Dialog

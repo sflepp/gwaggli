@@ -6,6 +6,7 @@ dist
 
 .openai/config.json
 .replicate/config.json
+.elevenlabs/config.json
 
 generated
 
