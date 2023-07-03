@@ -47,7 +47,7 @@ export const registerVoiceActivationDetection = (eventSystem: EventSystem, confi
                 subsystem: "pipeline",
                 sid: event.sid,
                 timestamp: Date.now(),
-                level: Math.round(averageLoudness / config.voiceActivationStartLevel * config.voiceActivationMaxLevel)
+                level: Math.round(averageLoudness / config.voiceActivationMaxLevel * 100)
             })
         }
 

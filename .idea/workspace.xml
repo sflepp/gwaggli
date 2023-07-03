@@ -8,7 +8,11 @@
       <change afterPath="$PROJECT_DIR$/gwaggli-pipeline/config.json" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/gwaggli-pipeline/src/integration/elevenlabs/eleven-labs-client.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gwaggli-events/src/events/client-events.ts" beforeDir="false" afterPath="$PROJECT_DIR$/gwaggli-events/src/events/client-events.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/gwaggli-events/src/events/domain-events.ts" beforeDir="false" afterPath="$PROJECT_DIR$/gwaggli-events/src/events/domain-events.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gwaggli-events/src/events/pipeline-events.ts" beforeDir="false" afterPath="$PROJECT_DIR$/gwaggli-events/src/events/pipeline-events.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gwaggli-insights/src/pages/chat/Chat.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/gwaggli-insights/src/pages/chat/Chat.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gwaggli-insights/src/pages/copilot/Copilot.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/gwaggli-insights/src/pages/copilot/Copilot.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/gwaggli-pipeline/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/gwaggli-pipeline/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/gwaggli-pipeline/src/domain/model/advisory/advisor-configurations.ts" beforeDir="false" afterPath="$PROJECT_DIR$/gwaggli-pipeline/src/domain/model/advisory/advisor-configurations.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/gwaggli-pipeline/src/domain/model/advisory/advisory.ts" beforeDir="false" afterPath="$PROJECT_DIR$/gwaggli-pipeline/src/domain/model/advisory/advisory.ts" afterDir="false" />
@@ -67,7 +71,7 @@
       <recent name="\\wsl$\Ubuntu-22.04\home\simon\prj\gwaggli" />
     </key>
   </component>
-  <component name="RunManager" selected="npm.gwaggli-pipeline dev">
+  <component name="RunManager" selected="npm.gwaggli-insights start">
     <configuration name="gwaggli-insights start" type="js.build_tools.npm">
       <package-json value="$PROJECT_DIR$/gwaggli-insights/package.json" />
       <command value="run" />
@@ -115,7 +119,7 @@
       <workItem from="1687681422158" duration="2842000" />
       <workItem from="1687721157030" duration="656000" />
       <workItem from="1687768341178" duration="16550000" />
-      <workItem from="1688388396856" duration="9368000" />
+      <workItem from="1688388396856" duration="10167000" />
     </task>
     <servers />
   </component>
