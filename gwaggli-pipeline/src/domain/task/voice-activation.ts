@@ -9,15 +9,13 @@ import { WaveData } from "../data/wave-data";
 import { Buffer } from "buffer";
 import crypto from "crypto";
 import fs from "fs";
+import { SubPipelineConfig } from "../../pipeline";
 
 
 const { v4: uuidv4 } = require('uuid')
 
-export const registerVoiceActivationDetection = (eventSystem: EventSystem) => {
+export const registerVoiceActivationDetection = (eventSystem: EventSystem, config: SubPipelineConfig) => {
     const voiceActivation = new Map<string, VoiceActivationStart>()
-
-    const voiceActivationStartLevel = 20;
-    const voiceActivationEndLevel = 15;
 
     eventSystem.on<AudioBufferUpdate>(PipelineEventType.AudioBufferUpdate, (event) => {
         let windowDuration = 1000; // milliseconds
@@ -49,11 +47,11 @@ export const registerVoiceActivationDetection = (eventSystem: EventSystem) => {
                 subsystem: "pipeline",
                 sid: event.sid,
                 timestamp: Date.now(),
-                level: Math.round(averageLoudness / voiceActivationStartLevel * 100)
+                level: Math.round(averageLoudness / config.voiceActivationStartLevel * config.voiceActivationMaxLevel)
             })
         }
 
-        if (!voiceActivation.has(event.sid) && averageLoudness > voiceActivationStartLevel) {
+        if (!voiceActivation.has(event.sid) && averageLoudness > config.voiceActivationStartLevel) {
 
             const trackId = uuidv4();
 
@@ -71,7 +69,7 @@ export const registerVoiceActivationDetection = (eventSystem: EventSystem) => {
             eventSystem.dispatch(voiceActivationStart)
         }
 
-        if (voiceActivation.has(event.sid) && averageLoudness < voiceActivationEndLevel) {
+        if (voiceActivation.has(event.sid) && averageLoudness < config.voiceActivationEndLevel) {
 
             eventSystem.dispatch({
                 type: PipelineEventType.VoiceActivationEnd,
@@ -149,8 +147,8 @@ export const registerVoiceActivationPersist = (eventSystem: EventSystem) => {
     });
 }
 
-export const registerVoiceActivation = (eventSystem: EventSystem) => {
-    registerVoiceActivationDetection(eventSystem);
+export const registerVoiceActivation = (eventSystem: EventSystem, config: SubPipelineConfig) => {
+    registerVoiceActivationDetection(eventSystem, config);
     registerVoiceActivationDataProcessing(eventSystem);
     registerVoiceActivationPersist(eventSystem);
 }

@@ -12,10 +12,25 @@ import {
     registerCopilotStyleTextCompletion
 } from "./domain/task/text-completion";
 import {registerAdvisoryProcessing} from "./domain/task/advisory-processing";
+const fs = require("fs")
+
+
+export interface SubPipelineConfig {
+    voiceActivationStartLevel: number;
+    voiceActivationEndLevel: number;
+    voiceActivationMaxLevel: number;
+}
+export interface PipelineConfig {
+    copilot: SubPipelineConfig;
+    chat: SubPipelineConfig;
+    advisory: SubPipelineConfig;
+}
+
+const pipelineConfig = (JSON.parse(fs.readFileSync("./config.json"))) as PipelineConfig
 
 export const registerChatPipeline = (eventSystem: EventSystem) => {
     registerAudioBuffering(eventSystem);
-    registerVoiceActivation(eventSystem);
+    registerVoiceActivation(eventSystem, pipelineConfig.chat);
     registerTranscription(eventSystem);
     registerChatStyleTextCompletion(eventSystem);
     registerTextToSpeech(eventSystem);
@@ -24,14 +39,14 @@ export const registerChatPipeline = (eventSystem: EventSystem) => {
 
 export const registerCopilotPipeline = (eventSystem: EventSystem) => {
     registerAudioBuffering(eventSystem)
-    registerVoiceActivation(eventSystem)
+    registerVoiceActivation(eventSystem, pipelineConfig.copilot)
     registerTranscription(eventSystem)
     registerCopilotStyleTextCompletion(eventSystem)
 }
 
 export const registerAdvisoryPipeline = (eventSystem: EventSystem) => {
     registerAudioBuffering(eventSystem)
-    registerVoiceActivation(eventSystem)
+    registerVoiceActivation(eventSystem, pipelineConfig.advisory)
     registerTranscription(eventSystem)
     registerAdvisoryProcessing(eventSystem)
     registerTextToSpeech(eventSystem)
