@@ -1,5 +1,5 @@
 import fs from "fs";
-import {Configuration, OpenAIApi} from "openai";
+import { Configuration, CreateChatCompletionResponse, CreateEmbeddingResponse, OpenAIApi } from "openai";
 import {ChatCompletionRequestMessage} from "openai/api";
 import {PipelineEventType} from "@gwaggli/events/dist/events/pipeline-events";
 
@@ -13,7 +13,7 @@ const openAi = new OpenAIApi(configuration);
 
 export default openAi;
 
-export const createChatCompletion = async (sid: string, messages: Array<ChatCompletionRequestMessage>) => {
+export const createChatCompletion = async (sid: string, messages: Array<ChatCompletionRequestMessage>): Promise<string> => {
     try {
         const response = await openAi.createChatCompletion(
             {
@@ -63,4 +63,15 @@ export const createChatCompletion = async (sid: string, messages: Array<ChatComp
             sid: sid
         };
     }
+}
+
+export const generateEmbedding = async (text: string): Promise<CreateEmbeddingResponse> => {
+    const response = await openAi.createEmbedding(
+        {
+            model: 'text-embedding-ada-002',
+            input: text,
+        }
+    )
+
+    return response.data;
 }
