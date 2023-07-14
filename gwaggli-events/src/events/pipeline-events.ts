@@ -16,6 +16,7 @@ export type PipelineEvents =
     VoicePersist |
     KnowledgeLocationAvailable |
     KnowledgeTextAvailable |
+    KnowledgeEmbeddingAvailable |
     PipelineError;
 
 export enum PipelineEventType {
@@ -33,6 +34,7 @@ export enum PipelineEventType {
     VoicePersist = "voice-persist",
     KnowledgeLocationAvailable = "knowledge-location-available",
     KnowledgeTextAvailable = "knowledge-text-available",
+    KnowledgeEmbeddingAvailable = "knowledge-embedding-available",
     PipelineError = "pipeline-error",
 }
 
@@ -128,13 +130,22 @@ export interface PipelineError extends PipelineBaseEvent {
 
 export interface KnowledgeLocationAvailable extends PipelineBaseEvent {
     type: PipelineEventType.KnowledgeLocationAvailable,
-    locationType: 'fs-directory',
+    locationType: KnowledgeLocationType,
     location: string,
 }
+
+export type KnowledgeLocationType = 'fs/directory'
 
 export interface KnowledgeTextAvailable extends PipelineBaseEvent {
     type: PipelineEventType.KnowledgeTextAvailable,
     source: string
     text: string
+}
+
+export interface KnowledgeEmbeddingAvailable extends PipelineBaseEvent {
+    type: PipelineEventType.KnowledgeEmbeddingAvailable,
+    source: string
+    text: string
+    embedding: number[]
 }
 

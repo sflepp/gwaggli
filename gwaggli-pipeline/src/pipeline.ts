@@ -12,6 +12,7 @@ import {
     registerCopilotStyleTextCompletion
 } from "./domain/task/text-completion";
 import {registerAdvisoryProcessing} from "./domain/task/advisory-processing";
+import {registerKnowledgeLoader} from "./domain/task/knowledge-loader";
 const fs = require("fs")
 
 
@@ -34,6 +35,7 @@ export const registerChatPipeline = (eventSystem: EventSystem) => {
     registerTranscription(eventSystem);
     registerChatStyleTextCompletion(eventSystem);
     registerTextToSpeech(eventSystem);
+    registerKnowledgeLoader(eventSystem);
 }
 
 

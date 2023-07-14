@@ -1,5 +1,5 @@
 import fs from "fs";
-import { Configuration, CreateChatCompletionResponse, CreateEmbeddingResponse, OpenAIApi } from "openai";
+import {Configuration, CreateEmbeddingResponse, OpenAIApi} from "openai";
 import {ChatCompletionRequestMessage} from "openai/api";
 import {PipelineEventType} from "@gwaggli/events/dist/events/pipeline-events";
 
@@ -65,7 +65,7 @@ export const createChatCompletion = async (sid: string, messages: Array<ChatComp
     }
 }
 
-export const generateEmbedding = async (text: string): Promise<CreateEmbeddingResponse> => {
+export const generateEmbedding = async (text: string): Promise<EmbeddingResult> => {
     const response = await openAi.createEmbedding(
         {
             model: 'text-embedding-ada-002',
@@ -73,5 +73,13 @@ export const generateEmbedding = async (text: string): Promise<CreateEmbeddingRe
         }
     )
 
-    return response.data;
+    return {
+        text: text,
+        embedding: response.data.data[0].embedding
+    };
+}
+
+export interface EmbeddingResult {
+    text: string;
+    embedding: number[]
 }

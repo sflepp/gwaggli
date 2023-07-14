@@ -5,18 +5,39 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f5c384cc-a39b-480a-bc43-a936d9016f85" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/gwaggli-pipeline/src/domain/task/knowledge-loader.spec.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/gwaggli-pipeline/src/domain/task/knowledge-loader.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/gwaggli-pipeline/src/storage/knowledge-base/embeddings-knowledge-base.spec.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/gwaggli-pipeline/src/storage/knowledge-base/embeddings-knowledge-base.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/gwaggli-pipeline/src/storage/knowledge-base/entity/knowledge-base-entry.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/gwaggli-pipeline/src/storage/knowledge-base/test-data/embeddings.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/jsLibraryMappings.xml" beforeDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/jsLibraryMappings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/gwaggli-pipeline/__test-data__/data-loader/pdf/git.pdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/gwaggli-pipeline/__test-data__/data-loader/txt/rfc1149.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/gwaggli-pipeline/__test-data__/data-loader/txt/rfc2549.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/gwaggli-pipeline/input/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/gwaggli-pipeline/src/domain/data-loader/loader-factory.spec.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/gwaggli-pipeline/src/domain/data-loader/loader-factory.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/gwaggli-pipeline/src/domain/data-loader/loader.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/gwaggli-pipeline/src/domain/data-loader/loaders/directory-loader.spec.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/gwaggli-pipeline/src/domain/data-loader/loaders/directory-loader.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/gwaggli-pipeline/src/domain/data-loader/parser-factory.spec.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/gwaggli-pipeline/src/domain/data-loader/parser-factory.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/gwaggli-pipeline/src/domain/data-loader/parser.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/gwaggli-pipeline/src/domain/data-loader/parsers/application-pdf.spec.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/gwaggli-pipeline/src/domain/data-loader/parsers/application-pdf.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/gwaggli-pipeline/src/domain/data-loader/parsers/text-plain.spec.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/gwaggli-pipeline/src/domain/data-loader/parsers/text-plain.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/gwaggli-pipeline/src/storage/knowledge-base/splitter.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/gwaggli-pipeline/src/storage/knowledge-base/splitters/noop-splitter.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/gwaggli-pipeline/src/storage/knowledge-base/splitters/sentence-splitter.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gwaggli-events/src/event-system.ts" beforeDir="false" afterPath="$PROJECT_DIR$/gwaggli-events/src/event-system.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/gwaggli-events/src/events/pipeline-events.ts" beforeDir="false" afterPath="$PROJECT_DIR$/gwaggli-events/src/events/pipeline-events.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gwaggli-insights/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/gwaggli-insights/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gwaggli-insights/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/gwaggli-insights/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/gwaggli-pipeline/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/gwaggli-pipeline/package-lock.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/gwaggli-pipeline/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/gwaggli-pipeline/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gwaggli-pipeline/src/domain/task/audio-buffering.spec.ts" beforeDir="false" afterPath="$PROJECT_DIR$/gwaggli-pipeline/src/domain/task/audio-buffering.spec.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gwaggli-pipeline/src/domain/task/knowledge-loader.spec.ts" beforeDir="false" afterPath="$PROJECT_DIR$/gwaggli-pipeline/src/domain/task/knowledge-loader.spec.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gwaggli-pipeline/src/domain/task/knowledge-loader.ts" beforeDir="false" afterPath="$PROJECT_DIR$/gwaggli-pipeline/src/domain/task/knowledge-loader.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/gwaggli-pipeline/src/integration/openai/open-ai-client.ts" beforeDir="false" afterPath="$PROJECT_DIR$/gwaggli-pipeline/src/integration/openai/open-ai-client.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gwaggli-pipeline/src/pipeline.ts" beforeDir="false" afterPath="$PROJECT_DIR$/gwaggli-pipeline/src/pipeline.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gwaggli-pipeline/src/storage/knowledge-base/embeddings-knowledge-base.spec.ts" beforeDir="false" afterPath="$PROJECT_DIR$/gwaggli-pipeline/src/storage/knowledge-base/embeddings-knowledge-base.spec.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -44,69 +65,52 @@
   &quot;keyToString&quot;: {
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
     &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
     &quot;git-widget-placeholder&quot;: &quot;main&quot;,
     &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;//wsl$/Ubuntu-22.04/home/simon/prj/gwaggli/gwaggli-pipeline/src/storage/knowledge-base/test-data&quot;,
+    &quot;javascript.nodejs.core.library.configured.version&quot;: &quot;20.4.0&quot;,
+    &quot;javascript.nodejs.core.library.typings.version&quot;: &quot;20.4.0&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/simon/projects/gwaggli/gwaggli-pipeline/__test-data__/pdf&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs.jest.jest_package&quot;: &quot;//wsl$/Ubuntu-22.04/home/simon/prj/gwaggli/gwaggli-pipeline/node_modules/jest&quot;,
-    &quot;nodejs_interpreter_path&quot;: &quot;wsl://Ubuntu-22.04@/home/simon/.nvm/versions/node/v19.9.0/bin/node&quot;,
+    &quot;nodejs.jest.jest_package&quot;: &quot;/home/simon/projects/gwaggli/gwaggli-pipeline/node_modules/jest&quot;,
+    &quot;nodejs_interpreter_path&quot;: &quot;/home/simon/.nvm/versions/node/v20.4.0/bin/node&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;,
-    &quot;ts.external.directory.path&quot;: &quot;\\\\wsl$\\Ubuntu-22.04\\home\\simon\\prj\\gwaggli\\gwaggli-events\\node_modules\\typescript\\lib&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Global Libraries&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;settings.nodejs&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;/home/simon/projects/gwaggli/gwaggli-pipeline/node_modules/typescript/lib&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/gwaggli-pipeline/__test-data__/pdf" />
+      <recent name="$PROJECT_DIR$/gwaggli-pipeline/src/domain/data-loader/parsers/__test-data__/pdf" />
+      <recent name="$PROJECT_DIR$/gwaggli-pipeline/input/knowledge-base" />
       <recent name="\\wsl$\Ubuntu-22.04\home\simon\prj\gwaggli\gwaggli-pipeline\src\storage\knowledge-base\test-data" />
       <recent name="\\wsl$\Ubuntu-22.04\home\simon\prj\gwaggli\gwaggli-pipeline\.elevenlabs" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="\\wsl$\Ubuntu-22.04\home\simon\prj\gwaggli\gwaggli-pipeline\src\storage\vector-db" />
-      <recent name="\\wsl$\Ubuntu-22.04\home\simon\prj\gwaggli" />
+      <recent name="$PROJECT_DIR$/gwaggli-pipeline/__test-data__/data-loader" />
+      <recent name="$PROJECT_DIR$/gwaggli-pipeline" />
+      <recent name="$PROJECT_DIR$/gwaggli-pipeline/src/domain/data-loader/parsers" />
+      <recent name="$PROJECT_DIR$/gwaggli-pipeline/input" />
+      <recent name="$PROJECT_DIR$/gwaggli-pipeline/src/domain" />
     </key>
   </component>
   <component name="RunManager" selected="Jest.knowledge-loader">
-    <configuration name="embeddings-knowledge-base" type="JavaScriptTestRunnerJest" temporary="true" nameIsGenerated="true">
-      <node-interpreter value="project" />
+    <configuration name="Tests in src/" type="JavaScriptTestRunnerJest" temporary="true" nameIsGenerated="true">
+      <node-interpreter value="node" />
       <jest-package value="$PROJECT_DIR$/gwaggli-pipeline/node_modules/jest" />
       <working-dir value="$PROJECT_DIR$/gwaggli-pipeline" />
       <envs />
-      <scope-kind value="SUITE" />
-      <test-file value="$PROJECT_DIR$/gwaggli-pipeline/src/storage/knowledge-base/embeddings-knowledge-base.spec.ts" />
-      <test-names>
-        <test-name value="embeddings-knowledge-base" />
-      </test-names>
-      <method v="2" />
-    </configuration>
-    <configuration name="embeddings-knowledge-base.it should add entries" type="JavaScriptTestRunnerJest" temporary="true" nameIsGenerated="true">
-      <node-interpreter value="project" />
-      <jest-package value="$PROJECT_DIR$/gwaggli-pipeline/node_modules/jest" />
-      <working-dir value="$PROJECT_DIR$/gwaggli-pipeline" />
-      <envs />
-      <scope-kind value="TEST" />
-      <test-file value="$PROJECT_DIR$/gwaggli-pipeline/src/storage/knowledge-base/embeddings-knowledge-base.spec.ts" />
-      <test-names>
-        <test-name value="embeddings-knowledge-base" />
-        <test-name value="it should add entries" />
-      </test-names>
-      <method v="2" />
-    </configuration>
-    <configuration name="embeddings-knowledge-base.it should search entries" type="JavaScriptTestRunnerJest" temporary="true" nameIsGenerated="true">
-      <node-interpreter value="project" />
-      <jest-package value="$PROJECT_DIR$/gwaggli-pipeline/node_modules/jest" />
-      <working-dir value="$PROJECT_DIR$/gwaggli-pipeline" />
-      <envs />
-      <scope-kind value="TEST" />
-      <test-file value="$PROJECT_DIR$/gwaggli-pipeline/src/storage/knowledge-base/embeddings-knowledge-base.spec.ts" />
-      <test-names>
-        <test-name value="embeddings-knowledge-base" />
-        <test-name value="it should search entries" />
-      </test-names>
+      <scope-kind value="DIRECTORY" />
+      <test-directory value="$PROJECT_DIR$/gwaggli-pipeline/src" />
       <method v="2" />
     </configuration>
     <configuration name="knowledge-loader" type="JavaScriptTestRunnerJest" temporary="true" nameIsGenerated="true">
@@ -121,14 +125,40 @@
       </test-names>
       <method v="2" />
     </configuration>
-    <configuration name="build" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
-      <package-json value="$PROJECT_DIR$/gwaggli-pipeline/package.json" />
-      <command value="run" />
-      <scripts>
-        <script value="build" />
-      </scripts>
+    <configuration name="loader-factory" type="JavaScriptTestRunnerJest" temporary="true" nameIsGenerated="true">
       <node-interpreter value="project" />
+      <jest-package value="$PROJECT_DIR$/gwaggli-pipeline/node_modules/jest" />
+      <working-dir value="$PROJECT_DIR$/gwaggli-pipeline" />
       <envs />
+      <scope-kind value="SUITE" />
+      <test-file value="$PROJECT_DIR$/gwaggli-pipeline/src/domain/data-loader/loader-factory.spec.ts" />
+      <test-names>
+        <test-name value="loader-factory" />
+      </test-names>
+      <method v="2" />
+    </configuration>
+    <configuration name="loaders/directory-loader" type="JavaScriptTestRunnerJest" temporary="true" nameIsGenerated="true">
+      <node-interpreter value="project" />
+      <jest-package value="$PROJECT_DIR$/gwaggli-pipeline/node_modules/jest" />
+      <working-dir value="$PROJECT_DIR$/gwaggli-pipeline" />
+      <envs />
+      <scope-kind value="SUITE" />
+      <test-file value="$PROJECT_DIR$/gwaggli-pipeline/src/domain/data-loader/loaders/directory-loader.spec.ts" />
+      <test-names>
+        <test-name value="loaders/directory-loader" />
+      </test-names>
+      <method v="2" />
+    </configuration>
+    <configuration name="parser-factory" type="JavaScriptTestRunnerJest" temporary="true" nameIsGenerated="true">
+      <node-interpreter value="node" />
+      <jest-package value="$PROJECT_DIR$/gwaggli-pipeline/node_modules/jest" />
+      <working-dir value="$PROJECT_DIR$/gwaggli-pipeline" />
+      <envs />
+      <scope-kind value="SUITE" />
+      <test-file value="$PROJECT_DIR$/gwaggli-pipeline/src/domain/data-loader/parser-factory.spec.ts" />
+      <test-names>
+        <test-name value="parser-factory" />
+      </test-names>
       <method v="2" />
     </configuration>
     <configuration name="gwaggli-insights start" type="js.build_tools.npm">
@@ -137,7 +167,7 @@
       <scripts>
         <script value="start" />
       </scripts>
-      <node-interpreter value="project" />
+      <node-interpreter value="node" />
       <envs />
       <method v="2" />
     </configuration>
@@ -147,26 +177,26 @@
       <scripts>
         <script value="dev" />
       </scripts>
-      <node-interpreter value="project" />
+      <node-interpreter value="node" />
       <envs />
       <method v="2" />
     </configuration>
     <list>
-      <item itemvalue="Jest.embeddings-knowledge-base" />
-      <item itemvalue="Jest.embeddings-knowledge-base.it should add entries" />
-      <item itemvalue="Jest.embeddings-knowledge-base.it should search entries" />
+      <item itemvalue="Jest.loader-factory" />
+      <item itemvalue="Jest.loaders/directory-loader" />
+      <item itemvalue="Jest.parser-factory" />
+      <item itemvalue="Jest.Tests in src/" />
       <item itemvalue="Jest.knowledge-loader" />
       <item itemvalue="npm.gwaggli-pipeline dev" />
       <item itemvalue="npm.gwaggli-insights start" />
-      <item itemvalue="npm.build" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Jest.knowledge-loader" />
-        <item itemvalue="Jest.embeddings-knowledge-base" />
-        <item itemvalue="Jest.embeddings-knowledge-base.it should search entries" />
-        <item itemvalue="Jest.embeddings-knowledge-base.it should add entries" />
-        <item itemvalue="npm.build" />
+        <item itemvalue="Jest.Tests in src/" />
+        <item itemvalue="Jest.loader-factory" />
+        <item itemvalue="Jest.parser-factory" />
+        <item itemvalue="Jest.loaders/directory-loader" />
       </list>
     </recent_temporary>
   </component>
@@ -195,6 +225,10 @@
       <workItem from="1688388396856" duration="17841000" />
       <workItem from="1688801711752" duration="15280000" />
       <workItem from="1688917780134" duration="741000" />
+      <workItem from="1688992760557" duration="8097000" />
+      <workItem from="1689095350474" duration="8005000" />
+      <workItem from="1689367297420" duration="79000" />
+      <workItem from="1689367396889" duration="1225000" />
     </task>
     <servers />
   </component>

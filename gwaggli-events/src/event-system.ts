@@ -15,6 +15,7 @@ export class EventSystem {
     on<T extends GwaggliEvent>(type: GwaggliEventType, callback: (event: T) => void): (event: GwaggliEvent) => void {
         const listener = (event: GwaggliEvent) => {
             if (event.type === type) {
+                console.log(`Processing ${event.type}...`)
                 callback(event as T);
             }
         }
@@ -28,7 +29,7 @@ export class EventSystem {
         this.eventEmitter.off("message", listener);
     }
 
-    filter<T = GwaggliEvent>(filter: (event: GwaggliEvent) => boolean, callback: (event: T) => void): (event: GwaggliEvent) => void {
+    filter<T = GwaggliEvent>(filter: EventFilter, callback: (event: T) => void): (event: GwaggliEvent) => void {
         const listener = (event: GwaggliEvent) => {
             if (filter(event)) {
                 callback(event as T);
@@ -40,6 +41,32 @@ export class EventSystem {
         return listener;
     }
 
+    await<T extends GwaggliEvent>(filter: EventFilter): Promise<T> {
+        return new Promise<T>((resolve) => {
+            const listener = (event: GwaggliEvent) => {
+                if (filter(event)) {
+                    resolve(event as T);
+                    this.off(listener);
+                }
+            }
+
+            this.eventEmitter.on("message", listener);
+        })
+    }
+
+    awaitType<T extends GwaggliEvent>(type: GwaggliEventType): Promise<T> {
+        return new Promise<T>((resolve) => {
+            const listener = (event: GwaggliEvent) => {
+                if (event.type === type) {
+                    resolve(event as T);
+                    this.off(listener);
+                }
+            }
+
+            this.eventEmitter.on("message", listener);
+        })
+    }
+
     connect(other: EventSystem) {
         other.eventEmitter.on("message", this.dispatch);
     }
@@ -47,3 +74,5 @@ export class EventSystem {
 
 const globalEventSystem = new EventSystem();
 export const getGlobalEventSystem = () => globalEventSystem;
+
+export type EventFilter = (event: GwaggliEvent) => boolean

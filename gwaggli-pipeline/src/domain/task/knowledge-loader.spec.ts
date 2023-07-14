@@ -1,26 +1,44 @@
-import { EventSystem, GwaggliEvent, PipelineEventType } from "@gwaggli/events";
-import { registerKnowledgeLoader } from "./knowledge-loader";
+import {EventSystem, GwaggliEvent, PipelineEventType} from "@gwaggli/events";
+import {registerKnowledgeLoader} from "./knowledge-loader";
+import {EmbeddingResult} from "../../integration/openai/open-ai-client";
+import {KnowledgeEmbeddingAvailable} from "@gwaggli/events/dist/events/pipeline-events";
 
-describe("knowledge-loader", () => {
-    let eventSystem: EventSystem;
-    let result: GwaggliEvent[];
+jest.mock('../../integration/openai/open-ai-client', () => ({
+    generateEmbedding: jest.fn(async (text: string): Promise<EmbeddingResult> => {
+        return {
+            text: text,
+            embedding: Array(1536).fill(1.0)
+        }
+    }),
+}));
 
-    beforeEach(() => {
-       result = [];
-       eventSystem = new EventSystem();
+let eventSystem: EventSystem;
 
-       registerKnowledgeLoader(eventSystem);
+beforeEach(() => {
+    eventSystem = new EventSystem();
+
+    registerKnowledgeLoader(eventSystem);
+});
+
+it('should create an embedding', async () => {
+    eventSystem.dispatch({
+        type: PipelineEventType.KnowledgeTextAvailable,
+        subsystem: "pipeline",
+        sid: "123",
+        timestamp: Date.now(),
+        source: "test-data",
+        text: "This is an example text"
     });
 
+    const event = await eventSystem.awaitType<KnowledgeEmbeddingAvailable>(PipelineEventType.KnowledgeEmbeddingAvailable);
 
-    it('should create an embedding', () => {
-        eventSystem.dispatch({
-            type: PipelineEventType.TextKnowledgeAvailable,
-            subsystem: "pipeline",
-            sid: "123",
-            timestamp: Date.now(),
-            source: "test-data",
-            text: "This is an example text."
-        })
-    });
-})
+    expect(event).toBeDefined();
+    expect(event.type).toBe(PipelineEventType.KnowledgeEmbeddingAvailable);
+    expect(event.subsystem).toBe("pipeline");
+    expect(event.sid).toBe("123");
+    expect(event.timestamp).toBeGreaterThan(0);
+    expect(event.source).toBe("test-data");
+    expect(event.text).toBe("This is an example text");
+    expect(event.embedding).toBeDefined();
+    expect(event.embedding.length).toBe(1536);
+});

@@ -1,29 +1,65 @@
-import { EventSystem, PipelineEventType } from "@gwaggli/events";
-import { KnowledgeLocationAvailable, TextKnowledgeAvailable } from "@gwaggli/events/dist/events/pipeline-events";
+import {EventSystem, PipelineEventType} from "@gwaggli/events";
+import {
+    KnowledgeEmbeddingAvailable,
+    KnowledgeLocationAvailable,
+    KnowledgeTextAvailable
+} from "@gwaggli/events/dist/events/pipeline-events";
 
-import { generateEmbedding } from "../../integration/openai/open-ai-client";
-import { EmbeddingsKnowledgeBase } from "../../storage/knowledge-base/embeddings-knowledge-base";
+import {generateEmbedding} from "../../integration/openai/open-ai-client";
+import {EmbeddingsKnowledgeBase} from "../../storage/knowledge-base/embeddings-knowledge-base";
+import {loaderByLocationType} from "../data-loader/loader-factory";
+import {SentenceSplitter} from "../../storage/knowledge-base/splitters/sentence-splitter";
+import {NoopSplitter} from "../../storage/knowledge-base/splitters/noop-splitter";
 
-
+const splitters = [
+    new SentenceSplitter(),
+    new NoopSplitter(),
+]
 
 export const registerKnowledgeLoader = (eventSystem: EventSystem) => {
 
     const knowledgeBase = new EmbeddingsKnowledgeBase();
 
     eventSystem.on<KnowledgeLocationAvailable>(PipelineEventType.KnowledgeLocationAvailable, async (event) => {
+        let loader = loaderByLocationType(event.locationType);
 
+        const results = await loader.load(event);
+
+        for (const result of results) {
+            eventSystem.dispatch({
+                type: PipelineEventType.KnowledgeTextAvailable,
+                subsystem: "pipeline",
+                sid: event.sid,
+                timestamp: Date.now(),
+                source: result.location,
+                text: result.text
+            })
+        }
     });
 
 
+    eventSystem.on<KnowledgeTextAvailable>(PipelineEventType.KnowledgeTextAvailable, async (event) => {
+        for (const splitter of splitters) {
+            const splitTexts = splitter.split(event.text);
+
+            for (let i = 0; i < splitTexts.length; i++) {
+                const splitText = splitTexts[i];
+                console.log(`Processing ${splitter.name()}: ${i + 1}/${splitTexts.length}`)
 
 
-    eventSystem.on<TextKnowledgeAvailable>(PipelineEventType.TextKnowledgeAvailable, async (event) => {
-        const embeddings = await generateEmbedding(event.text)
+                eventSystem.dispatch({
+                    type: PipelineEventType.KnowledgeEmbeddingAvailable,
+                    subsystem: "pipeline",
+                    sid: event.sid,
+                    timestamp: Date.now(),
+                    source: event.source,
+                    ...await generateEmbedding(splitText)
+                })
+            }
+        }
+    });
 
-        knowledgeBase.add({
-            source: event.source,
-            text: event.text,
-            embedding: embeddings.data[0].embedding
-        });
+    eventSystem.on<KnowledgeEmbeddingAvailable>(PipelineEventType.KnowledgeEmbeddingAvailable, async (event) => {
+        knowledgeBase.add(event);
     });
 }
