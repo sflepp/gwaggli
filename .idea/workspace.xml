@@ -5,36 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f5c384cc-a39b-480a-bc43-a936d9016f85" name="Changes" comment="Enable git-lfs">
-      <change afterPath="$PROJECT_DIR$/gwaggli-insights/src/pages/data-loader/DataLoader.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/gwaggli-insights/src/ui-components/file-selector.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/gwaggli-pipeline/.gitattributes" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/gwaggli-pipeline/__test-data__/data-loader/zip/example-data-1.zip" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/gwaggli-pipeline/__test-data__/data-loader/zip/example-data-2.zip" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/gwaggli-pipeline/src/domain/data-loader/loaders/in-memory-zip-loader.spec.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/gwaggli-pipeline/src/domain/data-loader/loaders/inline-zip-loader.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/gwaggli-pipeline/src/integration/openai/open-ai-client.spec.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/helpful-links.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gwaggli-events/src/events/pipeline-events.ts" beforeDir="false" afterPath="$PROJECT_DIR$/gwaggli-events/src/events/pipeline-events.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gwaggli-insights/src/App.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/gwaggli-insights/src/App.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gwaggli-insights/src/env.ts" beforeDir="false" afterPath="$PROJECT_DIR$/gwaggli-insights/src/env.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gwaggli-insights/src/pages/AppLayout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/gwaggli-insights/src/pages/AppLayout.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gwaggli-insights/src/pages/debugger/Debugger.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/gwaggli-insights/src/pages/debugger/Debugger.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gwaggli-pipeline/__test-data__/data-loader/pdf/git.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/gwaggli-pipeline/__test-data__/data-loader/pdf/git.pdf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gwaggli-pipeline/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/gwaggli-pipeline/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gwaggli-pipeline/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/gwaggli-pipeline/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gwaggli-pipeline/src/domain/data-loader/loader-factory.ts" beforeDir="false" afterPath="$PROJECT_DIR$/gwaggli-pipeline/src/domain/data-loader/loader-factory.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gwaggli-pipeline/src/domain/data-loader/loader.ts" beforeDir="false" afterPath="$PROJECT_DIR$/gwaggli-pipeline/src/domain/data-loader/loader.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gwaggli-pipeline/src/domain/data-loader/loaders/directory-loader.ts" beforeDir="false" afterPath="$PROJECT_DIR$/gwaggli-pipeline/src/domain/data-loader/loaders/directory-loader.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gwaggli-pipeline/src/domain/data-loader/parser-factory.ts" beforeDir="false" afterPath="$PROJECT_DIR$/gwaggli-pipeline/src/domain/data-loader/parser-factory.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gwaggli-pipeline/src/domain/task/knowledge-loader.ts" beforeDir="false" afterPath="$PROJECT_DIR$/gwaggli-pipeline/src/domain/task/knowledge-loader.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gwaggli-pipeline/src/domain/task/text-completion.ts" beforeDir="false" afterPath="$PROJECT_DIR$/gwaggli-pipeline/src/domain/task/text-completion.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gwaggli-pipeline/src/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/gwaggli-pipeline/src/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gwaggli-pipeline/src/integration/openai/open-ai-client.ts" beforeDir="false" afterPath="$PROJECT_DIR$/gwaggli-pipeline/src/integration/openai/open-ai-client.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gwaggli-pipeline/src/pipeline.ts" beforeDir="false" afterPath="$PROJECT_DIR$/gwaggli-pipeline/src/pipeline.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gwaggli-pipeline/src/storage/knowledge-base/embeddings-knowledge-base.spec.ts" beforeDir="false" afterPath="$PROJECT_DIR$/gwaggli-pipeline/src/storage/knowledge-base/embeddings-knowledge-base.spec.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gwaggli-pipeline/src/storage/knowledge-base/embeddings-knowledge-base.ts" beforeDir="false" afterPath="$PROJECT_DIR$/gwaggli-pipeline/src/storage/knowledge-base/embeddings-knowledge-base.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -58,32 +30,32 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "git-widget-placeholder": "main",
-    "ignore.virus.scanning.warn.message": "true",
-    "javascript.nodejs.core.library.configured.version": "20.4.0",
-    "javascript.nodejs.core.library.typings.version": "20.4.0",
-    "last_opened_file_path": "/home/simon/projects/gwaggli/gwaggli-pipeline",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs.jest.jest_package": "/home/simon/projects/gwaggli/gwaggli-pipeline/node_modules/jest",
-    "nodejs_interpreter_path": "/home/simon/.nvm/versions/node/v20.4.0/bin/node",
-    "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "Global Libraries",
-    "project.structure.proportion": "0.0",
-    "project.structure.side.proportion": "0.2",
-    "settings.editor.selected.configurable": "settings.nodejs",
-    "ts.external.directory.path": "/home/simon/projects/gwaggli/gwaggli-pipeline/node_modules/typescript/lib",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;javascript.nodejs.core.library.configured.version&quot;: &quot;20.4.0&quot;,
+    &quot;javascript.nodejs.core.library.typings.version&quot;: &quot;20.4.0&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/simon/projects/gwaggli/gwaggli-pipeline&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs.jest.jest_package&quot;: &quot;/home/simon/projects/gwaggli/gwaggli-pipeline/node_modules/jest&quot;,
+    &quot;nodejs_interpreter_path&quot;: &quot;/home/simon/.nvm/versions/node/v20.4.0/bin/node&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Global Libraries&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;settings.nodejs&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;/home/simon/projects/gwaggli/gwaggli-pipeline/node_modules/typescript/lib&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/gwaggli-pipeline/__test-data__/pdf" />
@@ -100,7 +72,7 @@
       <recent name="$PROJECT_DIR$/gwaggli-pipeline/input" />
     </key>
   </component>
-  <component name="RunManager" selected="npm.gwaggli-pipeline dev">
+  <component name="RunManager" selected="Jest.gwaggli-pipeline test">
     <configuration name="messages should fit into token limit" type="JavaScriptTestRunnerJest" temporary="true" nameIsGenerated="true">
       <node-interpreter value="project" />
       <jest-package value="$PROJECT_DIR$/gwaggli-pipeline/node_modules/jest" />
@@ -168,8 +140,6 @@
       <item itemvalue="Jest.should be possible to search for more entries than available" />
       <item itemvalue="Jest.should load a full directory" />
       <item itemvalue="Jest.should load a zip file" />
-      <item itemvalue="npm.gwaggli-pipeline dev" />
-      <item itemvalue="npm.gwaggli-insights start" />
     </list>
     <recent_temporary>
       <list>
@@ -235,19 +205,16 @@
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/gwaggli-pipeline/node_modules/gpt-tokenizer/src/GptEncoding.ts</url>
           <line>245</line>
-          <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="10" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/gwaggli-pipeline/src/integration/openai/open-ai-client.ts</url>
           <line>37</line>
-          <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="17" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/gwaggli-pipeline/src/integration/openai/open-ai-client.ts</url>
           <line>25</line>
-          <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="18" />
         </line-breakpoint>
       </breakpoints>

@@ -3,7 +3,7 @@
 Gwaggli is a simple voice processing tool. It consists of the following components:
 
 - gwaggli-events: An event system that allows to read and write gwaggli events
-- gwaggli-insight: A web application to show the results of the processing
+- gwaggli-insights: A web application to show the results of the processing
 - gwaggli-pipeline: A pipeline to process voice streams in real time and output useful information
 
 
@@ -60,6 +60,16 @@ Add the [Replicate API-Key](https://replicate.ai/) to the following file:
 
 ```
 ./gwaggli-pipeline/.replicate/config.json
+
+{
+  "apiKey": "<YOUR-API-KEY>
+}
+```
+
+Add the [elevenlabs.io API-Key](https://elevenlabs.io/) to the following file:
+
+```
+./gwaggli-pipeline/.elevenlabs/config.json
 
 {
   "apiKey": "<YOUR-API-KEY>
