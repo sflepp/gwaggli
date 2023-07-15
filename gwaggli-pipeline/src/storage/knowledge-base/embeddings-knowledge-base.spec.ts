@@ -1,13 +1,20 @@
 import {EmbeddingsKnowledgeBase} from "./embeddings-knowledge-base";
-import {embeddingsDataSet1} from "./test-data/embeddings";
-
+import fs from "fs";
 let sut: EmbeddingsKnowledgeBase;
 beforeEach(() => {
     sut = new EmbeddingsKnowledgeBase();
 });
 
+interface EmbeddingTestData {
+    text: string;
+    embedding: number[];
+}
+
 it('it should add entries', async () => {
-    embeddingsDataSet1.forEach((data) => {
+
+    const testData = JSON.parse(fs.readFileSync("./__test-data__/embeddings/embeddings-set-1.json", 'utf8')) as EmbeddingTestData[];
+
+    testData.forEach((data: EmbeddingTestData) => {
         sut.add({
             source: "test-data",
             text: data.text,
@@ -15,11 +22,13 @@ it('it should add entries', async () => {
         })
     });
 
-    expect(sut.size()).toBe(embeddingsDataSet1.length);
+    expect(sut.size()).toBe(testData.length);
 });
 
 it('it should search entries', async () => {
-    embeddingsDataSet1.forEach((data) => {
+    const testData = JSON.parse(fs.readFileSync("./__test-data__/embeddings/embeddings-set-1.json", 'utf8')) as EmbeddingTestData[];
+
+    testData.forEach((data: EmbeddingTestData) => {
         sut.add({
             source: "test-data",
             text: data.text,
@@ -27,8 +36,8 @@ it('it should search entries', async () => {
         })
     });
 
-    const result = sut.search(embeddingsDataSet1[0].embedding, 2);
+    const result = sut.search(testData[0].embedding, 2);
 
     expect(result.length).toBe(2);
-    expect(result[0].text).toBe(embeddingsDataSet1[0].text);
+    expect(result[0].text).toBe(testData[0].text);
 });

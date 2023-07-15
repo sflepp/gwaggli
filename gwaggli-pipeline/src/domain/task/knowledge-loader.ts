@@ -8,12 +8,12 @@ import {
 import {generateEmbedding} from "../../integration/openai/open-ai-client";
 import {EmbeddingsKnowledgeBase} from "../../storage/knowledge-base/embeddings-knowledge-base";
 import {loaderByLocationType} from "../data-loader/loader-factory";
-import {SentenceSplitter} from "../../storage/knowledge-base/splitters/sentence-splitter";
 import {NoopSplitter} from "../../storage/knowledge-base/splitters/noop-splitter";
+import {ChunkSplitter} from "../../storage/knowledge-base/splitters/chunk-splitter";
 
 const splitters = [
-    new SentenceSplitter(),
     new NoopSplitter(),
+    new ChunkSplitter(250),
 ]
 
 export const registerKnowledgeLoader = (eventSystem: EventSystem) => {

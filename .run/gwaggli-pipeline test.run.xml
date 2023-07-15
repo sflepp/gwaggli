@@ -1,0 +1,12 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="gwaggli-pipeline test" type="JavaScriptTestRunnerJest">
+    <node-interpreter value="project" />
+    <jest-package value="$PROJECT_DIR$/gwaggli-pipeline/node_modules/jest" />
+    <working-dir value="$PROJECT_DIR$/gwaggli-pipeline" />
+    <jest-options value="--watch" />
+    <envs />
+    <scope-kind value="DIRECTORY" />
+    <test-directory value="$PROJECT_DIR$/gwaggli-pipeline" />
+    <method v="2" />
+  </configuration>
+</component>
