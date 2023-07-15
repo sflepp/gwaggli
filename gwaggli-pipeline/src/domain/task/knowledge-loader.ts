@@ -13,12 +13,15 @@ import {ChunkSplitter} from "../../storage/knowledge-base/splitters/chunk-splitt
 
 const splitters = [
     new NoopSplitter(),
-    new ChunkSplitter(250),
+    new ChunkSplitter(1500),
 ]
+
+
+// TODO: This is a temporary solution to get the knowledge base working, find a better place for this
+export const knowledgeBase = new EmbeddingsKnowledgeBase();
 
 export const registerKnowledgeLoader = (eventSystem: EventSystem) => {
 
-    const knowledgeBase = new EmbeddingsKnowledgeBase();
 
     eventSystem.on<KnowledgeLocationAvailable>(PipelineEventType.KnowledgeLocationAvailable, async (event) => {
         let loader = loaderByLocationType(event.locationType);
@@ -46,6 +49,12 @@ export const registerKnowledgeLoader = (eventSystem: EventSystem) => {
                 const splitText = splitTexts[i];
                 console.log(`Processing ${splitter.name()}: ${i + 1}/${splitTexts.length}`)
 
+                const embedding = await generateEmbedding(splitText);
+
+                if (embedding === undefined) {
+                    console.warn(`Skipping ${splitter.name()}: ${i + 1}/${splitTexts.length}`)
+                    continue;
+                }
 
                 eventSystem.dispatch({
                     type: PipelineEventType.KnowledgeEmbeddingAvailable,
@@ -53,7 +62,8 @@ export const registerKnowledgeLoader = (eventSystem: EventSystem) => {
                     sid: event.sid,
                     timestamp: Date.now(),
                     source: event.source,
-                    ...await generateEmbedding(splitText)
+                    text: embedding.text,
+                    embedding: embedding.embedding
                 })
             }
         }

@@ -15,6 +15,10 @@ export class DirectoryLoader extends Loader {
             const fileContents = fs.readFileSync(file);
             const parser = parserByFileName(file)
 
+            if (parser === undefined) {
+                continue;
+            }
+
             const result = await parser.parse(fileContents);
 
             results.push({

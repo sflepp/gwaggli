@@ -132,9 +132,10 @@ export interface KnowledgeLocationAvailable extends PipelineBaseEvent {
     type: PipelineEventType.KnowledgeLocationAvailable,
     locationType: KnowledgeLocationType,
     location: string,
+    data?: string,
 }
 
-export type KnowledgeLocationType = 'fs/directory'
+export type KnowledgeLocationType = 'fs/directory' | 'inline/zip'
 
 export interface KnowledgeTextAvailable extends PipelineBaseEvent {
     type: PipelineEventType.KnowledgeTextAvailable,

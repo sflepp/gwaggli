@@ -7,9 +7,10 @@ import {docco} from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import Waveform from "../../ui-components/waveform";
 import UuidVisualize from "../../ui-components/uuid-visualize";
 import {DomainEventType} from "@gwaggli/events/dist/events/domain-events";
-import { pipelineHost } from "../../env";
+import {pipelineHost} from "../../env";
+import ConnectionStatus from "../../ui-components/connection-status";
 
-const {Text, Link} = Typography;
+const {Text} = Typography;
 
 
 interface DataType {
@@ -22,18 +23,11 @@ interface DataType {
     type: string;
 }
 
-interface ExpandableDataType {
-    key: React.Key;
-    details: string;
-}
-
 const Debugger = () => {
-
-    const currentTime = useState(Date.now())
 
     const [events, setEvents] = useState<GwaggliEvent[]>([])
 
-    useWebSocket(`ws://${pipelineHost}:8888`, {
+    const {readyState} = useWebSocket(`ws://${pipelineHost}:8888`, {
         onOpen: () => console.log("opened"),
         onMessage: (message) => {
             const event = JSON.parse(message.data) as GwaggliEvent
@@ -80,6 +74,9 @@ const Debugger = () => {
             pagination={{pageSize: 100}}
         >
         </Table>
+        <div style={{position: 'absolute', right: '0', top: '0'}}>
+            <ConnectionStatus readyState={readyState}></ConnectionStatus>
+        </div>
     </>)
 }
 
@@ -91,7 +88,7 @@ const ExpandedRow = (record: DataType) => {
     </div>
 }
 
-const TimestampRenderer = (value: any, record: DataType, index: number) => {
+const TimestampRenderer = (value: any) => {
     const date = new Date(value)
     const time = date.toISOString()
     return <>
@@ -99,26 +96,26 @@ const TimestampRenderer = (value: any, record: DataType, index: number) => {
     </>
 }
 
-const SidRenderer = (value: any, record: DataType, index: number) => {
+const SidRenderer = (value: any) => {
     return <>
         <UuidVisualize uuid={value}></UuidVisualize>
     </>
 }
 
-const TrackIdRenderer = (value: any, record: any, index: number) => {
+const TrackIdRenderer = (value: any, record: any) => {
     return record.event.trackId ? <UuidVisualize uuid={record.event.trackId}></UuidVisualize> : <></>
 }
-const EventRenderer = (value: any, record: DataType, index: number) => {
+const EventRenderer = (value: any, record: DataType) => {
     return <>
         <Text code>{record.event.type}</Text>
     </>
 }
 
-const DeltaTime = (value: any, record: DataType, index: number) => {
+const DeltaTime = (value: any, record: DataType) => {
     return record.deltaTime.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "'") + ' ms';
 }
 
-const Details = (value: any, record: DataType, index: number) => {
+const Details = (value: any, record: DataType) => {
     switch (record.event.type) {
         case PipelineEventType.CopilotProcessingComplete:
             return <>

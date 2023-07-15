@@ -53,3 +53,7 @@ export const registerAdvisoryPipeline = (eventSystem: EventSystem) => {
     registerAdvisoryProcessing(eventSystem)
     registerTextToSpeech(eventSystem)
 }
+
+export const registerDebugPipeline = (eventSystem: EventSystem) => {
+    registerKnowledgeLoader(eventSystem);
+}
