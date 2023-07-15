@@ -1,7 +1,12 @@
 import express, {Express, Request, Response} from 'express';
 import dotenv from 'dotenv';
 import {dispatchClientMessage, registerClientView} from "./client-view";
-import {registerAdvisoryPipeline, registerChatPipeline, registerCopilotPipeline} from "./pipeline";
+import {
+    registerAdvisoryPipeline,
+    registerChatPipeline,
+    registerCopilotPipeline,
+    registerDebugPipeline
+} from "./pipeline";
 import {ClientEventType, EventSystem, GwaggliEvent, PipelineEventType} from "@gwaggli/events";
 import {getGlobalEventSystem} from "@gwaggli/events/dist/event-system";
 
@@ -135,27 +140,43 @@ advisoryWebsocket.on("connection", async (ws: WebSocket) => {
     registerAdvisoryPipeline(eventSystem);
 });
 
-console.log(`⚡️[server]: Debugging Websocket server is running at ws://localhost:${chatPort}`);
+console.log(`⚡️[server]: Debugging Websocket server is running at ws://localhost:${debugPort}`);
 
 const debugWebsocket = new WebSocketServer.Server({port: debugPort})
 debugWebsocket.on("connection", async (ws: WebSocket) => {
     console.log("new debug client connected");
+
+    const eventSystem = new EventSystem();
+    getGlobalEventSystem().connect(eventSystem);
+
+    const sid = uuidv4();
+
     const filterDebugger = (event: GwaggliEvent) => event.type !== ClientEventType.AudioChunk &&
         event.type !== ClientEventType.ClientViewVoiceActivation &&
         event.type !== PipelineEventType.VoiceActivationLevelUpdate &&
         event.type !== PipelineEventType.AudioBufferUpdate
 
-    const listener = getGlobalEventSystem().filter(filterDebugger, (event) => {
+    const listener = eventSystem.filter(filterDebugger, (event) => {
         ws.send(JSON.stringify(event));
+    });
+
+    ws.addEventListener("message", (event: MessageEvent<string>) => {
+        try {
+            dispatchClientMessage(eventSystem, sid, event.data);
+        } catch (e) {
+            console.error(e)
+        }
     });
 
     ws.addEventListener("close", () => {
         console.log("debug client disconnected");
-        getGlobalEventSystem().off(listener)
+        eventSystem.off(listener)
     });
 
     ws.addEventListener("error", (event) => {
         console.log("debug client error", event);
-        getGlobalEventSystem().off(listener)
+        eventSystem.off(listener)
     });
+
+    registerDebugPipeline(eventSystem)
 });

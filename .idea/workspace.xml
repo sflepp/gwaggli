@@ -4,22 +4,37 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f5c384cc-a39b-480a-bc43-a936d9016f85" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/gwaggli-pipeline/config.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/gwaggli-pipeline/src/integration/elevenlabs/eleven-labs-client.ts" afterDir="false" />
+    <list default="true" id="f5c384cc-a39b-480a-bc43-a936d9016f85" name="Changes" comment="Enable git-lfs">
+      <change afterPath="$PROJECT_DIR$/gwaggli-insights/src/pages/data-loader/DataLoader.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/gwaggli-insights/src/ui-components/file-selector.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/gwaggli-pipeline/.gitattributes" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/gwaggli-pipeline/__test-data__/data-loader/zip/example-data-1.zip" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/gwaggli-pipeline/__test-data__/data-loader/zip/example-data-2.zip" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/gwaggli-pipeline/src/domain/data-loader/loaders/in-memory-zip-loader.spec.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/gwaggli-pipeline/src/domain/data-loader/loaders/inline-zip-loader.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/gwaggli-pipeline/src/integration/openai/open-ai-client.spec.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/helpful-links.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gwaggli-events/src/events/client-events.ts" beforeDir="false" afterPath="$PROJECT_DIR$/gwaggli-events/src/events/client-events.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gwaggli-events/src/events/domain-events.ts" beforeDir="false" afterPath="$PROJECT_DIR$/gwaggli-events/src/events/domain-events.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/gwaggli-events/src/events/pipeline-events.ts" beforeDir="false" afterPath="$PROJECT_DIR$/gwaggli-events/src/events/pipeline-events.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gwaggli-insights/src/pages/copilot/Copilot.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/gwaggli-insights/src/pages/copilot/Copilot.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gwaggli-pipeline/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/gwaggli-pipeline/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gwaggli-pipeline/src/domain/model/advisory/advisor-configurations.ts" beforeDir="false" afterPath="$PROJECT_DIR$/gwaggli-pipeline/src/domain/model/advisory/advisor-configurations.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gwaggli-pipeline/src/domain/model/advisory/advisory.ts" beforeDir="false" afterPath="$PROJECT_DIR$/gwaggli-pipeline/src/domain/model/advisory/advisory.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gwaggli-pipeline/src/domain/task/advisory-processing.ts" beforeDir="false" afterPath="$PROJECT_DIR$/gwaggli-pipeline/src/domain/task/advisory-processing.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gwaggli-pipeline/src/domain/task/text-to-speech.ts" beforeDir="false" afterPath="$PROJECT_DIR$/gwaggli-pipeline/src/domain/task/text-to-speech.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gwaggli-pipeline/src/domain/task/voice-activation.ts" beforeDir="false" afterPath="$PROJECT_DIR$/gwaggli-pipeline/src/domain/task/voice-activation.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gwaggli-pipeline/src/integration/aws/aws-client.ts" beforeDir="false" afterPath="$PROJECT_DIR$/gwaggli-pipeline/src/integration/aws/aws-client.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gwaggli-insights/src/App.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/gwaggli-insights/src/App.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gwaggli-insights/src/env.ts" beforeDir="false" afterPath="$PROJECT_DIR$/gwaggli-insights/src/env.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gwaggli-insights/src/pages/AppLayout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/gwaggli-insights/src/pages/AppLayout.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gwaggli-insights/src/pages/debugger/Debugger.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/gwaggli-insights/src/pages/debugger/Debugger.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gwaggli-pipeline/__test-data__/data-loader/pdf/git.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/gwaggli-pipeline/__test-data__/data-loader/pdf/git.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gwaggli-pipeline/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/gwaggli-pipeline/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gwaggli-pipeline/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/gwaggli-pipeline/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gwaggli-pipeline/src/domain/data-loader/loader-factory.ts" beforeDir="false" afterPath="$PROJECT_DIR$/gwaggli-pipeline/src/domain/data-loader/loader-factory.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gwaggli-pipeline/src/domain/data-loader/loader.ts" beforeDir="false" afterPath="$PROJECT_DIR$/gwaggli-pipeline/src/domain/data-loader/loader.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gwaggli-pipeline/src/domain/data-loader/loaders/directory-loader.ts" beforeDir="false" afterPath="$PROJECT_DIR$/gwaggli-pipeline/src/domain/data-loader/loaders/directory-loader.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gwaggli-pipeline/src/domain/data-loader/parser-factory.ts" beforeDir="false" afterPath="$PROJECT_DIR$/gwaggli-pipeline/src/domain/data-loader/parser-factory.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gwaggli-pipeline/src/domain/task/knowledge-loader.ts" beforeDir="false" afterPath="$PROJECT_DIR$/gwaggli-pipeline/src/domain/task/knowledge-loader.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gwaggli-pipeline/src/domain/task/text-completion.ts" beforeDir="false" afterPath="$PROJECT_DIR$/gwaggli-pipeline/src/domain/task/text-completion.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gwaggli-pipeline/src/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/gwaggli-pipeline/src/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gwaggli-pipeline/src/integration/openai/open-ai-client.ts" beforeDir="false" afterPath="$PROJECT_DIR$/gwaggli-pipeline/src/integration/openai/open-ai-client.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/gwaggli-pipeline/src/pipeline.ts" beforeDir="false" afterPath="$PROJECT_DIR$/gwaggli-pipeline/src/pipeline.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gwaggli-pipeline/src/storage/knowledge-base/embeddings-knowledge-base.spec.ts" beforeDir="false" afterPath="$PROJECT_DIR$/gwaggli-pipeline/src/storage/knowledge-base/embeddings-knowledge-base.spec.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gwaggli-pipeline/src/storage/knowledge-base/embeddings-knowledge-base.ts" beforeDir="false" afterPath="$PROJECT_DIR$/gwaggli-pipeline/src/storage/knowledge-base/embeddings-knowledge-base.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -47,54 +62,124 @@
   "keyToString": {
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "WebServerToolWindowFactoryState": "false",
     "git-widget-placeholder": "main",
     "ignore.virus.scanning.warn.message": "true",
-    "last_opened_file_path": "//wsl$/Ubuntu-22.04/home/simon/prj/gwaggli/gwaggli-pipeline/.elevenlabs",
+    "javascript.nodejs.core.library.configured.version": "20.4.0",
+    "javascript.nodejs.core.library.typings.version": "20.4.0",
+    "last_opened_file_path": "/home/simon/projects/gwaggli/gwaggli-pipeline",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_interpreter_path": "wsl://Ubuntu-22.04@/home/simon/.nvm/versions/node/v19.9.0/bin/node",
+    "nodejs.jest.jest_package": "/home/simon/projects/gwaggli/gwaggli-pipeline/node_modules/jest",
+    "nodejs_interpreter_path": "/home/simon/.nvm/versions/node/v20.4.0/bin/node",
     "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "preferences.lookFeel",
-    "ts.external.directory.path": "\\\\wsl$\\Ubuntu-22.04\\home\\simon\\prj\\gwaggli\\gwaggli-events\\node_modules\\typescript\\lib",
+    "project.structure.last.edited": "Global Libraries",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "settings.nodejs",
+    "ts.external.directory.path": "/home/simon/projects/gwaggli/gwaggli-pipeline/node_modules/typescript/lib",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/gwaggli-pipeline/__test-data__/pdf" />
+      <recent name="$PROJECT_DIR$/gwaggli-pipeline/src/domain/data-loader/parsers/__test-data__/pdf" />
+      <recent name="$PROJECT_DIR$/gwaggli-pipeline/input/knowledge-base" />
+      <recent name="\\wsl$\Ubuntu-22.04\home\simon\prj\gwaggli\gwaggli-pipeline\src\storage\knowledge-base\test-data" />
       <recent name="\\wsl$\Ubuntu-22.04\home\simon\prj\gwaggli\gwaggli-pipeline\.elevenlabs" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="\\wsl$\Ubuntu-22.04\home\simon\prj\gwaggli" />
+      <recent name="$PROJECT_DIR$/ignored" />
+      <recent name="$PROJECT_DIR$/gwaggli-pipeline/__test-data__/data-loader" />
+      <recent name="$PROJECT_DIR$/gwaggli-pipeline" />
+      <recent name="$PROJECT_DIR$/gwaggli-pipeline/src/domain/data-loader/parsers" />
+      <recent name="$PROJECT_DIR$/gwaggli-pipeline/input" />
     </key>
   </component>
-  <component name="RunManager" selected="npm.gwaggli-insights start">
-    <configuration name="gwaggli-insights start" type="js.build_tools.npm">
-      <package-json value="$PROJECT_DIR$/gwaggli-insights/package.json" />
-      <command value="run" />
-      <scripts>
-        <script value="start" />
-      </scripts>
+  <component name="RunManager" selected="npm.gwaggli-pipeline dev">
+    <configuration name="messages should fit into token limit" type="JavaScriptTestRunnerJest" temporary="true" nameIsGenerated="true">
       <node-interpreter value="project" />
+      <jest-package value="$PROJECT_DIR$/gwaggli-pipeline/node_modules/jest" />
+      <working-dir value="$PROJECT_DIR$/gwaggli-pipeline" />
       <envs />
+      <scope-kind value="TEST" />
+      <test-file value="$PROJECT_DIR$/gwaggli-pipeline/src/integration/openai/open-ai-client.spec.ts" />
+      <test-names>
+        <test-name value="messages should fit into token limit" />
+      </test-names>
       <method v="2" />
     </configuration>
-    <configuration name="gwaggli-pipeline dev" type="js.build_tools.npm">
-      <package-json value="$PROJECT_DIR$/gwaggli-pipeline/package.json" />
-      <command value="run" />
-      <scripts>
-        <script value="dev" />
-      </scripts>
+    <configuration name="should be possible to search even if no data is available" type="JavaScriptTestRunnerJest" temporary="true" nameIsGenerated="true">
       <node-interpreter value="project" />
+      <jest-package value="$PROJECT_DIR$/gwaggli-pipeline/node_modules/jest" />
+      <working-dir value="$PROJECT_DIR$/gwaggli-pipeline" />
       <envs />
+      <scope-kind value="TEST" />
+      <test-file value="$PROJECT_DIR$/gwaggli-pipeline/src/storage/knowledge-base/embeddings-knowledge-base.spec.ts" />
+      <test-names>
+        <test-name value="should be possible to search even if no data is available" />
+      </test-names>
+      <method v="2" />
+    </configuration>
+    <configuration name="should be possible to search for more entries than available" type="JavaScriptTestRunnerJest" temporary="true" nameIsGenerated="true">
+      <node-interpreter value="project" />
+      <jest-package value="$PROJECT_DIR$/gwaggli-pipeline/node_modules/jest" />
+      <working-dir value="$PROJECT_DIR$/gwaggli-pipeline" />
+      <envs />
+      <scope-kind value="TEST" />
+      <test-file value="$PROJECT_DIR$/gwaggli-pipeline/src/storage/knowledge-base/embeddings-knowledge-base.spec.ts" />
+      <test-names>
+        <test-name value="should be possible to search for more entries than available" />
+      </test-names>
+      <method v="2" />
+    </configuration>
+    <configuration name="should load a full directory" type="JavaScriptTestRunnerJest" temporary="true" nameIsGenerated="true">
+      <node-interpreter value="project" />
+      <jest-package value="$PROJECT_DIR$/gwaggli-pipeline/node_modules/jest" />
+      <working-dir value="$PROJECT_DIR$/gwaggli-pipeline" />
+      <envs />
+      <scope-kind value="TEST" />
+      <test-file value="$PROJECT_DIR$/gwaggli-pipeline/src/domain/data-loader/loaders/directory-loader.spec.ts" />
+      <test-names>
+        <test-name value="should load a full directory" />
+      </test-names>
+      <method v="2" />
+    </configuration>
+    <configuration name="should load a zip file" type="JavaScriptTestRunnerJest" temporary="true" nameIsGenerated="true">
+      <node-interpreter value="project" />
+      <jest-package value="$PROJECT_DIR$/gwaggli-pipeline/node_modules/jest" />
+      <working-dir value="$PROJECT_DIR$/gwaggli-pipeline" />
+      <envs />
+      <scope-kind value="TEST" />
+      <test-file value="$PROJECT_DIR$/gwaggli-pipeline/src/domain/data-loader/loaders/in-memory-zip-loader.spec.ts" />
+      <test-names>
+        <test-name value="should load a zip file" />
+      </test-names>
       <method v="2" />
     </configuration>
     <list>
+      <item itemvalue="Jest.gwaggli-pipeline test" />
+      <item itemvalue="Jest.messages should fit into token limit" />
+      <item itemvalue="Jest.should be possible to search even if no data is available" />
+      <item itemvalue="Jest.should be possible to search for more entries than available" />
+      <item itemvalue="Jest.should load a full directory" />
+      <item itemvalue="Jest.should load a zip file" />
       <item itemvalue="npm.gwaggli-pipeline dev" />
       <item itemvalue="npm.gwaggli-insights start" />
     </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Jest.messages should fit into token limit" />
+        <item itemvalue="Jest.should be possible to search even if no data is available" />
+        <item itemvalue="Jest.should be possible to search for more entries than available" />
+        <item itemvalue="Jest.should load a zip file" />
+        <item itemvalue="Jest.should load a full directory" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -118,12 +203,55 @@
       <workItem from="1687681422158" duration="2842000" />
       <workItem from="1687721157030" duration="656000" />
       <workItem from="1687768341178" duration="16550000" />
-      <workItem from="1688388396856" duration="15466000" />
+      <workItem from="1688388396856" duration="17841000" />
+      <workItem from="1688801711752" duration="15280000" />
+      <workItem from="1688917780134" duration="741000" />
+      <workItem from="1688992760557" duration="8097000" />
+      <workItem from="1689095350474" duration="8005000" />
+      <workItem from="1689367297420" duration="79000" />
+      <workItem from="1689367396889" duration="30073000" />
     </task>
+    <task id="LOCAL-00001" summary="Enable git-lfs">
+      <option name="closed" value="true" />
+      <created>1689449674471</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1689449674471</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Enable git-lfs" />
+    <option name="LAST_COMMIT_MESSAGE" value="Enable git-lfs" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/gwaggli-pipeline/node_modules/gpt-tokenizer/src/GptEncoding.ts</url>
+          <line>245</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="10" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/gwaggli-pipeline/src/integration/openai/open-ai-client.ts</url>
+          <line>37</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="17" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/gwaggli-pipeline/src/integration/openai/open-ai-client.ts</url>
+          <line>25</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="18" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

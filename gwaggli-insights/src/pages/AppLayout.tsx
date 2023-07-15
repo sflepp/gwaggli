@@ -34,13 +34,19 @@ const AppLayout: React.FC = () => {
                         key: 'Debugger',
                         label: 'Debugger',
                         onClick: () => navigate('/debugger'),
-                    }
+                    },
+                    {
+                        key: 'Data-Loader',
+                        label: 'Data-Loader',
+                        onClick: () => navigate('/data-loader'),
+                    },
                 ]} />
             </Header>
             <Layout>
                 <Layout style={{ padding: '0 24px 24px' }}>
                     <Content
                         style={{
+                            position: 'relative',
                             padding: 24,
                             margin: 0,
                             minHeight: 280,

@@ -11,45 +11,41 @@ const sampleAudioMessage: GwaggliEvent = {
     audio: exampleWaveFileData
 };
 
-describe("audio-buffering", () => {
+let eventSystem: EventSystem;
+let result: any[];
+beforeEach(() => {
+    result = [];
+    eventSystem = new EventSystem();
 
-    let eventSystem: EventSystem;
-    let result: any[];
-
-    beforeEach(() => {
-        result = [];
-        eventSystem = new EventSystem();
-
-        eventSystem.on(PipelineEventType.AudioBufferUpdate, (event) => {
-            result.push(event);
-        });
-
-        registerAudioBuffering(eventSystem);
+    eventSystem.on(PipelineEventType.AudioBufferUpdate, (event) => {
+        result.push(event);
     });
 
-    it("should emit AudioBufferUpdate", () => {
-        eventSystem.dispatch(sampleAudioMessage);
+    registerAudioBuffering(eventSystem);
+});
 
-        expect(result.length).toBe(1);
-    });
+it("should emit AudioBufferUpdate", () => {
+    eventSystem.dispatch(sampleAudioMessage);
 
-    it('should export valid wave data', () => {
-        eventSystem.dispatch(sampleAudioMessage);
+    expect(result.length).toBe(1);
+});
 
-        const resultingWaveData = new WaveData(Buffer.from(result[0].audio, 'base64'));
+it('should export valid wave data', () => {
+    eventSystem.dispatch(sampleAudioMessage);
 
-        expect(resultingWaveData.getDuration()).toBeCloseTo(19098, 0);
-        expect(resultingWaveData.getLoudnessAt(1)).toBeCloseTo(6);
-    });
+    const resultingWaveData = new WaveData(Buffer.from(result[0].audio, 'base64'));
 
-    it('should export valid concatenated wave data', () => {
-        eventSystem.dispatch(sampleAudioMessage);
-        eventSystem.dispatch(sampleAudioMessage);
+    expect(resultingWaveData.getDuration()).toBeCloseTo(19098, 0);
+    expect(resultingWaveData.getLoudnessAt(1)).toBeCloseTo(6);
+});
 
-        const resultingWaveData = new WaveData(Buffer.from(result[1].audio, 'base64'));
+it('should export valid concatenated wave data', () => {
+    eventSystem.dispatch(sampleAudioMessage);
+    eventSystem.dispatch(sampleAudioMessage);
 
-        expect(resultingWaveData.getDuration()).toBeCloseTo(19098 * 2, 0);
-        expect(resultingWaveData.getLoudnessAt(0)).toBeCloseTo(36);
-        expect(resultingWaveData.getLoudnessAt(19098)).toBeCloseTo(36);
-    });
+    const resultingWaveData = new WaveData(Buffer.from(result[1].audio, 'base64'));
+
+    expect(resultingWaveData.getDuration()).toBeCloseTo(19098 * 2, 0);
+    expect(resultingWaveData.getLoudnessAt(0)).toBeCloseTo(36);
+    expect(resultingWaveData.getLoudnessAt(19098)).toBeCloseTo(36);
 });

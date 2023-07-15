@@ -1,5 +1,6 @@
 import {BaseEvent} from "../events";
 
+
 export type PipelineEvents =
     AudioBufferUpdate |
     VoiceActivationLevelUpdate |
@@ -7,12 +8,15 @@ export type PipelineEvents =
     VoiceActivationEnd |
     VoiceActivationDataAvailable |
     VoiceActivationPersist |
-    TrnascriptionProcessing |
+    TranscriptionProcessing |
     TranscriptionComplete |
     TextCompletionFinish |
     CopilotProcessingComplete |
     TextToVoiceFinish |
     VoicePersist |
+    KnowledgeLocationAvailable |
+    KnowledgeTextAvailable |
+    KnowledgeEmbeddingAvailable |
     PipelineError;
 
 export enum PipelineEventType {
@@ -28,6 +32,9 @@ export enum PipelineEventType {
     TextCompletionFinish = "text-completion-finish",
     TextToVoiceFinish = "text-to-voice-finish",
     VoicePersist = "voice-persist",
+    KnowledgeLocationAvailable = "knowledge-location-available",
+    KnowledgeTextAvailable = "knowledge-text-available",
+    KnowledgeEmbeddingAvailable = "knowledge-embedding-available",
     PipelineError = "pipeline-error",
 }
 
@@ -69,7 +76,7 @@ export interface VoiceActivationPersist extends PipelineBaseEvent {
     fileName: string,
 }
 
-export interface TrnascriptionProcessing extends PipelineBaseEvent {
+export interface TranscriptionProcessing extends PipelineBaseEvent {
     type: PipelineEventType.TranscriptionProcessing,
     trackId: string,
     status: string
@@ -120,3 +127,26 @@ export interface PipelineError extends PipelineBaseEvent {
     error: string
     cause: any
 }
+
+export interface KnowledgeLocationAvailable extends PipelineBaseEvent {
+    type: PipelineEventType.KnowledgeLocationAvailable,
+    locationType: KnowledgeLocationType,
+    location: string,
+    data?: string,
+}
+
+export type KnowledgeLocationType = 'fs/directory' | 'inline/zip'
+
+export interface KnowledgeTextAvailable extends PipelineBaseEvent {
+    type: PipelineEventType.KnowledgeTextAvailable,
+    source: string
+    text: string
+}
+
+export interface KnowledgeEmbeddingAvailable extends PipelineBaseEvent {
+    type: PipelineEventType.KnowledgeEmbeddingAvailable,
+    source: string
+    text: string
+    embedding: number[]
+}
+

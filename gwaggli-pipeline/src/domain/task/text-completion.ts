@@ -1,7 +1,8 @@
 import {PipelineError, TranscriptionComplete} from "@gwaggli/events/dist/events/pipeline-events";
-import openAi, {createChatCompletion} from "../../integration/openai/open-ai-client";
+import openAi, {createChatCompletion, generateEmbedding} from "../../integration/openai/open-ai-client";
 import {EventSystem, PipelineEventType} from "@gwaggli/events";
 import {ChatCompletionRequestMessage} from "openai/api";
+import {knowledgeBase} from "./knowledge-loader";
 
 const chatModel = "gpt-3.5-turbo"
 
@@ -10,8 +11,20 @@ export const registerChatStyleTextCompletion = (eventSystem: EventSystem) => {
 
     const history: ChatCompletionRequestMessage[] = [];
 
-
     eventSystem.on<TranscriptionComplete>(PipelineEventType.TranscriptionComplete, async (event) => {
+
+        const embedding = await generateEmbedding(event.text);
+
+        if (embedding !== undefined) {
+            const bestEmbeddings = knowledgeBase.search(embedding.embedding, 3, 0.5);
+
+            for (const bestEmbedding of bestEmbeddings) {
+                history.push({
+                    role: "user", // TODO: analyze why user works best... Shouldn't it be assistant?
+                    content: bestEmbedding.entry.text
+                })
+            }
+        }
 
         history.push({
             role: "user",
@@ -24,7 +37,7 @@ export const registerChatStyleTextCompletion = (eventSystem: EventSystem) => {
                 [
                     {
                         role: "system",
-                        content: "Ich bin ein freundlicher, weltoffener Chatpartner. Ich heisse Gwaggli und beantworte gerne Fragen zu allen möglichen Themen. Ich gebe meistens gute und informierte Antworten."
+                        content: "Ich bin ein freundlicher, weltoffener Chatpartner. Ich heisse Gwaggli und beantworte gerne Fragen zu allen möglichen Themen. Ich gebe kurze und knackige Antworten."
                     },
                     ...history
                 ]
@@ -38,6 +51,8 @@ export const registerChatStyleTextCompletion = (eventSystem: EventSystem) => {
             role: "assistant",
             content: answer
         });
+
+        console.log(history)
 
         eventSystem.dispatch({
             type: PipelineEventType.TextCompletionFinish,
