@@ -4,8 +4,9 @@ import {
     SimplePcmVoiceActivationConfig
 } from "./simple-pcm-voice-activation";
 import fs from "fs";
-import {WAV_HEADER_SIZE} from "../../data/wave-data";
+import {WAV_HEADER_SIZE, WaveData} from "../../data/wave-data";
 import {Buffer} from "buffer";
+import assert from "assert";
 
 const exampleSpeech1: Buffer = fs.readFileSync('./__test-data__/audio/wav/example-speech-1.wav')
 
@@ -165,4 +166,30 @@ it('should tell when it is active', () => {
         1, 1, 1, 1, 1, 1
     ])
 })
+
+it('should return a valid WAVE/RIFF file', () => {
+    const reference = new WaveData(exampleSpeech1);
+    const referenceHeader = reference.getHeader();
+    const sut = new SimplePcmVoiceActivation(exampleConfig);
+
+    let result: WaveData | undefined;
+
+    for (let i = 0; i < exampleSpeech1.length; i += 48_000) {
+        const sample = exampleSpeech1.subarray(i, Math.min(exampleSpeech1.length, i + 48_000));
+        result = sut.next(sample);
+
+        if (result) {
+            break;
+        }
+    }
+
+    assert(result !== undefined)
+    expect(result.getBuffer().subarray(0, 4).toString()).toEqual("RIFF")
+    expect(result.getBuffer().subarray(8, 12).toString()).toEqual("WAVE")
+    expect(result.getBuffer().length).toBe(1_536_044);
+    expect(result.getHeader().channels).toEqual(referenceHeader.channels);
+    expect(result.getHeader().sampleRate).toEqual(referenceHeader.sampleRate);
+    expect(result.getHeader().bitsPerSample).toEqual(referenceHeader.bitsPerSample);
+    expect(result.getHeader().mono).toEqual(referenceHeader.mono);
+});
 

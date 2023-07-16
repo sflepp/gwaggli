@@ -80,7 +80,10 @@ export class SimplePcmVoiceActivation implements VoiceActivationAlgorithm {
 
         if (this._activeBuffer && this._currentLevel < deactivationThreshold) {
             // Was active, but is not anymore
-            const result = new WaveData(this._activeBuffer);
+            const result = new WaveData(this._activeBuffer, {
+                ...this._header,
+                chunkSize: this._activeBuffer.length
+            });
             this._activeBuffer = undefined;
             return result;
         }
