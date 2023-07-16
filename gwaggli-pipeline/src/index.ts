@@ -77,8 +77,7 @@ suggestionWebsocket.on("connection", async (ws: WebSocket) => {
     const sid = uuidv4();
 
     const clientFilter = (event: GwaggliEvent) => event.sid === sid &&
-        event.type !== ClientEventType.AudioChunk &&
-        event.type !== PipelineEventType.AudioBufferUpdate;
+        event.type !== ClientEventType.AudioChunk
 
     const listener = eventSystem.filter(clientFilter, (event) => {
         ws.send(JSON.stringify(event));
@@ -112,8 +111,7 @@ advisoryWebsocket.on("connection", async (ws: WebSocket) => {
     const sid = uuidv4();
 
     const clientFilter = (event: GwaggliEvent) => event.sid === sid &&
-        event.type !== ClientEventType.AudioChunk &&
-        event.type !== PipelineEventType.AudioBufferUpdate;
+        event.type !== ClientEventType.AudioChunk
 
     const listener = eventSystem.filter(clientFilter, (event) => {
         ws.send(JSON.stringify(event));
@@ -153,8 +151,7 @@ debugWebsocket.on("connection", async (ws: WebSocket) => {
 
     const filterDebugger = (event: GwaggliEvent) => event.type !== ClientEventType.AudioChunk &&
         event.type !== ClientEventType.ClientViewVoiceActivation &&
-        event.type !== PipelineEventType.VoiceActivationLevelUpdate &&
-        event.type !== PipelineEventType.AudioBufferUpdate
+        event.type !== PipelineEventType.VoiceActivationLevelUpdate
 
     const listener = eventSystem.filter(filterDebugger, (event) => {
         ws.send(JSON.stringify(event));

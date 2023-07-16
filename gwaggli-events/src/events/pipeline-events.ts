@@ -2,7 +2,6 @@ import {BaseEvent} from "../events";
 
 
 export type PipelineEvents =
-    AudioBufferUpdate |
     VoiceActivationLevelUpdate |
     VoiceActivationStart |
     VoiceActivationEnd |
@@ -40,11 +39,6 @@ export enum PipelineEventType {
 
 interface PipelineBaseEvent extends BaseEvent {
     subsystem: "pipeline"
-}
-
-export interface AudioBufferUpdate extends PipelineBaseEvent {
-    type: PipelineEventType.AudioBufferUpdate,
-    audio: any
 }
 
 export interface VoiceActivationLevelUpdate extends PipelineBaseEvent {
