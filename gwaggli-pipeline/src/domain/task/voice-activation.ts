@@ -1,137 +1,83 @@
-import { EventSystem, PipelineEventType } from "@gwaggli/events";
+import {ClientEventType, EventSystem, PipelineEventType} from "@gwaggli/events";
 import {
-    AudioBufferUpdate,
-    VoiceActivationDataAvailable,
-    VoiceActivationEnd,
-    VoiceActivationStart
+    VoiceActivationDataAvailable
 } from "@gwaggli/events/dist/events/pipeline-events";
-import { WaveData } from "../data/wave-data";
-import { Buffer } from "buffer";
-import crypto from "crypto";
+import {Buffer} from "buffer";
 import fs from "fs";
-import { SubPipelineConfig } from "../../pipeline";
+import {SubPipelineConfig} from "../../pipeline";
+import {SimplePcmVoiceActivation} from "../algorithms/voice-activation/simple-pcm-voice-activation";
+import {AudioChunk} from "@gwaggli/events/dist/events/client-events";
 
-
-const { v4: uuidv4 } = require('uuid')
+const {v4: uuidv4} = require('uuid')
 
 export const registerVoiceActivationDetection = (eventSystem: EventSystem, config: SubPipelineConfig) => {
-    const voiceActivation = new Map<string, VoiceActivationStart>()
+    const voiceActivation = new SimplePcmVoiceActivation({
+        observeMilliseconds: 1000,
+        observeSampleResolution: 1000,
+        activationThreshold: config.voiceActivationStartLevel,
+        deactivationThreshold: config.voiceActivationEndLevel,
+    })
 
-    eventSystem.on<AudioBufferUpdate>(PipelineEventType.AudioBufferUpdate, (event) => {
-        let windowDuration = 1000; // milliseconds
+    let trackId: string | undefined;
+    let isActive = false;
 
-        const audio = new WaveData(Buffer.from(event.audio, 'base64'));
+    eventSystem.on<AudioChunk>(ClientEventType.AudioChunk, (event: AudioChunk) => {
+        const voiceData = voiceActivation.next(Buffer.from(event.audio, 'base64'));
+        const currentLevel = voiceActivation.currentLevel();
 
-        const startMarker = Math.max(audio.getDuration() - windowDuration, 0);
-        const endMarker = audio.getDuration()
+        eventSystem.dispatch({
+            type: PipelineEventType.VoiceActivationLevelUpdate,
+            subsystem: "pipeline",
+            sid: event.sid,
+            timestamp: Date.now(),
+            level: Math.min(100, Math.round(currentLevel / config.voiceActivationStartLevel * 100))
+        })
 
-        const samples = [];
-        for (let i = startMarker; i <= endMarker; i += 10) {
-            const loudness = audio.getLoudnessAt(i)
-            samples.push(loudness);
-        }
+        if (!isActive && voiceActivation.isActive()) {
+            trackId = uuidv4();
+            isActive = true;
 
-        const averageLoudness = samples.reduce((a, b) => a + b, 0) / samples.length;
-
-        if (voiceActivation.has(event.sid)) {
             eventSystem.dispatch({
-                type: PipelineEventType.VoiceActivationLevelUpdate,
-                subsystem: "pipeline",
-                sid: event.sid,
-                timestamp: Date.now(),
-                level: 100
-            })
-        } else {
-            eventSystem.dispatch({
-                type: PipelineEventType.VoiceActivationLevelUpdate,
-                subsystem: "pipeline",
-                sid: event.sid,
-                timestamp: Date.now(),
-                level: Math.round(averageLoudness / config.voiceActivationStartLevel * 100)
-            })
-        }
-
-        if (!voiceActivation.has(event.sid) && averageLoudness > config.voiceActivationStartLevel) {
-
-            const trackId = uuidv4();
-
-            const voiceActivationStart: VoiceActivationStart = {
                 type: PipelineEventType.VoiceActivationStart,
                 subsystem: "pipeline",
                 sid: event.sid,
                 timestamp: Date.now(),
-                trackId: trackId,
-                startMarker: startMarker
-            }
-
-            voiceActivation.set(event.sid, voiceActivationStart)
-
-            eventSystem.dispatch(voiceActivationStart)
+                trackId: trackId as string,
+            })
         }
 
-        if (voiceActivation.has(event.sid) && averageLoudness < config.voiceActivationEndLevel) {
-
+        if (voiceData) {
             eventSystem.dispatch({
                 type: PipelineEventType.VoiceActivationEnd,
                 subsystem: "pipeline",
                 sid: event.sid,
                 timestamp: Date.now(),
-                trackId: (voiceActivation.get(event.sid) as VoiceActivationStart).trackId,
-                endMarker: endMarker
+                trackId: trackId as string
             })
-
-            voiceActivation.delete(event.sid)
-        }
-    });
-}
-
-export const registerVoiceActivationDataProcessing = (eventSystem: EventSystem) => {
-
-    let bufferedData: WaveData;
-    const startEvents: VoiceActivationStart[] = []
-
-    eventSystem.on<AudioBufferUpdate>(PipelineEventType.AudioBufferUpdate, (event) => {
-        bufferedData = new WaveData(Buffer.from(event.audio, 'base64'));
-    });
-
-    eventSystem.on<VoiceActivationStart>(PipelineEventType.VoiceActivationStart, (startEvent) => {
-        startEvents.push(startEvent);
-    });
-
-    eventSystem.on<VoiceActivationEnd>(PipelineEventType.VoiceActivationEnd, (endEvent) => {
-        const startEvent = startEvents.find((startEvent) => startEvent.trackId === endEvent.trackId)
-
-        if (startEvent) {
-            const startIndex = bufferedData.getByteIndexAtTime(startEvent.startMarker);
-            const endIndex = bufferedData.getByteIndexAtTime(endEvent.endMarker);
-
-            const audio = bufferedData.slice(startIndex, endIndex);
 
             eventSystem.dispatch({
                 type: PipelineEventType.VoiceActivationDataAvailable,
                 subsystem: "pipeline",
-                sid: startEvent.sid,
+                sid: event.sid,
                 timestamp: Date.now(),
-                trackId: startEvent.trackId,
-                audio: audio.buffer.toString('base64')
+                trackId: trackId as string,
+                audio: voiceData.buffer.toString('base64')
             })
+
+            isActive = false;
+            trackId = undefined;
         }
     });
 }
 
 export const registerVoiceActivationPersist = (eventSystem: EventSystem) => {
     eventSystem.on<VoiceActivationDataAvailable>(PipelineEventType.VoiceActivationDataAvailable, (event) => {
-        const hash = crypto
-            .createHash('sha256')
-            .update(event.audio)
-            .digest('hex');
-
-        const fileName = `audio-${new Date().getTime()}-${hash}.wav`
+        const fileName = `audio-${new Date().getTime()}-${event.trackId}.wav`
         const folder = `./generated/voice-activation`;
         const path = `${folder}/${fileName}`;
 
         if (!fs.existsSync(folder)) {
-            fs.mkdirSync(folder, { recursive: true });
+            fs.mkdirSync(folder, {recursive: true});
         }
 
         fs.writeFileSync(path, Buffer.from(event.audio, 'base64'));
@@ -149,6 +95,5 @@ export const registerVoiceActivationPersist = (eventSystem: EventSystem) => {
 
 export const registerVoiceActivation = (eventSystem: EventSystem, config: SubPipelineConfig) => {
     registerVoiceActivationDetection(eventSystem, config);
-    registerVoiceActivationDataProcessing(eventSystem);
     registerVoiceActivationPersist(eventSystem);
 }

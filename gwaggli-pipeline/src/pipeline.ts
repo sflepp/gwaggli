@@ -1,5 +1,4 @@
 import {EventSystem} from "@gwaggli/events";
-import {registerAudioBuffering} from "./domain/task/audio-buffering";
 import {
     registerVoiceActivation
 } from "./domain/task/voice-activation";
@@ -13,6 +12,7 @@ import {
 } from "./domain/task/text-completion";
 import {registerAdvisoryProcessing} from "./domain/task/advisory-processing";
 import {registerKnowledgeLoader} from "./domain/task/knowledge-loader";
+
 const fs = require("fs")
 
 
@@ -21,6 +21,7 @@ export interface SubPipelineConfig {
     voiceActivationEndLevel: number;
     voiceActivationMaxLevel: number;
 }
+
 export interface PipelineConfig {
     copilot: SubPipelineConfig;
     chat: SubPipelineConfig;
@@ -30,7 +31,6 @@ export interface PipelineConfig {
 const pipelineConfig = (JSON.parse(fs.readFileSync("./config.json"))) as PipelineConfig
 
 export const registerChatPipeline = (eventSystem: EventSystem) => {
-    registerAudioBuffering(eventSystem);
     registerVoiceActivation(eventSystem, pipelineConfig.chat);
     registerTranscription(eventSystem);
     registerChatStyleTextCompletion(eventSystem);
@@ -40,14 +40,12 @@ export const registerChatPipeline = (eventSystem: EventSystem) => {
 
 
 export const registerCopilotPipeline = (eventSystem: EventSystem) => {
-    registerAudioBuffering(eventSystem)
     registerVoiceActivation(eventSystem, pipelineConfig.copilot)
     registerTranscription(eventSystem)
     registerCopilotStyleTextCompletion(eventSystem)
 }
 
 export const registerAdvisoryPipeline = (eventSystem: EventSystem) => {
-    registerAudioBuffering(eventSystem)
     registerVoiceActivation(eventSystem, pipelineConfig.advisory)
     registerTranscription(eventSystem)
     registerAdvisoryProcessing(eventSystem)

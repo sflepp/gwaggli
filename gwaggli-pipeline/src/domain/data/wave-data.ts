@@ -9,7 +9,7 @@ export interface WavHeader {
 }
 
 export class WaveData {
-    public readonly buffer: Buffer;
+    public buffer: Buffer;
 
     constructor(buffer: Buffer, header?: WavHeader) {
         if (header) {
@@ -44,6 +44,14 @@ export class WaveData {
         const newData = Buffer.concat([this.getPayload(), other.getPayload()]);
         const newHeader = WaveData.createWavHeader(newData, this.getHeader().sampleRate, this.getHeader().mono, false);
         return new WaveData(Buffer.concat([newHeader, newData]));
+    }
+
+    append(buffer: Buffer) {
+        if (hasWaveHeader(buffer)) {
+            this.buffer = Buffer.concat([this.buffer, buffer.subarray(WAV_HEADER_SIZE)]);
+        } else {
+            this.buffer = Buffer.concat([this.buffer, buffer]);
+        }
     }
 
     getLoudnessAt(time: number): number {
@@ -116,4 +124,9 @@ export class WaveData {
 
         return Buffer.from(header.buffer, header.byteOffset, header.byteLength);
     }
+}
+
+export const hasWaveHeader = (buffer: Buffer): boolean => {
+    return buffer.subarray(0, 4).toString() === 'RIFF'
+        && buffer.subarray(8, 12).toString() === 'WAVE'
 }
