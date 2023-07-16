@@ -139,10 +139,30 @@ it('should be fast for large buffers', () => {
     buffer.fill(80);
 
     const start = performance.now()
-    const result = averageLevel(buffer, 8,  1000)
+    const result = averageLevel(buffer, 8, 1000)
     const end = performance.now()
 
     expect(end - start).toBeLessThan(10); // 10 ms
     expect(result).toBe(80);
 });
+
+it('should tell when it is active', () => {
+    const sut = new SimplePcmVoiceActivationSpec(exampleConfig);
+    const active = []
+
+    for (let i = 0; i < exampleSpeech1.length; i += 48_000) {
+        const sample = exampleSpeech1.subarray(i, Math.min(exampleSpeech1.length, i + 48_000));
+        sut.next(sample);
+        active.push(sut.isActive() ? 1 : 0)
+    }
+
+    expect(active.length).toBe(54);
+    expect(active).toEqual([
+        0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1
+    ])
+})
 

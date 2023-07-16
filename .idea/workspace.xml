@@ -5,16 +5,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f5c384cc-a39b-480a-bc43-a936d9016f85" name="Changes" comment="Enable git-lfs">
-      <change afterPath="$PROJECT_DIR$/gwaggli-pipeline/__test-data__/audio/wav/example-speech-1.wav" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/gwaggli-pipeline/src/domain/algorithms/voice-activation/simple-pcm-voice-activation.spec.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/gwaggli-pipeline/src/domain/algorithms/voice-activation/simple-pcm-voice-activation.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/gwaggli-pipeline/src/domain/algorithms/voice-activation/voice-activation-algorithm.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitattributes" beforeDir="false" afterPath="$PROJECT_DIR$/.gitattributes" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/jsLibraryMappings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/jsLibraryMappings.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gwaggli-pipeline/.gitattributes" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/gwaggli-pipeline/src/domain/data/wave-data.ts" beforeDir="false" afterPath="$PROJECT_DIR$/gwaggli-pipeline/src/domain/data/wave-data.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gwaggli-events/src/events/pipeline-events.ts" beforeDir="false" afterPath="$PROJECT_DIR$/gwaggli-events/src/events/pipeline-events.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gwaggli-insights/src/pages/debugger/Debugger.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/gwaggli-insights/src/pages/debugger/Debugger.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gwaggli-pipeline/src/domain/algorithms/voice-activation/simple-pcm-voice-activation.spec.ts" beforeDir="false" afterPath="$PROJECT_DIR$/gwaggli-pipeline/src/domain/algorithms/voice-activation/simple-pcm-voice-activation.spec.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gwaggli-pipeline/src/domain/algorithms/voice-activation/simple-pcm-voice-activation.ts" beforeDir="false" afterPath="$PROJECT_DIR$/gwaggli-pipeline/src/domain/algorithms/voice-activation/simple-pcm-voice-activation.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gwaggli-pipeline/src/domain/algorithms/voice-activation/voice-activation-algorithm.ts" beforeDir="false" afterPath="$PROJECT_DIR$/gwaggli-pipeline/src/domain/algorithms/voice-activation/voice-activation-algorithm.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gwaggli-pipeline/src/domain/task/audio-buffering.spec.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gwaggli-pipeline/src/domain/task/audio-buffering.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gwaggli-pipeline/src/domain/task/voice-activation.ts" beforeDir="false" afterPath="$PROJECT_DIR$/gwaggli-pipeline/src/domain/task/voice-activation.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gwaggli-pipeline/src/pipeline.ts" beforeDir="false" afterPath="$PROJECT_DIR$/gwaggli-pipeline/src/pipeline.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -80,7 +80,7 @@
       <recent name="$PROJECT_DIR$/gwaggli-pipeline/__test-data__/data-loader" />
     </key>
   </component>
-  <component name="RunManager" selected="Jest.should calculate average level for 32bit samples even if the resoultion doesn\'t fit into array size">
+  <component name="RunManager" selected="npm.gwaggli-pipeline dev">
     <configuration name="should be fast for large buffers" type="JavaScriptTestRunnerJest" temporary="true" nameIsGenerated="true">
       <node-interpreter value="project" />
       <jest-package value="$PROJECT_DIR$/gwaggli-pipeline/node_modules/jest" />
@@ -105,18 +105,6 @@
       </test-names>
       <method v="2" />
     </configuration>
-    <configuration name="should calculate average level for 32bit samples" type="JavaScriptTestRunnerJest" temporary="true" nameIsGenerated="true">
-      <node-interpreter value="project" />
-      <jest-package value="$PROJECT_DIR$/gwaggli-pipeline/node_modules/jest" />
-      <working-dir value="$PROJECT_DIR$/gwaggli-pipeline" />
-      <envs />
-      <scope-kind value="TEST" />
-      <test-file value="$PROJECT_DIR$/gwaggli-pipeline/src/domain/algorithms/voice-activation/simple-pcm-voice-activation.spec.ts" />
-      <test-names>
-        <test-name value="should calculate average level for 32bit samples" />
-      </test-names>
-      <method v="2" />
-    </configuration>
     <configuration name="should calculate average level for 8bit samples" type="JavaScriptTestRunnerJest" temporary="true" nameIsGenerated="true">
       <node-interpreter value="project" />
       <jest-package value="$PROJECT_DIR$/gwaggli-pipeline/node_modules/jest" />
@@ -126,6 +114,18 @@
       <test-file value="$PROJECT_DIR$/gwaggli-pipeline/src/domain/algorithms/voice-activation/simple-pcm-voice-activation.spec.ts" />
       <test-names>
         <test-name value="should calculate average level for 8bit samples" />
+      </test-names>
+      <method v="2" />
+    </configuration>
+    <configuration name="should tell when it is active" type="JavaScriptTestRunnerJest" temporary="true" nameIsGenerated="true">
+      <node-interpreter value="project" />
+      <jest-package value="$PROJECT_DIR$/gwaggli-pipeline/node_modules/jest" />
+      <working-dir value="$PROJECT_DIR$/gwaggli-pipeline" />
+      <envs />
+      <scope-kind value="TEST" />
+      <test-file value="$PROJECT_DIR$/gwaggli-pipeline/src/domain/algorithms/voice-activation/simple-pcm-voice-activation.spec.ts" />
+      <test-names>
+        <test-name value="should tell when it is active" />
       </test-names>
       <method v="2" />
     </configuration>
@@ -141,20 +141,20 @@
     <list>
       <item itemvalue="Jest.gwaggli-pipeline test" />
       <item itemvalue="Jest.should be fast for large buffers" />
-      <item itemvalue="Jest.should calculate average level for 32bit samples" />
       <item itemvalue="Jest.should calculate average level for 32bit samples even if the resoultion doesn\'t fit into array size" />
       <item itemvalue="Jest.should calculate average level for 8bit samples" />
+      <item itemvalue="Jest.should tell when it is active" />
       <item itemvalue="Jest.simple-pcm-voice-activation.spec.ts" />
       <item itemvalue="npm.gwaggli-insights start" />
       <item itemvalue="npm.gwaggli-pipeline dev" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Jest.should calculate average level for 32bit samples even if the resoultion doesn\'t fit into array size" />
+        <item itemvalue="Jest.should tell when it is active" />
         <item itemvalue="Jest.simple-pcm-voice-activation.spec.ts" />
+        <item itemvalue="Jest.should calculate average level for 32bit samples even if the resoultion doesn\'t fit into array size" />
         <item itemvalue="Jest.should calculate average level for 8bit samples" />
         <item itemvalue="Jest.should be fast for large buffers" />
-        <item itemvalue="Jest.should calculate average level for 32bit samples" />
       </list>
     </recent_temporary>
   </component>
@@ -189,7 +189,7 @@
       <workItem from="1689367396889" duration="30073000" />
       <workItem from="1689506732723" duration="495000" />
       <workItem from="1689508111842" duration="72000" />
-      <workItem from="1689508192682" duration="11706000" />
+      <workItem from="1689508192682" duration="14496000" />
     </task>
     <task id="LOCAL-00001" summary="Enable git-lfs">
       <option name="closed" value="true" />

@@ -55,13 +55,11 @@ export interface VoiceActivationLevelUpdate extends PipelineBaseEvent {
 export interface VoiceActivationStart extends PipelineBaseEvent {
     type: PipelineEventType.VoiceActivationStart,
     trackId: string,
-    startMarker: number,
 }
 
 export interface VoiceActivationEnd extends PipelineBaseEvent {
     type: PipelineEventType.VoiceActivationEnd,
     trackId: string,
-    endMarker: number,
 }
 
 export interface VoiceActivationDataAvailable extends PipelineBaseEvent {

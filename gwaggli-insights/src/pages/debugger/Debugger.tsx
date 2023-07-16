@@ -130,11 +130,11 @@ const Details = (value: any, record: DataType) => {
             </>
         case PipelineEventType.VoiceActivationStart:
             return <>
-                <Text code>startMarker</Text><Text type="secondary">{record.event.startMarker}</Text>
+                <Text code>trackId</Text><Text type="secondary">{record.event.trackId}</Text>
             </>
         case PipelineEventType.VoiceActivationEnd:
             return <>
-                <Text code>endMarker</Text><Text type="secondary">{record.event.endMarker}</Text>
+                <Text code>trackId</Text><Text type="secondary">{record.event.trackId}</Text>
             </>
         case PipelineEventType.VoiceActivationPersist:
             return <>

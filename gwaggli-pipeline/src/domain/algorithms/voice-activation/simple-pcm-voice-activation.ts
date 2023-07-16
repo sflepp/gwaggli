@@ -89,6 +89,10 @@ export class SimplePcmVoiceActivation implements VoiceActivationAlgorithm {
     currentLevel(): number {
         return this._currentLevel;
     }
+
+    isActive(): boolean {
+        return this._activeBuffer !== undefined;
+    }
 }
 
 export const averageLevel = (buffer: Buffer, bitsPerSample: number, resolution: number): number => {
