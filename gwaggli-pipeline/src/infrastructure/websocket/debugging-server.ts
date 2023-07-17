@@ -15,10 +15,9 @@ export const startDebuggingServer = () => {
         console.log('new debug client connected');
 
         const eventSystem = new EventSystem();
-        getGlobalEventSystem().connect(eventSystem);
+        eventSystem.connect(getGlobalEventSystem());
 
         const sid = uuidv4();
-
         const filterDebugger = (event: GwaggliEvent) =>
             event.type !== ClientEventType.AudioChunk &&
             event.type !== ClientEventType.ClientViewVoiceActivation &&
