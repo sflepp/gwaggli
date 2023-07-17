@@ -61,16 +61,19 @@ npm install && npm run install
 ```
 
 Run the following command to build components:
+
 ```bash
 npm run build
 ```
 
 Run the following command to start the application:
+
 ```bash
 npm run start
 ```
 
 If you want to start the application with live-reload, run the following command:
+
 ```bash
 npm run dev
 ```
