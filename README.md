@@ -57,10 +57,10 @@ Add the [elevenlabs.io API-Key](https://elevenlabs.io/) to the following file:
 Run the following command to install all dependencies:
 
 ```bash
-npm install && npm run install
+npm install
 ```
 
-Run the following command to build components:
+Run the following command to build all relevant components:
 
 ```bash
 npm run build
