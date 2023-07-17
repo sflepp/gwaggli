@@ -22,7 +22,7 @@ const Chat = () => {
         onMessage: (event) => {
             eventSystem.dispatch(JSON.parse(event.data))
         },
-        shouldReconnect: (_) => true,
+        shouldReconnect: () => true,
         reconnectInterval: 10_000,
     })
 
@@ -61,7 +61,7 @@ const Chat = () => {
     const conversations = viewState?.conversation.sort((a, b) => a.timestamp - b.timestamp) || []
 
 
-    const data = conversations.flatMap((chunk, index) => {
+    const data = conversations.flatMap((chunk) => {
         return [
             {
                 loading: chunk.prompt === undefined,

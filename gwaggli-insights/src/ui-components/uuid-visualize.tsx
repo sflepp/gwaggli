@@ -1,5 +1,6 @@
 import {Typography} from "antd";
 import styled from "styled-components";
+import React  from 'react';
 
 const UuidVisualize = ({uuid}: { uuid: string }) => {
     const firstChars = uuid.substring(0, 6);

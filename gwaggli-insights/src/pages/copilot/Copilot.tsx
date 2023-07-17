@@ -18,7 +18,7 @@ const Copilot = () => {
         onMessage: (event) => {
             eventSystem.dispatch(JSON.parse(event.data))
         },
-        shouldReconnect: (_) => true,
+        shouldReconnect: () => true,
         reconnectInterval: 10_000,
     })
 

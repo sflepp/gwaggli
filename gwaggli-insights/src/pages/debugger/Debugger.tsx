@@ -9,6 +9,9 @@ import UuidVisualize from "../../ui-components/uuid-visualize";
 import {DomainEventType} from "@gwaggli/events/dist/events/domain-events";
 import {pipelineHost} from "../../env";
 import ConnectionStatus from "../../ui-components/connection-status";
+import {
+    VoiceActivationStart
+} from "@gwaggli/events/dist/events/pipeline-events";
 
 const {Text} = Typography;
 
@@ -88,7 +91,7 @@ const ExpandedRow = (record: DataType) => {
     </div>
 }
 
-const TimestampRenderer = (value: any) => {
+const TimestampRenderer = (value: string) => {
     const date = new Date(value)
     const time = date.toISOString()
     return <>
@@ -96,26 +99,27 @@ const TimestampRenderer = (value: any) => {
     </>
 }
 
-const SidRenderer = (value: any) => {
+const SidRenderer = (value: string) => {
     return <>
         <UuidVisualize uuid={value}></UuidVisualize>
     </>
 }
 
-const TrackIdRenderer = (value: any, record: any) => {
-    return record.event.trackId ? <UuidVisualize uuid={record.event.trackId}></UuidVisualize> : <></>
+const TrackIdRenderer = (value: string, record: DataType) => {
+    const event = record.event as VoiceActivationStart
+    return event.trackId ? <UuidVisualize uuid={event.trackId}></UuidVisualize> : <></>
 }
-const EventRenderer = (value: any, record: DataType) => {
+const EventRenderer = (value: unknown, record: DataType) => {
     return <>
         <Text code>{record.event.type}</Text>
     </>
 }
 
-const DeltaTime = (value: any, record: DataType) => {
+const DeltaTime = (value: unknown, record: DataType) => {
     return record.deltaTime.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "'") + ' ms';
 }
 
-const Details = (value: any, record: DataType) => {
+const Details = (value: unknown, record: DataType) => {
     switch (record.event.type) {
         case PipelineEventType.CopilotProcessingComplete:
             return <>

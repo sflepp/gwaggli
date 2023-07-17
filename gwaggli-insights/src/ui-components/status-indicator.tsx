@@ -1,3 +1,4 @@
+import React  from 'react';
 interface StatusIndicatorProps {
     color: 'red' | 'orange' | 'green' | undefined;
 }

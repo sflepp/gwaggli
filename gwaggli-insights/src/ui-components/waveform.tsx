@@ -8,6 +8,7 @@ import {FaPlayCircle, FaPauseCircle} from 'react-icons/fa';
 const Waveform = ({audio}: { audio: string }) => {
     const containerRef = useRef<HTMLDivElement>(null)
     const waveSurferRef = useRef<WaveSurfer>(
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         {
             isPlaying: () => false,

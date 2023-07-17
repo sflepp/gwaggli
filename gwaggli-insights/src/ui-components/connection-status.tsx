@@ -1,5 +1,6 @@
 import {ReadyState} from "react-use-websocket";
 import StatusIndicator from "./status-indicator";
+import React  from 'react';
 
 interface ConnectionStatusProps {
     readyState: ReadyState
