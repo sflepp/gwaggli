@@ -1,4 +1,4 @@
 dist
 generated
-__test-data__
+test-data
 webpack.config.js

@@ -2,7 +2,7 @@ import fs from 'fs';
 import { InlineZipLoader } from './inline-zip-loader';
 
 it('should load a zip file', async () => {
-    const data = fs.readFileSync('./__test-data__/data-loader/zip/example-data-1.zip');
+    const data = fs.readFileSync('./test-data/data-loader/zip/example-data-1.zip');
 
     const sut = new InlineZipLoader();
 

@@ -12,7 +12,7 @@ it('should not split simple text', () => {
 
 it('should not split more complex text', () => {
     const sut = new NoopSplitter();
-    const text = fs.readFileSync('./__test-data__/data-loader/txt/rfc1149.txt', 'utf8');
+    const text = fs.readFileSync('./test-data/data-loader/txt/rfc1149.txt', 'utf8');
 
     const result = sut.split(text);
 

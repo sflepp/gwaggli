@@ -14,7 +14,7 @@ it('should split a simple text into chunks with fixed size', () => {
 it('should split a more advanced text into chunks with fixed size', () => {
     const sut = new ChunkSplitter(250);
 
-    const text = fs.readFileSync('./__test-data__/data-loader/txt/rfc1149.txt', 'utf8');
+    const text = fs.readFileSync('./test-data/data-loader/txt/rfc1149.txt', 'utf8');
 
     const result = sut.split(text);
 

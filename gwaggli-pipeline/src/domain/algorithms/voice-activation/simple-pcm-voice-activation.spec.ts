@@ -4,7 +4,7 @@ import { WAV_HEADER_SIZE, WaveData } from '../../data/wave-data';
 import { Buffer } from 'buffer';
 import assert from 'assert';
 
-const exampleSpeech1: Buffer = fs.readFileSync('./__test-data__/audio/wav/example-speech-1.wav');
+const exampleSpeech1: Buffer = fs.readFileSync('./test-data/audio/wav/example-speech-1.wav');
 
 const exampleConfig: SimplePcmVoiceActivationConfig = {
     observeMilliseconds: 1000,

@@ -4,7 +4,7 @@ it('should load a full directory', async () => {
 
     const results = await sut.load({
         locationType: 'fs/directory',
-        location: './__test-data__/data-loader',
+        location: './test-data/data-loader',
     });
 
     expect(results.length).toBeGreaterThanOrEqual(3);
