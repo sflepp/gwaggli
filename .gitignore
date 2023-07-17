@@ -3,3 +3,4 @@
 *.pem
 _ignored
 .idea
+node_modules

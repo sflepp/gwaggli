@@ -1,0 +1,25 @@
+{
+  "name": "gwaggli",
+  "version": "0.1.0",
+  "description": "Gwaggli is a simple voice processing tool",
+  "workspaces": [
+    "gwaggli-events",
+    "gwaggli-insights",
+    "gwaggli-pipeline"
+  ],
+  "scripts": {
+    "gwaggli-events:lint": "npm run lint -w gwaggli-events",
+    "gwaggli-events:lint:fix": "npm run lint:fix -w gwaggli-events",
+    "gwaggli-insights:lint": "npm run lint -w gwaggli-insights",
+    "gwaggli-insights:lint:fix": "npm run lint:fix -w gwaggli-insights",
+    "gwaggli-pipeline:lint": "npm run lint -w gwaggli-pipeline",
+    "gwaggli-pipeline:lint:fix": "npm run lint:fix -w gwaggli-pipeline",
+    "lint": "concurrently npm:*:lint --group --prefix-colors \"red,green,blue\" --timings",
+    "lint:fix": "concurrently npm:*:lint:fix --group --prefix-colors \"red,green,blue\" --timings"
+  },
+  "author": "Simon Flepp",
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^8.2.0"
+  }
+}
