@@ -1,5 +1,5 @@
-import {KnowledgeBaseEntry} from "./entity/knowledge-base-entry";
-import {IndexFlatL2} from "faiss-node";
+import { KnowledgeBaseEntry } from './entity/knowledge-base-entry';
+import { IndexFlatL2 } from 'faiss-node';
 
 export interface KnowledgeBaseSearchResult {
     entry: KnowledgeBaseEntry;
@@ -7,7 +7,6 @@ export interface KnowledgeBaseSearchResult {
 }
 
 export class EmbeddingsKnowledgeBase {
-
     private knowledgeBaseEntries: KnowledgeBaseEntry[] = [];
     private vectorDb: IndexFlatL2 = new IndexFlatL2(1536);
 
@@ -30,8 +29,8 @@ export class EmbeddingsKnowledgeBase {
             .map((label, index) => {
                 return {
                     entry: this.knowledgeBaseEntries[label],
-                    distance: searchResult.distances[index]
-                }
+                    distance: searchResult.distances[index],
+                };
             })
             .filter((result) => result.distance <= maxDistance);
     }

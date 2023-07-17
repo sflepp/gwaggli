@@ -1,5 +1,3 @@
-
-
 export type TransportMessage = AudioChunkMessage;
 
 export interface AudioChunkMessage {
@@ -10,5 +8,5 @@ export interface AudioChunkMessage {
 export interface TranscriptionMessage {
     type: 'transcription-event';
     data: string;
-    transcript: string
+    transcript: string;
 }

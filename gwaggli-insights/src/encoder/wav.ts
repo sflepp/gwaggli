@@ -16,8 +16,7 @@
 //                        have one or two channels of data.
 //
 // Returns a Blob of type audio/wav.
-export function encodeWAV(samples: Float32Array, {streaming = false, sampleRate = 16000, mono = true} = {}): Blob {
-
+export function encodeWAV(samples: Float32Array, { streaming = false, sampleRate = 16000, mono = true } = {}): Blob {
     // http://soundfile.sapp.org/doc/WaveFormat/
     const header = new DataView(new ArrayBuffer(44));
 
@@ -50,7 +49,7 @@ export function encodeWAV(samples: Float32Array, {streaming = false, sampleRate 
 
     const data = toPCM(samples);
 
-    return new Blob([header, data], {type: 'audio/wav'});
+    return new Blob([header, data], { type: 'audio/wav' });
 }
 
 const toPCM = (samples: Float32Array): DataView => {
@@ -62,7 +61,7 @@ const toPCM = (samples: Float32Array): DataView => {
     });
 
     return view;
-}
+};
 
 function writeString(view: DataView, offset: number, string: string) {
     string.split('').forEach((c, i) => {

@@ -1,11 +1,11 @@
-import {VoiceActivationAlgorithm} from "./voice-activation-algorithm";
-import {hasWaveHeader, WAV_HEADER_SIZE, WaveData, WavHeader} from "../../data/wave-data";
+import { VoiceActivationAlgorithm } from './voice-activation-algorithm';
+import { hasWaveHeader, WAV_HEADER_SIZE, WaveData, WavHeader } from '../../data/wave-data';
 
 export interface SimplePcmVoiceActivationConfig {
-    observeMilliseconds: number,
-    observeSampleResolution: number,
-    activationThreshold: number,
-    deactivationThreshold: number,
+    observeMilliseconds: number;
+    observeSampleResolution: number;
+    activationThreshold: number;
+    deactivationThreshold: number;
 }
 
 export class SimplePcmVoiceActivation implements VoiceActivationAlgorithm {
@@ -15,17 +15,20 @@ export class SimplePcmVoiceActivation implements VoiceActivationAlgorithm {
     protected _activeBuffer?: Buffer = undefined;
     protected _currentLevel = 0;
 
-    constructor(private readonly config: SimplePcmVoiceActivationConfig) {
-    }
+    constructor(private readonly config: SimplePcmVoiceActivationConfig) {}
 
     private initializeWith(firstSample: Buffer) {
         if (!hasWaveHeader(firstSample)) {
-            throw new Error("First sample must have WAVE/RIFF header information");
+            throw new Error('First sample must have WAVE/RIFF header information');
         }
 
         const waveData = new WaveData(firstSample);
         this._header = waveData.getHeader();
-        this._bufferMaxSize = this.config.observeMilliseconds / 1000 * this._header.sampleRate * this._header.channels * (this._header.bitsPerSample / 8)
+        this._bufferMaxSize =
+            (this.config.observeMilliseconds / 1000) *
+            this._header.sampleRate *
+            this._header.channels *
+            (this._header.bitsPerSample / 8);
     }
 
     next(sample: Buffer): WaveData | undefined {
@@ -34,18 +37,12 @@ export class SimplePcmVoiceActivation implements VoiceActivationAlgorithm {
         }
 
         if (this._header === undefined) {
-            throw new Error("Header must be defined at this point");
+            throw new Error('Header must be defined at this point');
         }
 
-        const {
-            activationThreshold,
-            deactivationThreshold,
-            observeSampleResolution,
-        } = this.config;
+        const { activationThreshold, deactivationThreshold, observeSampleResolution } = this.config;
 
-        const {
-            bitsPerSample,
-        } = this._header
+        const { bitsPerSample } = this._header;
 
         if (hasWaveHeader(sample)) {
             this._buffer = Buffer.concat([this._buffer, sample.subarray(WAV_HEADER_SIZE)]);
@@ -60,7 +57,7 @@ export class SimplePcmVoiceActivation implements VoiceActivationAlgorithm {
             return undefined;
         }
 
-        this._currentLevel = averageLevel(this._buffer, bitsPerSample, observeSampleResolution)
+        this._currentLevel = averageLevel(this._buffer, bitsPerSample, observeSampleResolution);
 
         if (!this._activeBuffer && this._currentLevel > activationThreshold) {
             // Was not active, but is now
@@ -82,7 +79,7 @@ export class SimplePcmVoiceActivation implements VoiceActivationAlgorithm {
             // Was active, but is not anymore
             const result = new WaveData(this._activeBuffer, {
                 ...this._header,
-                chunkSize: this._activeBuffer.length
+                chunkSize: this._activeBuffer.length,
             });
             this._activeBuffer = undefined;
             return result;
@@ -99,20 +96,20 @@ export class SimplePcmVoiceActivation implements VoiceActivationAlgorithm {
 }
 
 export const averageLevel = (buffer: Buffer, bitsPerSample: number, resolution: number): number => {
-    const lookAtEveryNthSample = Math.ceil(buffer.length / resolution / bitsPerSample * 8);
+    const lookAtEveryNthSample = Math.ceil((buffer.length / resolution / bitsPerSample) * 8);
     const dataView = new DataView(buffer.buffer);
     const getUint = getUintN(dataView, bitsPerSample);
 
     let total: bigint = BigInt(0);
     let count: bigint = BigInt(0);
 
-    for (let i = 0; i < buffer.length - bitsPerSample; i += bitsPerSample / 8 * lookAtEveryNthSample) {
+    for (let i = 0; i < buffer.length - bitsPerSample; i += (bitsPerSample / 8) * lookAtEveryNthSample) {
         total += BigInt(getUint.call(dataView, i, true));
         count++;
     }
 
     return Number(total / count);
-}
+};
 
 const getUintN = (dataView: DataView, bitsPerSample: number) => {
     switch (bitsPerSample) {
@@ -125,4 +122,4 @@ const getUintN = (dataView: DataView, bitsPerSample: number) => {
         default:
             throw new Error(`Unsupported bits per sample: ${bitsPerSample}`);
     }
-}
+};

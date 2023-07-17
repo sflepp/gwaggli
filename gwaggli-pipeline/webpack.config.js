@@ -14,14 +14,12 @@ module.exports = {
                 test: /\.tsx?$/,
                 use: 'ts-loader',
                 exclude: /node_modules/,
-                include: [
-                    path.resolve(__dirname, "src")
-                ],
+                include: [path.resolve(__dirname, 'src')],
             },
         ],
     },
     resolve: {
-        extensions: [ '.tsx', '.ts', '.js' ],
+        extensions: ['.tsx', '.ts', '.js'],
     },
     output: {
         filename: 'index.js',

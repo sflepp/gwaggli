@@ -1,35 +1,33 @@
-import {useState} from "react";
-import React  from 'react';
-
+import { useState } from 'react';
+import React from 'react';
 
 interface FileSelectorPros {
-    onFileSelected: (file: File) => void
+    onFileSelected: (file: File) => void;
 }
 
-const FileSelector = ({onFileSelected}: FileSelectorPros) => {
-
-    const [file, setFile] = useState<File | null>(null)
+const FileSelector = ({ onFileSelected }: FileSelectorPros) => {
+    const [file, setFile] = useState<File | null>(null);
 
     const handleFileChanged = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.files) {
-            setFile(event.target.files[0])
+            setFile(event.target.files[0]);
         }
-    }
+    };
 
     const handleSubmit = () => {
         if (file) {
-            onFileSelected(file)
+            onFileSelected(file);
         }
-    }
+    };
 
     return (
         <div>
-            <input type={"file"} onChange={handleFileChanged}/>
+            <input type={'file'} onChange={handleFileChanged} />
             <div>{file && `${file.name} - ${file.type}`}</div>
 
             <button onClick={handleSubmit}>Submit</button>
         </div>
-    )
-}
+    );
+};
 
-export default FileSelector
+export default FileSelector;

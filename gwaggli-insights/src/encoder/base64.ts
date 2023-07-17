@@ -6,4 +6,4 @@ export const encodeBase64 = (arrayBuffer: ArrayBuffer) => {
         binary += String.fromCharCode(bytes[i]);
     }
     return window.btoa(binary);
-}
+};

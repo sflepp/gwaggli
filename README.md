@@ -2,10 +2,9 @@
 
 Gwaggli is a simple voice processing tool. It consists of the following components:
 
-- gwaggli-events: An event system that allows to read and write gwaggli events
-- gwaggli-insights: A web application to show the results of the processing
-- gwaggli-pipeline: A pipeline to process voice streams in real time and output useful information
-
+-   gwaggli-events: An event system that allows to read and write gwaggli events
+-   gwaggli-insights: A web application to show the results of the processing
+-   gwaggli-pipeline: A pipeline to process voice streams in real time and output useful information
 
 ## Installation & Usage
 
@@ -24,6 +23,7 @@ The web application is a simple React application. To install and run it, do the
 ```bash
 cd gwaggli-insights && npm install && npm start
 ```
+
 ### gwaggli-pipeline
 
 The pipeline is a NodeJS application. To install and run it, do the following:
@@ -32,8 +32,8 @@ The pipeline is a NodeJS application. To install and run it, do the following:
 cd gwaggli-pipeline && npm install && npm run dev
 ```
 
-
 #### Preparation
+
 Setup an AWS account with permissions to run [Amazon Polly](https://aws.amazon.com/de/polly/) and add the credentials into the following file:
 
 ```

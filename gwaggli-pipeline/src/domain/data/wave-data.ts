@@ -33,7 +33,7 @@ export class WaveData {
             sampleRate: header.getUint32(24, true),
             bitsPerSample: header.getUint16(34, true),
             channels: header.getUint16(22, true),
-        }
+        };
     }
 
     getPayload(): Buffer {
@@ -63,7 +63,7 @@ export class WaveData {
 
     getDuration(): number {
         const header = this.getHeader();
-        return this.getPayload().length / (header.sampleRate * header.channels * (header.bitsPerSample / 8)) * 1000;
+        return (this.getPayload().length / (header.sampleRate * header.channels * (header.bitsPerSample / 8))) * 1000;
     }
 
     getByteIndexAtTime(time: number): number {
@@ -73,7 +73,7 @@ export class WaveData {
         const bitsPerSample = header.bitsPerSample;
         const bytesPerSample = bitsPerSample / 8;
         const bytesPerChannel = bytesPerSample * channels;
-        const sampleIndex = Math.floor(time / 1000 * sampleRate);
+        const sampleIndex = Math.floor((time / 1000) * sampleRate);
         return Math.min(this.getPayload().length - bytesPerSample, sampleIndex * bytesPerChannel);
     }
 
@@ -93,7 +93,7 @@ export class WaveData {
             string.split('').forEach((c, i) => {
                 view.setUint8(offset + i, c.charCodeAt(0));
             });
-        }
+        };
 
         // ChunkID
         writeString(header, 0, 'RIFF');
@@ -127,6 +127,5 @@ export class WaveData {
 }
 
 export const hasWaveHeader = (buffer: Buffer): boolean => {
-    return buffer.subarray(0, 4).toString() === 'RIFF'
-        && buffer.subarray(8, 12).toString() === 'WAVE'
-}
+    return buffer.subarray(0, 4).toString() === 'RIFF' && buffer.subarray(8, 12).toString() === 'WAVE';
+};

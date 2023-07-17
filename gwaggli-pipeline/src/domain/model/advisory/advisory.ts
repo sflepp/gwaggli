@@ -1,8 +1,8 @@
 export interface Advisory {
     id: string;
-    advisors: Advisor[]
-    sids: string[]
-    conversation: ConversationChunk[]
+    advisors: Advisor[];
+    sids: string[];
+    conversation: ConversationChunk[];
 }
 
 export interface Advisor {

@@ -1,8 +1,8 @@
-import {Splitter} from "../splitter";
+import { Splitter } from '../splitter';
 
 export class NoopSplitter extends Splitter {
     name(): string {
-        return "noop-splitter";
+        return 'noop-splitter';
     }
     split(text: string): string[] {
         return [text];

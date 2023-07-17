@@ -1,37 +1,26 @@
 module.exports = {
-    "env": {
-        "browser": true,
-        "es2021": true,
-        "node": true
+    env: {
+        browser: true,
+        es2021: true,
+        node: true,
     },
-    "extends": [
-        "eslint:recommended",
-        "plugin:@typescript-eslint/recommended",
-        "prettier"
-    ],
-    "overrides": [
+    extends: ['eslint:recommended', 'plugin:@typescript-eslint/recommended', 'prettier'],
+    overrides: [
         {
-            "env": {
-                "node": true
+            env: {
+                node: true,
             },
-            "files": [
-                ".eslintrc.{js,cjs}",
-                "**/*.ts"
-            ],
-            "parserOptions": {
-                "sourceType": "script"
-            }
-        }
+            files: ['.eslintrc.{js,cjs}', '**/*.ts'],
+            parserOptions: {
+                sourceType: 'script',
+            },
+        },
     ],
-    "parser": "@typescript-eslint/parser",
-    "parserOptions": {
-        "ecmaVersion": "latest",
-        "sourceType": "module"
+    parser: '@typescript-eslint/parser',
+    parserOptions: {
+        ecmaVersion: 'latest',
+        sourceType: 'module',
     },
-    "plugins": [
-        "@typescript-eslint",
-        "prettier",
-    ],
-    "rules": {
-    }
-}
+    plugins: ['@typescript-eslint', 'prettier'],
+    rules: {},
+};

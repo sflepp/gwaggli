@@ -1,28 +1,25 @@
-import {BaseEvent} from "../events";
+import { BaseEvent } from '../events';
 
-export type ClientEvents =
-    AudioChunk |
-    ClientViewUpdate |
-    ClientViewVoiceActivation;
+export type ClientEvents = AudioChunk | ClientViewUpdate | ClientViewVoiceActivation;
 
 export enum ClientEventType {
-    AudioChunk = "audio-chunk",
-    ClientViewUpdate = "client-view-update",
-    ClientViewVoiceActivation = "client-view-voice-activation",
+    AudioChunk = 'audio-chunk',
+    ClientViewUpdate = 'client-view-update',
+    ClientViewVoiceActivation = 'client-view-voice-activation',
 }
 
 interface ClientBaseEvent extends BaseEvent {
-    subsystem: "client"
+    subsystem: 'client';
 }
 
 export interface AudioChunk extends ClientBaseEvent {
-    type: ClientEventType.AudioChunk,
-    audio: string
+    type: ClientEventType.AudioChunk;
+    audio: string;
 }
 
 export interface ClientViewUpdate extends ClientBaseEvent {
-    type: ClientEventType.ClientViewUpdate,
-    data: ClientViewState
+    type: ClientEventType.ClientViewUpdate;
+    data: ClientViewState;
 }
 
 export interface ClientViewState {
@@ -43,7 +40,6 @@ export interface ConversationChunk {
 }
 
 export interface ClientViewVoiceActivation extends ClientBaseEvent {
-    type: ClientEventType.ClientViewVoiceActivation,
-    level: number
+    type: ClientEventType.ClientViewVoiceActivation;
+    level: number;
 }
-

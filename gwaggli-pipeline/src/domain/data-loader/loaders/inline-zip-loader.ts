@@ -1,17 +1,17 @@
-import {Loader, LoaderRequest, LoaderResult} from "../loader";
-import {parserByFileName} from "../parser-factory";
-import {Duplex, Stream} from "stream";
+import { Loader, LoaderRequest, LoaderResult } from '../loader';
+import { parserByFileName } from '../parser-factory';
+import { Duplex, Stream } from 'stream';
 
-import unzipper from "unzipper";
+import unzipper from 'unzipper';
 
 export class InlineZipLoader extends Loader {
     async load(event: LoaderRequest): Promise<LoaderResult[]> {
         if (!event.data) {
-            return []
+            return [];
         }
         const zipData = Buffer.from(event.data, 'base64');
         const zipDataStream = bufferToStream(zipData);
-        const directoryStream = zipDataStream.pipe(unzipper.Parse({forceStream: true}));
+        const directoryStream = zipDataStream.pipe(unzipper.Parse({ forceStream: true }));
 
         const results: LoaderResult[] = [];
 
@@ -21,7 +21,7 @@ export class InlineZipLoader extends Loader {
 
             if (type === 'File') {
                 const contents = await entry.buffer();
-                const parser = parserByFileName(filename)
+                const parser = parserByFileName(filename);
 
                 if (parser === undefined) {
                     continue;
@@ -32,7 +32,7 @@ export class InlineZipLoader extends Loader {
                 results.push({
                     locationType: event.locationType,
                     location: filename,
-                    text: result
+                    text: result,
                 });
             } else {
                 entry.autodrain();
@@ -48,4 +48,4 @@ const bufferToStream = (buffer: Buffer): Stream => {
     tmp.push(buffer);
     tmp.push(null);
     return tmp;
-}
+};

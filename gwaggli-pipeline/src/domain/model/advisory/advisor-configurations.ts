@@ -1,4 +1,4 @@
-import { AdvisorConfiguration } from "./advisory";
+import { AdvisorConfiguration } from './advisory';
 
 export const advisorConfigurations: AdvisorConfiguration[] = [
     {
@@ -52,6 +52,6 @@ export const advisorConfigurations: AdvisorConfiguration[] = [
         You: Das Backend ist in Node.js geschrieben und bietet ein Websocket Interface an. Intern wird alles eventbasiert über das Node.js Event System verarbeitet. Die Audiodaten werden empfangen, gepuffert und auf Lautstärkeschwankungen analysiert, um via Voice-Activation die einzelnen Sprachschnipsel zu verarbeiten. 
         Customer: Wie funktioniert das prozessieren der Audiodaten?
         You: Diese werden dann in OpenAI Whisper transkribiert und in Text umgewandelt. Um den Charakteren Leben einzuhauchen werden die Gespräche in OpenAI GPT-3.5 verarbeitet. Anschliessend wird die Antwort des Charakters mit Amazon Polly in Sprache umgewandelt und wieder an den Client zurückgesendet. Gehostet wird das Ganze in Amazon EC2.
-        `
-    }
-]
+        `,
+    },
+];

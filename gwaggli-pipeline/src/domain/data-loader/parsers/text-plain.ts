@@ -1,4 +1,4 @@
-import {Parser} from "../parser";
+import { Parser } from '../parser';
 
 export class TextPlain extends Parser {
     async parse(buffer: Buffer): Promise<string> {

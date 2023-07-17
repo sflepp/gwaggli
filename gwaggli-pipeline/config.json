@@ -1,17 +1,17 @@
 {
-  "copilot": {
-    "voiceActivationStartLevel": 400,
-    "voiceActivationEndLevel": 300,
-    "voiceActivationMaxLevel": 1000
-  },
-  "chat": {
-    "voiceActivationStartLevel": 400,
-    "voiceActivationEndLevel": 300,
-    "voiceActivationMaxLevel": 1000
-  },
-  "advisory": {
-    "voiceActivationStartLevel": 30,
-    "voiceActivationEndLevel": 25,
-    "voiceActivationMaxLevel": 100
-  }
+    "copilot": {
+        "voiceActivationStartLevel": 400,
+        "voiceActivationEndLevel": 300,
+        "voiceActivationMaxLevel": 1000
+    },
+    "chat": {
+        "voiceActivationStartLevel": 400,
+        "voiceActivationEndLevel": 300,
+        "voiceActivationMaxLevel": 1000
+    },
+    "advisory": {
+        "voiceActivationStartLevel": 30,
+        "voiceActivationEndLevel": 25,
+        "voiceActivationMaxLevel": 100
+    }
 }

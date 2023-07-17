@@ -1,5 +1,5 @@
-import {Parser} from "../parser";
-import pdf from "pdf-parse";
+import { Parser } from '../parser';
+import pdf from 'pdf-parse';
 
 export class ApplicationPdf extends Parser {
     async parse(buffer: Buffer): Promise<string> {

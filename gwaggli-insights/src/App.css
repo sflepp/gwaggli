@@ -6,15 +6,15 @@
     background-color: #ccc;
 }
 
-.status-indicator[color="green"] {
+.status-indicator[color='green'] {
     background-color: #00b700;
 }
 
-.status-indicator[color="orange"] {
+.status-indicator[color='orange'] {
     background-color: #ffc400;
 }
 
-.status-indicator[color="red"] {
+.status-indicator[color='red'] {
     background-color: #ff2023;
 }
 

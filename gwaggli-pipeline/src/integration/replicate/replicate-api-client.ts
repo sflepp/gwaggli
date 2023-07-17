@@ -1,45 +1,44 @@
-import axios from "axios";
+import axios from 'axios';
 
-import fs from "fs";
+import fs from 'fs';
 
 interface ReplicateConfig {
     apiKey: string;
 }
 
-const replicateConfig = (JSON.parse(fs.readFileSync(".replicate/config.json", "utf-8"))) as ReplicateConfig
-
+const replicateConfig = JSON.parse(fs.readFileSync('.replicate/config.json', 'utf-8')) as ReplicateConfig;
 
 const replicaApi = axios.create({
-    baseURL: "https://api.replicate.com/v1",
+    baseURL: 'https://api.replicate.com/v1',
     headers: {
-        "Content-Type": "application/json",
-        "Authorization": "Token " + replicateConfig.apiKey
-    }
+        'Content-Type': 'application/json',
+        Authorization: 'Token ' + replicateConfig.apiKey,
+    },
 });
 
-
 export interface ReplicaPredictionResponse<I, O> {
-    id: string,
-    version: string,
-    created_at: string,
-    started_at: string,
-    completed_at: string,
-    status: 'starting' | 'processing' | 'succeeded'| 'failed' | 'canceled',
-    input?: I,
-    output?: O,
-    error?: unknown,
-    logs?: string,
+    id: string;
+    version: string;
+    created_at: string;
+    started_at: string;
+    completed_at: string;
+    status: 'starting' | 'processing' | 'succeeded' | 'failed' | 'canceled';
+    input?: I;
+    output?: O;
+    error?: unknown;
+    logs?: string;
     metrics?: {
-        prediction_time: number,
-    }
+        prediction_time: number;
+    };
 }
 
-
 export async function* predict<I, O>(version: string, input: I): AsyncGenerator<ReplicaPredictionResponse<I, O>> {
-    const initialResponse = (await replicaApi.post("/predictions", {
-        version: version,
-        input: input
-    })).data as ReplicaPredictionResponse<I, O>
+    const initialResponse = (
+        await replicaApi.post('/predictions', {
+            version: version,
+            input: input,
+        })
+    ).data as ReplicaPredictionResponse<I, O>;
 
     yield initialResponse;
 
@@ -48,7 +47,10 @@ export async function* predict<I, O>(version: string, input: I): AsyncGenerator<
     let tries = 0;
 
     while (tries < maxTries) {
-        const response = (await replicaApi.get(`/predictions/${initialResponse.id}`)).data as ReplicaPredictionResponse<I, O>
+        const response = (await replicaApi.get(`/predictions/${initialResponse.id}`)).data as ReplicaPredictionResponse<
+            I,
+            O
+        >;
         yield response;
 
         if (response.status === 'succeeded') {
@@ -56,13 +58,13 @@ export async function* predict<I, O>(version: string, input: I): AsyncGenerator<
         }
 
         if (response.status === 'failed') {
-            throw new Error(`Prediction failed: ${response.error}`)
+            throw new Error(`Prediction failed: ${response.error}`);
         }
 
-        await new Promise((resolve) => setTimeout(resolve, sleepTime))
+        await new Promise((resolve) => setTimeout(resolve, sleepTime));
         tries++;
     }
 
     console.warn(`Prediction request ${initialResponse.id} timed out after ${maxTries * sleepTime}ms. Cancelling...`);
-    await replicaApi.post(`/predictions/${initialResponse.id}/cancel`)
+    await replicaApi.post(`/predictions/${initialResponse.id}/cancel`);
 }

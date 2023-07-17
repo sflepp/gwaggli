@@ -1,19 +1,14 @@
-import {Advisory} from "../domain/model/advisory/advisory";
+import { Advisory } from '../domain/model/advisory/advisory';
 
 const inMemoryData: Advisory[] = [];
 
 export class AdvisoryRepository {
-
     findById(id: string): Advisory | undefined {
-        return copy(
-            inMemoryData.find((advisory) => advisory.id === id)
-        );
+        return copy(inMemoryData.find((advisory) => advisory.id === id));
     }
 
     findBySid(sid: string): Advisory | undefined {
-        return copy(
-            inMemoryData.find((advisory) => advisory.sids.includes(sid))
-        );
+        return copy(inMemoryData.find((advisory) => advisory.sids.includes(sid)));
     }
 
     save(advisory: Advisory): void {
@@ -30,7 +25,7 @@ export class AdvisoryRepository {
     }
 
     findAll(): Advisory[] {
-        return inMemoryData
+        return inMemoryData;
     }
 }
 
@@ -40,6 +35,5 @@ function copy<T>(obj: T | undefined): T | undefined {
     }
     return JSON.parse(JSON.stringify(obj));
 }
-
 
 export const advisoryRepository = new AdvisoryRepository();

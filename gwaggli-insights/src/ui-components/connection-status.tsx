@@ -1,12 +1,12 @@
-import {ReadyState} from "react-use-websocket";
-import StatusIndicator from "./status-indicator";
-import React  from 'react';
+import { ReadyState } from 'react-use-websocket';
+import StatusIndicator from './status-indicator';
+import React from 'react';
 
 interface ConnectionStatusProps {
-    readyState: ReadyState
+    readyState: ReadyState;
 }
 
-const ConnectionStatus = ({readyState}: ConnectionStatusProps) => {
+const ConnectionStatus = ({ readyState }: ConnectionStatusProps) => {
     const connectionStatus = {
         [ReadyState.CONNECTING]: 'Connecting',
         [ReadyState.OPEN]: 'Connected',
@@ -21,7 +21,7 @@ const ConnectionStatus = ({readyState}: ConnectionStatusProps) => {
         [ReadyState.CLOSING]: 'orange',
         [ReadyState.CLOSED]: 'red',
         [ReadyState.UNINSTANTIATED]: 'red',
-    }[readyState] as 'red' | 'green' | 'orange'
+    }[readyState] as 'red' | 'green' | 'orange';
 
     return (
         <div className="connection-status">
@@ -29,6 +29,6 @@ const ConnectionStatus = ({readyState}: ConnectionStatusProps) => {
             <span className="connection-status-label">{connectionStatus}</span>
         </div>
     );
-}
+};
 
 export default ConnectionStatus;

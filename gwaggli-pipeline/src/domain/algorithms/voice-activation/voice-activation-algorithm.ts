@@ -1,4 +1,4 @@
-import {WaveData} from "../../data/wave-data";
+import { WaveData } from '../../data/wave-data';
 
 export interface VoiceActivationAlgorithm {
     isActive(): boolean;
