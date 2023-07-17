@@ -117,7 +117,7 @@ export interface VoicePersist extends PipelineBaseEvent {
 export interface PipelineError extends PipelineBaseEvent {
     type: PipelineEventType.PipelineError,
     error: string
-    cause: any
+    cause: unknown
 }
 
 export interface KnowledgeLocationAvailable extends PipelineBaseEvent {
