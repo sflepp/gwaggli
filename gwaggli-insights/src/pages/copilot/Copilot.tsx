@@ -1,13 +1,17 @@
 import useWebSocket, { ReadyState } from 'react-use-websocket';
 import React, { useEffect, useState } from 'react';
-import { ClientEventType, EventSystem, PipelineEventType } from '@gwaggli/events';
-import { AudioChunk } from '@gwaggli/events/dist/events/client-events';
 import { encodeBase64 } from '../../encoder/base64';
 import Microphone from '../../ui-components/microphone';
 import ConnectionStatus from '../../ui-components/connection-status';
 import { Card, Col, Progress, Row } from 'antd';
-import { CopilotProcessingComplete, VoiceActivationLevelUpdate } from '@gwaggli/events/dist/events/pipeline-events';
 import { pipelineHost } from '../../env';
+import {
+    AudioChunk,
+    CopilotProcessingComplete,
+    EventSystem,
+    GwaggliEventType,
+    VoiceActivationLevelUpdate,
+} from '@gwaggli/events';
 
 const Copilot = () => {
     const [eventSystem] = useState(new EventSystem());
@@ -23,9 +27,7 @@ const Copilot = () => {
 
     const sendAudio = (data: ArrayBuffer) => {
         const message: AudioChunk = {
-            type: ClientEventType.AudioChunk,
-            sid: '',
-            subsystem: 'client',
+            type: GwaggliEventType.AudioChunk,
             timestamp: Date.now(),
             audio: encodeBase64(data),
         };
@@ -38,14 +40,14 @@ const Copilot = () => {
 
     useEffect(() => {
         const voiceActivationListener = eventSystem.on<VoiceActivationLevelUpdate>(
-            PipelineEventType.VoiceActivationLevelUpdate,
+            GwaggliEventType.VoiceActivationLevelUpdate,
             (event) => {
                 setVoiceActivationLevel(event.level);
             }
         );
 
         const copilotListener = eventSystem.on<CopilotProcessingComplete>(
-            PipelineEventType.CopilotProcessingComplete,
+            GwaggliEventType.CopilotProcessingComplete,
             (event) => {
                 setCopilot(event);
             }

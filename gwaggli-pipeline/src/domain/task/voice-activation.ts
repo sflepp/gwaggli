@@ -1,12 +1,10 @@
-import { ClientEventType, EventSystem, PipelineEventType } from '@gwaggli/events';
-import { VoiceActivationDataAvailable } from '@gwaggli/events/dist/events/pipeline-events';
 import { Buffer } from 'buffer';
 import fs from 'fs';
 import { SubPipelineConfig } from '../../pipeline';
 import { SimplePcmVoiceActivation } from '../algorithms/voice-activation/simple-pcm-voice-activation';
-import { AudioChunk } from '@gwaggli/events/dist/events/client-events';
 
 import { v4 as uuidv4 } from 'uuid';
+import { AudioChunk, EventSystem, GwaggliEventType, VoiceActivationDataAvailable } from '@gwaggli/events';
 
 export const registerVoiceActivationDetection = (eventSystem: EventSystem, config: SubPipelineConfig) => {
     const voiceActivation = new SimplePcmVoiceActivation({
@@ -19,12 +17,12 @@ export const registerVoiceActivationDetection = (eventSystem: EventSystem, confi
     let trackId: string | undefined;
     let isActive = false;
 
-    eventSystem.on<AudioChunk>(ClientEventType.AudioChunk, (event: AudioChunk) => {
+    eventSystem.on<AudioChunk>(GwaggliEventType.AudioChunk, (event: AudioChunk) => {
         const voiceData = voiceActivation.next(Buffer.from(event.audio, 'base64'));
         const currentLevel = voiceActivation.currentLevel();
 
         eventSystem.dispatch({
-            type: PipelineEventType.VoiceActivationLevelUpdate,
+            type: GwaggliEventType.VoiceActivationLevelUpdate,
             subsystem: 'pipeline',
             sid: event.sid,
             timestamp: Date.now(),
@@ -36,7 +34,7 @@ export const registerVoiceActivationDetection = (eventSystem: EventSystem, confi
             isActive = true;
 
             eventSystem.dispatch({
-                type: PipelineEventType.VoiceActivationStart,
+                type: GwaggliEventType.VoiceActivationStart,
                 subsystem: 'pipeline',
                 sid: event.sid,
                 timestamp: Date.now(),
@@ -46,7 +44,7 @@ export const registerVoiceActivationDetection = (eventSystem: EventSystem, confi
 
         if (voiceData) {
             eventSystem.dispatch({
-                type: PipelineEventType.VoiceActivationEnd,
+                type: GwaggliEventType.VoiceActivationEnd,
                 subsystem: 'pipeline',
                 sid: event.sid,
                 timestamp: Date.now(),
@@ -54,7 +52,7 @@ export const registerVoiceActivationDetection = (eventSystem: EventSystem, confi
             });
 
             eventSystem.dispatch({
-                type: PipelineEventType.VoiceActivationDataAvailable,
+                type: GwaggliEventType.VoiceActivationDataAvailable,
                 subsystem: 'pipeline',
                 sid: event.sid,
                 timestamp: Date.now(),
@@ -69,7 +67,7 @@ export const registerVoiceActivationDetection = (eventSystem: EventSystem, confi
 };
 
 export const registerVoiceActivationPersist = (eventSystem: EventSystem) => {
-    eventSystem.on<VoiceActivationDataAvailable>(PipelineEventType.VoiceActivationDataAvailable, (event) => {
+    eventSystem.on<VoiceActivationDataAvailable>(GwaggliEventType.VoiceActivationDataAvailable, (event) => {
         const fileName = `audio-${new Date().getTime()}-${event.trackId}.wav`;
         const folder = `./generated/voice-activation`;
         const path = `${folder}/${fileName}`;
@@ -81,7 +79,7 @@ export const registerVoiceActivationPersist = (eventSystem: EventSystem) => {
         fs.writeFileSync(path, Buffer.from(event.audio, 'base64'));
 
         eventSystem.dispatch({
-            type: PipelineEventType.VoiceActivationPersist,
+            type: GwaggliEventType.VoiceActivationPersist,
             subsystem: 'pipeline',
             sid: event.sid,
             timestamp: Date.now(),

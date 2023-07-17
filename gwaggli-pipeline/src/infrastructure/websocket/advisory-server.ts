@@ -1,9 +1,9 @@
 import WebSocketServer from 'ws';
-import { ClientEventType, EventSystem, GwaggliEvent } from '@gwaggli/events';
 import { getGlobalEventSystem } from '@gwaggli/events/dist/event-system';
 import { v4 as uuidv4 } from 'uuid';
 import { dispatchClientMessage } from '../../client-view';
 import { registerAdvisoryPipeline } from '../../pipeline';
+import { EventSystem, GwaggliEvent, GwaggliEventType } from '@gwaggli/events';
 
 export const startAdvisoryServer = () => {
     const advisoryPort = process.env.WEBSOCKET_ADVISORY_PORT;
@@ -19,7 +19,7 @@ export const startAdvisoryServer = () => {
 
         const sid = uuidv4();
 
-        const clientFilter = (event: GwaggliEvent) => event.sid === sid && event.type !== ClientEventType.AudioChunk;
+        const clientFilter = (event: GwaggliEvent) => event.sid === sid && event.type !== GwaggliEventType.AudioChunk;
 
         const listener = eventSystem.filter(clientFilter, (event) => {
             ws.send(JSON.stringify(event));

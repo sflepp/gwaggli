@@ -1,15 +1,15 @@
-import { EventSystem, PipelineEventType } from '@gwaggli/events';
-import {
-    KnowledgeEmbeddingAvailable,
-    KnowledgeLocationAvailable,
-    KnowledgeTextAvailable,
-} from '@gwaggli/events/dist/events/pipeline-events';
-
 import { generateEmbedding } from '../../integration/openai/open-ai-client';
 import { EmbeddingsKnowledgeBase } from '../../storage/knowledge-base/embeddings-knowledge-base';
 import { loaderByLocationType } from '../data-loader/loader-factory';
 import { NoopSplitter } from '../../storage/knowledge-base/splitters/noop-splitter';
 import { ChunkSplitter } from '../../storage/knowledge-base/splitters/chunk-splitter';
+import {
+    EventSystem,
+    GwaggliEventType,
+    KnowledgeEmbeddingAvailable,
+    KnowledgeLocationAvailable,
+    KnowledgeTextAvailable,
+} from '@gwaggli/events';
 
 const splitters = [new NoopSplitter(), new ChunkSplitter(1500)];
 
@@ -17,14 +17,14 @@ const splitters = [new NoopSplitter(), new ChunkSplitter(1500)];
 export const knowledgeBase = new EmbeddingsKnowledgeBase();
 
 export const registerKnowledgeLoader = (eventSystem: EventSystem) => {
-    eventSystem.on<KnowledgeLocationAvailable>(PipelineEventType.KnowledgeLocationAvailable, async (event) => {
+    eventSystem.on<KnowledgeLocationAvailable>(GwaggliEventType.KnowledgeLocationAvailable, async (event) => {
         const loader = loaderByLocationType(event.locationType);
 
         const results = await loader.load(event);
 
         for (const result of results) {
             eventSystem.dispatch({
-                type: PipelineEventType.KnowledgeTextAvailable,
+                type: GwaggliEventType.KnowledgeTextAvailable,
                 subsystem: 'pipeline',
                 sid: event.sid,
                 timestamp: Date.now(),
@@ -34,7 +34,7 @@ export const registerKnowledgeLoader = (eventSystem: EventSystem) => {
         }
     });
 
-    eventSystem.on<KnowledgeTextAvailable>(PipelineEventType.KnowledgeTextAvailable, async (event) => {
+    eventSystem.on<KnowledgeTextAvailable>(GwaggliEventType.KnowledgeTextAvailable, async (event) => {
         for (const splitter of splitters) {
             const splitTexts = splitter.split(event.text);
 
@@ -50,7 +50,7 @@ export const registerKnowledgeLoader = (eventSystem: EventSystem) => {
                 }
 
                 eventSystem.dispatch({
-                    type: PipelineEventType.KnowledgeEmbeddingAvailable,
+                    type: GwaggliEventType.KnowledgeEmbeddingAvailable,
                     subsystem: 'pipeline',
                     sid: event.sid,
                     timestamp: Date.now(),
@@ -62,7 +62,7 @@ export const registerKnowledgeLoader = (eventSystem: EventSystem) => {
         }
     });
 
-    eventSystem.on<KnowledgeEmbeddingAvailable>(PipelineEventType.KnowledgeEmbeddingAvailable, async (event) => {
+    eventSystem.on<KnowledgeEmbeddingAvailable>(GwaggliEventType.KnowledgeEmbeddingAvailable, async (event) => {
         knowledgeBase.add(event);
     });
 };

@@ -3,3 +3,4 @@
 **/test-data
 .husky
 .prettierignore
+.run/**

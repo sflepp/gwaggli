@@ -1,9 +1,9 @@
 import WebSocketServer from 'ws';
-import { ClientEventType, EventSystem, GwaggliEvent } from '@gwaggli/events';
 import { getGlobalEventSystem } from '@gwaggli/events/dist/event-system';
 import { v4 as uuidv4 } from 'uuid';
 import { dispatchClientMessage, registerClientView } from '../../client-view';
 import { registerChatPipeline } from '../../pipeline';
+import { EventSystem, GwaggliEvent, GwaggliEventType } from '@gwaggli/events';
 
 export const startChatServer = () => {
     const chatPort = process.env.WEBSOCKET_CHAT_PORT;
@@ -20,7 +20,9 @@ export const startChatServer = () => {
         const sid = uuidv4();
 
         const clientFilter = (event: GwaggliEvent) =>
-            event.subsystem === 'client' && event.sid === sid && event.type !== ClientEventType.AudioChunk;
+            event.sid === sid &&
+            (event.type === GwaggliEventType.ClientViewUpdate ||
+                event.type === GwaggliEventType.ClientViewVoiceActivation);
 
         const listener = eventSystem.filter(clientFilter, (event) => {
             ws.send(JSON.stringify(event));

@@ -1,7 +1,6 @@
-import { EventSystem, PipelineEventType } from '@gwaggli/events';
 import { registerKnowledgeLoader } from './knowledge-loader';
 import { EmbeddingResult } from '../../integration/openai/open-ai-client';
-import { KnowledgeEmbeddingAvailable } from '@gwaggli/events/dist/events/pipeline-events';
+import { EventSystem, GwaggliEventType, KnowledgeEmbeddingAvailable } from '@gwaggli/events';
 
 jest.mock('../../integration/openai/open-ai-client', () => ({
     generateEmbedding: jest.fn(async (text: string): Promise<EmbeddingResult> => {
@@ -22,7 +21,7 @@ beforeEach(() => {
 
 it('should create an embedding', async () => {
     eventSystem.dispatch({
-        type: PipelineEventType.KnowledgeTextAvailable,
+        type: GwaggliEventType.KnowledgeTextAvailable,
         subsystem: 'pipeline',
         sid: '123',
         timestamp: Date.now(),
@@ -31,12 +30,11 @@ it('should create an embedding', async () => {
     });
 
     const event = await eventSystem.awaitType<KnowledgeEmbeddingAvailable>(
-        PipelineEventType.KnowledgeEmbeddingAvailable
+        GwaggliEventType.KnowledgeEmbeddingAvailable
     );
 
     expect(event).toBeDefined();
-    expect(event.type).toBe(PipelineEventType.KnowledgeEmbeddingAvailable);
-    expect(event.subsystem).toBe('pipeline');
+    expect(event.type).toBe(GwaggliEventType.KnowledgeEmbeddingAvailable);
     expect(event.sid).toBe('123');
     expect(event.timestamp).toBeGreaterThan(0);
     expect(event.source).toBe('test-data');

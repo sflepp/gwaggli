@@ -1,23 +1,25 @@
-import { ClientEventType, EventSystem, PipelineEventType } from '@gwaggli/events';
-import { ClientViewState, ConversationChunk } from '@gwaggli/events/dist/events/client-events';
 import {
+    ClientViewState,
+    ConversationChunk,
+    EventSystem,
+    GwaggliEventType,
     TextCompletionFinish,
     TranscriptionComplete,
     VoiceActivationEnd,
     VoiceActivationLevelUpdate,
     VoiceActivationStart,
     VoicePersist,
-} from '@gwaggli/events/dist/events/pipeline-events';
+} from '@gwaggli/events';
 
 export const registerClientView = (eventSystem: EventSystem) => {
     const views = new Map<string, ClientViewState>();
 
-    eventSystem.on<VoiceActivationStart>(PipelineEventType.VoiceActivationStart, (event) => {
-        if (!views.has(event.sid)) {
-            views.set(event.sid, { sid: event.sid, conversation: [] });
+    eventSystem.on<VoiceActivationStart>(GwaggliEventType.VoiceActivationStart, (event) => {
+        if (!views.has(event.sid || '')) {
+            views.set(event.sid || '', { sid: event.sid || '', conversation: [] });
         }
 
-        const view = views.get(event.sid) as ClientViewState;
+        const view = views.get(event.sid || '') as ClientViewState;
 
         const conversationChunk: ConversationChunk = {
             id: event.trackId,
@@ -31,8 +33,8 @@ export const registerClientView = (eventSystem: EventSystem) => {
         dispatchClientView(eventSystem, view);
     });
 
-    eventSystem.on<VoiceActivationEnd>(PipelineEventType.VoiceActivationEnd, (event) => {
-        const view = views.get(event.sid) as ClientViewState;
+    eventSystem.on<VoiceActivationEnd>(GwaggliEventType.VoiceActivationEnd, (event) => {
+        const view = views.get(event.sid || '') as ClientViewState;
 
         const conversationChunk = view.conversation.find((chunk) => chunk.id === event.trackId);
 
@@ -44,9 +46,9 @@ export const registerClientView = (eventSystem: EventSystem) => {
         dispatchClientView(eventSystem, view);
     });
 
-    eventSystem.on<TranscriptionComplete>(PipelineEventType.TranscriptionComplete, (event) => {
+    eventSystem.on<TranscriptionComplete>(GwaggliEventType.TranscriptionComplete, (event) => {
         console.log(event.sid);
-        const view = views.get(event.sid) as ClientViewState;
+        const view = views.get(event.sid || '') as ClientViewState;
 
         const conversationChunk = view.conversation.find((chunk) => chunk.id === event.trackId);
 
@@ -59,8 +61,8 @@ export const registerClientView = (eventSystem: EventSystem) => {
         dispatchClientView(eventSystem, view);
     });
 
-    eventSystem.on<TextCompletionFinish>(PipelineEventType.TextCompletionFinish, (event) => {
-        const view = views.get(event.sid) as ClientViewState;
+    eventSystem.on<TextCompletionFinish>(GwaggliEventType.TextCompletionFinish, (event) => {
+        const view = views.get(event.sid || '') as ClientViewState;
 
         const conversationChunk = view.conversation.find((chunk) => chunk.id === event.trackId);
 
@@ -73,8 +75,8 @@ export const registerClientView = (eventSystem: EventSystem) => {
         dispatchClientView(eventSystem, view);
     });
 
-    eventSystem.on<VoicePersist>(PipelineEventType.VoicePersist, (event) => {
-        const view = views.get(event.sid) as ClientViewState;
+    eventSystem.on<VoicePersist>(GwaggliEventType.VoicePersist, (event) => {
+        const view = views.get(event.sid || '') as ClientViewState;
 
         const conversationChunk = view.conversation.find((chunk) => chunk.id === event.trackId);
 
@@ -86,9 +88,9 @@ export const registerClientView = (eventSystem: EventSystem) => {
         dispatchClientView(eventSystem, view);
     });
 
-    eventSystem.on<VoiceActivationLevelUpdate>(PipelineEventType.VoiceActivationLevelUpdate, (event) => {
+    eventSystem.on<VoiceActivationLevelUpdate>(GwaggliEventType.VoiceActivationLevelUpdate, (event) => {
         eventSystem.dispatch({
-            type: ClientEventType.ClientViewVoiceActivation,
+            type: GwaggliEventType.ClientViewVoiceActivation,
             subsystem: 'client',
             timestamp: Date.now(),
             sid: event.sid,
@@ -99,7 +101,7 @@ export const registerClientView = (eventSystem: EventSystem) => {
 
 const dispatchClientView = (eventSystem: EventSystem, view: ClientViewState) => {
     eventSystem.dispatch({
-        type: ClientEventType.ClientViewUpdate,
+        type: GwaggliEventType.ClientViewUpdate,
         subsystem: 'client',
         timestamp: Date.now(),
         sid: view.sid,

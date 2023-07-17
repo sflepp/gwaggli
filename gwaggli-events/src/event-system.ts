@@ -1,5 +1,5 @@
 import { EventEmitter } from 'events';
-import { GwaggliEvent, GwaggliEventType } from './events';
+import { GwaggliEvents, GwaggliEventType } from './events';
 
 export class EventSystem {
     private eventEmitter = new EventEmitter();
@@ -8,12 +8,12 @@ export class EventSystem {
         this.eventEmitter.setMaxListeners(100);
     }
 
-    dispatch = (event: GwaggliEvent) => {
+    dispatch = (event: GwaggliEvents) => {
         this.eventEmitter.emit('message', event);
     };
 
-    on<T extends GwaggliEvent>(type: GwaggliEventType, callback: (event: T) => void): (event: GwaggliEvent) => void {
-        const listener = (event: GwaggliEvent) => {
+    on<T extends GwaggliEvents>(type: GwaggliEventType, callback: (event: T) => void): (event: GwaggliEvents) => void {
+        const listener = (event: GwaggliEvents) => {
             if (event.type === type) {
                 console.log(`Processing ${event.type}...`);
                 callback(event as T);
@@ -25,12 +25,12 @@ export class EventSystem {
         return listener;
     }
 
-    off(listener: (event: GwaggliEvent) => void) {
+    off(listener: (event: GwaggliEvents) => void) {
         this.eventEmitter.off('message', listener);
     }
 
-    filter<T = GwaggliEvent>(filter: EventFilter, callback: (event: T) => void): (event: GwaggliEvent) => void {
-        const listener = (event: GwaggliEvent) => {
+    filter<T = GwaggliEvents>(filter: EventFilter, callback: (event: T) => void): (event: GwaggliEvents) => void {
+        const listener = (event: GwaggliEvents) => {
             if (filter(event)) {
                 callback(event as T);
             }
@@ -41,9 +41,9 @@ export class EventSystem {
         return listener;
     }
 
-    await<T extends GwaggliEvent>(filter: EventFilter): Promise<T> {
+    await<T extends GwaggliEvents>(filter: EventFilter): Promise<T> {
         return new Promise<T>((resolve) => {
-            const listener = (event: GwaggliEvent) => {
+            const listener = (event: GwaggliEvents) => {
                 if (filter(event)) {
                     resolve(event as T);
                     this.off(listener);
@@ -54,9 +54,9 @@ export class EventSystem {
         });
     }
 
-    awaitType<T extends GwaggliEvent>(type: GwaggliEventType): Promise<T> {
+    awaitType<T extends GwaggliEvents>(type: GwaggliEventType): Promise<T> {
         return new Promise<T>((resolve) => {
-            const listener = (event: GwaggliEvent) => {
+            const listener = (event: GwaggliEvents) => {
                 if (event.type === type) {
                     resolve(event as T);
                     this.off(listener);
@@ -75,4 +75,4 @@ export class EventSystem {
 const globalEventSystem = new EventSystem();
 export const getGlobalEventSystem = () => globalEventSystem;
 
-export type EventFilter = (event: GwaggliEvent) => boolean;
+export type EventFilter = (event: GwaggliEvents) => boolean;

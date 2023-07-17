@@ -1,16 +1,15 @@
-import { EventSystem, PipelineEventType } from '@gwaggli/events';
-import { TextCompletionFinish, TextToVoiceFinish } from '@gwaggli/events/dist/events/pipeline-events';
 import fs from 'fs';
 import { Buffer } from 'buffer';
 import { textToSpeechAwsPolly } from '../../integration/aws/aws-client';
+import { EventSystem, GwaggliEventType, TextCompletionFinish, TextToVoiceFinish } from '@gwaggli/events';
 
 export const registerPollyTextToSpeech = (eventSystem: EventSystem) => {
-    eventSystem.on<TextCompletionFinish>(PipelineEventType.TextCompletionFinish, async (event) => {
+    eventSystem.on<TextCompletionFinish>(GwaggliEventType.TextCompletionFinish, async (event) => {
         const voiceId = speakerForLanguage(event.language);
         const audio = await textToSpeechAwsPolly(event.text, speakerForLanguage(event.language));
 
         eventSystem.dispatch({
-            type: PipelineEventType.TextToVoiceFinish,
+            type: GwaggliEventType.TextToVoiceFinish,
             subsystem: 'pipeline',
             sid: event.sid,
             timestamp: Date.now(),
@@ -23,7 +22,7 @@ export const registerPollyTextToSpeech = (eventSystem: EventSystem) => {
 };
 
 export const registerTextToSpeechPersist = (eventSystem: EventSystem) => {
-    eventSystem.on<TextToVoiceFinish>(PipelineEventType.TextToVoiceFinish, async (event) => {
+    eventSystem.on<TextToVoiceFinish>(GwaggliEventType.TextToVoiceFinish, async (event) => {
         const fileName = `${event.voiceId}_${new Date().getTime()}.wav`;
         const folder = `generated/voices`;
         const path = `${folder}/${fileName}`;
@@ -34,7 +33,7 @@ export const registerTextToSpeechPersist = (eventSystem: EventSystem) => {
 
         fs.writeFile(path, Buffer.from(event.audio, 'base64'), (err) => {
             eventSystem.dispatch({
-                type: PipelineEventType.VoicePersist,
+                type: GwaggliEventType.VoicePersist,
                 subsystem: 'pipeline',
                 timestamp: Date.now(),
                 sid: event.sid,

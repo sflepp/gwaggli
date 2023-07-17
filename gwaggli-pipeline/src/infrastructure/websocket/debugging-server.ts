@@ -1,9 +1,9 @@
 import WebSocketServer from 'ws';
-import { ClientEventType, EventSystem, GwaggliEvent, PipelineEventType } from '@gwaggli/events';
 import { getGlobalEventSystem } from '@gwaggli/events/dist/event-system';
 import { v4 as uuidv4 } from 'uuid';
 import { dispatchClientMessage } from '../../client-view';
 import { registerDebugPipeline } from '../../pipeline';
+import { EventSystem, GwaggliEvent, GwaggliEventType } from '@gwaggli/events';
 
 export const startDebuggingServer = () => {
     const debugPort = process.env.WEBSOCKET_DEBUG_PORT;
@@ -19,9 +19,9 @@ export const startDebuggingServer = () => {
 
         const sid = uuidv4();
         const filterDebugger = (event: GwaggliEvent) =>
-            event.type !== ClientEventType.AudioChunk &&
-            event.type !== ClientEventType.ClientViewVoiceActivation &&
-            event.type !== PipelineEventType.VoiceActivationLevelUpdate;
+            event.type !== GwaggliEventType.AudioChunk &&
+            event.type !== GwaggliEventType.ClientViewVoiceActivation &&
+            event.type !== GwaggliEventType.VoiceActivationLevelUpdate;
 
         const listener = eventSystem.filter(filterDebugger, (event) => {
             ws.send(JSON.stringify(event));

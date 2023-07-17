@@ -1,15 +1,13 @@
 import React, { useState } from 'react';
 import useWebSocket from 'react-use-websocket';
-import { ClientEventType, GwaggliEvent, PipelineEventType } from '@gwaggli/events';
+import { GwaggliEvent, GwaggliEventType, VoiceActivationStart } from '@gwaggli/events';
 import { Table, TableColumnsType, Typography } from 'antd';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { docco } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import Waveform from '../../ui-components/waveform';
 import UuidVisualize from '../../ui-components/uuid-visualize';
-import { DomainEventType } from '@gwaggli/events/dist/events/domain-events';
 import { pipelineHost } from '../../env';
 import ConnectionStatus from '../../ui-components/connection-status';
-import { VoiceActivationStart } from '@gwaggli/events/dist/events/pipeline-events';
 
 const { Text } = Typography;
 
@@ -51,9 +49,9 @@ const Debugger = () => {
         })
         .filter(
             (event) =>
-                event.type !== ClientEventType.ClientViewUpdate &&
-                event.type !== PipelineEventType.VoicePersist &&
-                event.type !== PipelineEventType.VoiceActivationPersist
+                event.type !== GwaggliEventType.ClientViewUpdate &&
+                event.type !== GwaggliEventType.VoicePersist &&
+                event.type !== GwaggliEventType.VoiceActivationPersist
         )
         .reverse();
 
@@ -70,7 +68,7 @@ const Debugger = () => {
         <>
             <Table
                 columns={columns}
-                dataSource={items}
+                dataSource={items as never}
                 expandable={{ expandedRowRender: ExpandedRow }}
                 pagination={{ pageSize: 100 }}
             ></Table>
@@ -123,7 +121,7 @@ const DeltaTime = (value: unknown, record: DataType) => {
 
 const Details = (value: unknown, record: DataType) => {
     switch (record.event.type) {
-        case PipelineEventType.CopilotProcessingComplete:
+        case GwaggliEventType.CopilotProcessingComplete:
             return (
                 <>
                     <Text code>summary</Text>
@@ -139,37 +137,37 @@ const Details = (value: unknown, record: DataType) => {
                     <Text type="secondary">{shorten(record.event.buzzwords, 100)}</Text>
                 </>
             );
-        case PipelineEventType.TranscriptionComplete:
+        case GwaggliEventType.TranscriptionComplete:
             return (
                 <>
                     <Text code>text</Text>
                     <Text type="secondary">{shorten(record.event.text, 100)}</Text>
                 </>
             );
-        case PipelineEventType.VoiceActivationStart:
+        case GwaggliEventType.VoiceActivationStart:
             return (
                 <>
                     <Text code>trackId</Text>
                     <Text type="secondary">{record.event.trackId}</Text>
                 </>
             );
-        case PipelineEventType.VoiceActivationEnd:
+        case GwaggliEventType.VoiceActivationEnd:
             return (
                 <>
                     <Text code>trackId</Text>
                     <Text type="secondary">{record.event.trackId}</Text>
                 </>
             );
-        case PipelineEventType.VoiceActivationPersist:
+        case GwaggliEventType.VoiceActivationPersist:
             return (
                 <>
                     <Text code>filename</Text>
                     <Text type="secondary">{shorten(record.event.fileName, 100)}</Text>
                 </>
             );
-        case PipelineEventType.VoiceActivationDataAvailable:
+        case GwaggliEventType.VoiceActivationDataAvailable:
             return <Waveform audio={'data:audio/wav;base64,' + record.event.audio} />;
-        case DomainEventType.AdvisorAnswer:
+        case GwaggliEventType.AdvisorAnswer:
             return (
                 <>
                     <Text code>text</Text>
@@ -178,7 +176,7 @@ const Details = (value: unknown, record: DataType) => {
                     <Waveform audio={'data:audio/wav;base64,' + record.event.audio} />
                 </>
             );
-        case PipelineEventType.PipelineError:
+        case GwaggliEventType.PipelineError:
             return (
                 <>
                     <Text code>error</Text>
@@ -186,7 +184,7 @@ const Details = (value: unknown, record: DataType) => {
                     <br />
                 </>
             );
-        case PipelineEventType.TextCompletionFinish:
+        case GwaggliEventType.TextCompletionFinish:
             return (
                 <>
                     <Text code>text</Text>
@@ -194,13 +192,13 @@ const Details = (value: unknown, record: DataType) => {
                     <br />
                 </>
             );
-        case PipelineEventType.TextToVoiceFinish:
+        case GwaggliEventType.TextToVoiceFinish:
             return (
                 <>
                     <Waveform audio={'data:audio/wav;base64,' + record.event.audio} />
                 </>
             );
-        case PipelineEventType.VoicePersist:
+        case GwaggliEventType.VoicePersist:
             return (
                 <>
                     <Text code>filename</Text>

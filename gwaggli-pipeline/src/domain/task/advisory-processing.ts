@@ -1,15 +1,20 @@
-import { EventSystem, PipelineEventType } from '@gwaggli/events';
-import { AddAdvisorEvent, DomainEventType, JoinAdvisoryEvent } from '@gwaggli/events/dist/events/domain-events';
 import { advisoryRepository } from '../../repository/advisory-repository';
-import { PipelineError, TranscriptionComplete } from '@gwaggli/events/dist/events/pipeline-events';
 import { createChatCompletion } from '../../integration/openai/open-ai-client';
 import { ChatCompletionRequestMessageRoleEnum } from 'openai';
 import { textToSpeechAwsPolly } from '../../integration/aws/aws-client';
 import { advisorConfigurations } from '../model/advisory/advisor-configurations';
 import { textToSpeechElevenLabs } from '../../integration/elevenlabs/eleven-labs-client';
+import {
+    AddAdvisorEvent,
+    EventSystem,
+    GwaggliEventType,
+    JoinAdvisoryEvent,
+    PipelineError,
+    TranscriptionComplete,
+} from '@gwaggli/events';
 
 export const registerAdvisoryProcessing = (eventSystem: EventSystem) => {
-    eventSystem.on<JoinAdvisoryEvent>(DomainEventType.JoinAdvisory, (event) => {
+    eventSystem.on<JoinAdvisoryEvent>(GwaggliEventType.JoinAdvisory, (event) => {
         let advisory = advisoryRepository.findById(event.advisoryId);
         if (advisory === undefined) {
             advisory = {
@@ -20,13 +25,13 @@ export const registerAdvisoryProcessing = (eventSystem: EventSystem) => {
             };
         }
 
-        advisory.sids.push(event.sid);
+        advisory.sids.push(event.sid || '');
 
         advisoryRepository.save(advisory);
     });
 
-    eventSystem.on<AddAdvisorEvent>(DomainEventType.AddAdvisor, (event) => {
-        const advisory = advisoryRepository.findBySid(event.sid);
+    eventSystem.on<AddAdvisorEvent>(GwaggliEventType.AddAdvisor, (event) => {
+        const advisory = advisoryRepository.findBySid(event.sid || '');
         if (advisory === undefined) {
             return;
         }
@@ -35,7 +40,7 @@ export const registerAdvisoryProcessing = (eventSystem: EventSystem) => {
 
         if (predefinedConfig === undefined) {
             advisory.advisors.push({
-                sid: event.sid,
+                sid: event.sid || '',
                 id: event.name,
                 name: event.name,
                 voice: event.voice,
@@ -44,7 +49,7 @@ export const registerAdvisoryProcessing = (eventSystem: EventSystem) => {
             });
         } else {
             advisory.advisors.push({
-                sid: event.sid,
+                sid: event.sid || '',
                 id: event.name,
                 ...predefinedConfig,
             });
@@ -53,9 +58,9 @@ export const registerAdvisoryProcessing = (eventSystem: EventSystem) => {
         advisoryRepository.save(advisory);
     });
 
-    eventSystem.on<TranscriptionComplete>(PipelineEventType.TranscriptionComplete, async (event) => {
+    eventSystem.on<TranscriptionComplete>(GwaggliEventType.TranscriptionComplete, async (event) => {
         try {
-            const advisory = advisoryRepository.findBySid(event.sid);
+            const advisory = advisoryRepository.findBySid(event.sid || '');
 
             if (advisory === undefined) {
                 return;
@@ -98,7 +103,7 @@ export const registerAdvisoryProcessing = (eventSystem: EventSystem) => {
 
             let answer;
             try {
-                answer = await createChatCompletion(event.sid, prompt);
+                answer = await createChatCompletion(event.sid || '', prompt);
             } catch (e: unknown) {
                 eventSystem.dispatch(e as PipelineError);
                 answer =
@@ -131,7 +136,7 @@ export const registerAdvisoryProcessing = (eventSystem: EventSystem) => {
             }
 
             eventSystem.dispatch({
-                type: DomainEventType.AdvisorAnswer,
+                type: GwaggliEventType.AdvisorAnswer,
                 subsystem: 'domain',
                 sid: event.sid,
                 timestamp: Date.now(),

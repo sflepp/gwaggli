@@ -1,15 +1,14 @@
-import { PipelineError, TranscriptionComplete } from '@gwaggli/events/dist/events/pipeline-events';
 import openAi, { createChatCompletion, generateEmbedding } from '../../integration/openai/open-ai-client';
-import { EventSystem, PipelineEventType } from '@gwaggli/events';
 import { ChatCompletionRequestMessage } from 'openai/api';
 import { knowledgeBase } from './knowledge-loader';
+import { EventSystem, GwaggliEventType, PipelineError, TranscriptionComplete } from '@gwaggli/events';
 
 const chatModel = 'gpt-3.5-turbo';
 
 export const registerChatStyleTextCompletion = (eventSystem: EventSystem) => {
     const history: ChatCompletionRequestMessage[] = [];
 
-    eventSystem.on<TranscriptionComplete>(PipelineEventType.TranscriptionComplete, async (event) => {
+    eventSystem.on<TranscriptionComplete>(GwaggliEventType.TranscriptionComplete, async (event) => {
         const embedding = await generateEmbedding(event.text);
 
         if (embedding !== undefined) {
@@ -30,7 +29,7 @@ export const registerChatStyleTextCompletion = (eventSystem: EventSystem) => {
 
         let answer;
         try {
-            answer = await createChatCompletion(event.sid, [
+            answer = await createChatCompletion(event.sid || '', [
                 {
                     role: 'system',
                     content:
@@ -52,7 +51,7 @@ export const registerChatStyleTextCompletion = (eventSystem: EventSystem) => {
         console.log(history);
 
         eventSystem.dispatch({
-            type: PipelineEventType.TextCompletionFinish,
+            type: GwaggliEventType.TextCompletionFinish,
             subsystem: 'pipeline',
             sid: event.sid,
             timestamp: Date.now(),
@@ -66,7 +65,7 @@ export const registerChatStyleTextCompletion = (eventSystem: EventSystem) => {
 export const registerCopilotStyleTextCompletion = (eventSystem: EventSystem) => {
     const history: TranscriptionComplete[] = [];
 
-    eventSystem.on<TranscriptionComplete>(PipelineEventType.TranscriptionComplete, async (event) => {
+    eventSystem.on<TranscriptionComplete>(GwaggliEventType.TranscriptionComplete, async (event) => {
         history.push(event);
 
         try {
@@ -83,7 +82,7 @@ export const registerCopilotStyleTextCompletion = (eventSystem: EventSystem) => 
             ]);
 
             eventSystem.dispatch({
-                type: PipelineEventType.CopilotProcessingComplete,
+                type: GwaggliEventType.CopilotProcessingComplete,
                 subsystem: 'pipeline',
                 sid: event.sid,
                 timestamp: Date.now(),

@@ -1,12 +1,13 @@
 import useWebSocket, { ReadyState } from 'react-use-websocket';
 import React, { useEffect, useState } from 'react';
-import { ClientEventType, EventSystem } from '@gwaggli/events';
 import {
     AudioChunk,
     ClientViewState,
     ClientViewUpdate,
     ClientViewVoiceActivation,
-} from '@gwaggli/events/dist/events/client-events';
+    EventSystem,
+    GwaggliEventType,
+} from '@gwaggli/events';
 import { encodeBase64 } from '../../encoder/base64';
 import Microphone from '../../ui-components/microphone';
 import ConnectionStatus from '../../ui-components/connection-status';
@@ -27,9 +28,7 @@ const Chat = () => {
 
     const sendAudio = (data: ArrayBuffer) => {
         const message: AudioChunk = {
-            type: ClientEventType.AudioChunk,
-            sid: '',
-            subsystem: 'client',
+            type: GwaggliEventType.AudioChunk,
             timestamp: Date.now(),
             audio: encodeBase64(data),
         };
@@ -42,13 +41,13 @@ const Chat = () => {
 
     useEffect(() => {
         const voiceActivationListener = eventSystem.on<ClientViewVoiceActivation>(
-            ClientEventType.ClientViewVoiceActivation,
+            GwaggliEventType.ClientViewVoiceActivation,
             (event) => {
                 setVoiceActivationLevel(event.level);
             }
         );
 
-        const viewListener = eventSystem.on<ClientViewUpdate>(ClientEventType.ClientViewUpdate, (event) => {
+        const viewListener = eventSystem.on<ClientViewUpdate>(GwaggliEventType.ClientViewUpdate, (event) => {
             setViewState(event.data);
         });
 
