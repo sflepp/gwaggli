@@ -8,18 +8,21 @@
     "gwaggli-pipeline"
   ],
   "scripts": {
+    "lint": "concurrently npm:*:lint --group --prefix-colors \"red,green,blue\" --timings",
+    "lint:fix": "concurrently npm:*:lint:fix --group --prefix-colors \"red,green,blue\" --timings",
+    "prettier": "npx prettier . --check",
+    "prettier:fix": "npx prettier . --write",
     "gwaggli-events:lint": "npm run lint -w gwaggli-events",
     "gwaggli-events:lint:fix": "npm run lint:fix -w gwaggli-events",
     "gwaggli-insights:lint": "npm run lint -w gwaggli-insights",
     "gwaggli-insights:lint:fix": "npm run lint:fix -w gwaggli-insights",
     "gwaggli-pipeline:lint": "npm run lint -w gwaggli-pipeline",
-    "gwaggli-pipeline:lint:fix": "npm run lint:fix -w gwaggli-pipeline",
-    "lint": "concurrently npm:*:lint --group --prefix-colors \"red,green,blue\" --timings",
-    "lint:fix": "concurrently npm:*:lint:fix --group --prefix-colors \"red,green,blue\" --timings"
+    "gwaggli-pipeline:lint:fix": "npm run lint:fix -w gwaggli-pipeline"
   },
   "author": "Simon Flepp",
   "license": "ISC",
   "devDependencies": {
-    "concurrently": "^8.2.0"
+    "concurrently": "^8.2.0",
+    "prettier": "^3.0.0"
   }
 }
