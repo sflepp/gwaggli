@@ -1,12 +1,12 @@
 import axios from "axios";
 
-const fs = require("fs")
+import fs from "fs";
 
 interface ReplicateConfig {
     apiKey: string;
 }
 
-const replicateConfig = (JSON.parse(fs.readFileSync(".replicate/config.json"))) as ReplicateConfig
+const replicateConfig = (JSON.parse(fs.readFileSync(".replicate/config.json", "utf-8"))) as ReplicateConfig
 
 
 const replicaApi = axios.create({
@@ -27,7 +27,7 @@ export interface ReplicaPredictionResponse<I, O> {
     status: 'starting' | 'processing' | 'succeeded'| 'failed' | 'canceled',
     input?: I,
     output?: O,
-    error?: any,
+    error?: unknown,
     logs?: string,
     metrics?: {
         prediction_time: number,

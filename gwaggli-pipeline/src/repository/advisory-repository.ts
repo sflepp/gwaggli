@@ -1,4 +1,4 @@
-import {Advisor, Advisory} from "../domain/model/advisory/advisory";
+import {Advisory} from "../domain/model/advisory/advisory";
 
 const inMemoryData: Advisory[] = [];
 

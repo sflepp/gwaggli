@@ -1,7 +1,7 @@
 import {Loader, LoaderRequest, LoaderResult} from "../loader";
 import {parserByFileName} from "../parser-factory";
 
-const fs = require("fs")
+import fs from "fs";
 
 export class DirectoryLoader extends Loader {
     async load(event: LoaderRequest): Promise<LoaderResult[]> {

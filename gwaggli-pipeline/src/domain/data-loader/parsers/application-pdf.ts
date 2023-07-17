@@ -1,5 +1,5 @@
 import {Parser} from "../parser";
-const pdf = require('pdf-parse');
+import pdf from "pdf-parse";
 
 export class ApplicationPdf extends Parser {
     async parse(buffer: Buffer): Promise<string> {

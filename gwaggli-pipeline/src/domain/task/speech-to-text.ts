@@ -40,7 +40,9 @@ export const registerReplicateWhisper = (eventSystem: EventSystem) => {
 
 export const registerOpenaiWhisper = (eventSystem: EventSystem) => {
     eventSystem.on<VoiceActivationDataAvailable>(PipelineEventType.VoiceActivationDataAvailable, async (event) => {
-        const audioFile = Readable.from(Buffer.from(event.audio, 'base64')) as any
+        const audioFile = Readable.from(Buffer.from(event.audio, 'base64')) as unknown as File;
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
         audioFile.path = 'in-memory.wav'; // workaround, see https://github.com/openai/openai-node/issues/77
 
         const language = 'de'

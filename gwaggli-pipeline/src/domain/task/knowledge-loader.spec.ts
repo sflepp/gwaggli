@@ -1,4 +1,4 @@
-import {EventSystem, GwaggliEvent, PipelineEventType} from "@gwaggli/events";
+import {EventSystem, PipelineEventType} from "@gwaggli/events";
 import {registerKnowledgeLoader} from "./knowledge-loader";
 import {EmbeddingResult} from "../../integration/openai/open-ai-client";
 import {KnowledgeEmbeddingAvailable} from "@gwaggli/events/dist/events/pipeline-events";

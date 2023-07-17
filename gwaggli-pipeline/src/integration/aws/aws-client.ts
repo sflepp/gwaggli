@@ -2,7 +2,7 @@ import {WaveData} from "../../domain/data/wave-data";
 import {AWSError} from "aws-sdk";
 import {SynthesizeSpeechOutput} from "aws-sdk/clients/polly";
 
-const AWS = require('aws-sdk')
+import AWS from "aws-sdk";
 
 AWS.config.loadFromPath('.aws/config.json')
 

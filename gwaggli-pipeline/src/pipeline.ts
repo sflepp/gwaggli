@@ -13,8 +13,7 @@ import {
 import {registerAdvisoryProcessing} from "./domain/task/advisory-processing";
 import {registerKnowledgeLoader} from "./domain/task/knowledge-loader";
 
-const fs = require("fs")
-
+import fs from "fs";
 
 export interface SubPipelineConfig {
     voiceActivationStartLevel: number;
@@ -28,7 +27,7 @@ export interface PipelineConfig {
     advisory: SubPipelineConfig;
 }
 
-const pipelineConfig = (JSON.parse(fs.readFileSync("./config.json"))) as PipelineConfig
+const pipelineConfig = (JSON.parse(fs.readFileSync("./config.json", "utf-8"))) as PipelineConfig
 
 export const registerChatPipeline = (eventSystem: EventSystem) => {
     registerVoiceActivation(eventSystem, pipelineConfig.chat);

@@ -24,7 +24,7 @@ export const registerKnowledgeLoader = (eventSystem: EventSystem) => {
 
 
     eventSystem.on<KnowledgeLocationAvailable>(PipelineEventType.KnowledgeLocationAvailable, async (event) => {
-        let loader = loaderByLocationType(event.locationType);
+        const loader = loaderByLocationType(event.locationType);
 
         const results = await loader.load(event);
 

@@ -10,8 +10,9 @@ import {
 import {ClientEventType, EventSystem, GwaggliEvent, PipelineEventType} from "@gwaggli/events";
 import {getGlobalEventSystem} from "@gwaggli/events/dist/event-system";
 
-const {v4: uuidv4} = require('uuid')
-const WebSocketServer = require('ws');
+import WebSocketServer from "ws";
+
+import {v4 as uuidv4} from "uuid";
 
 dotenv.config();
 
@@ -31,7 +32,7 @@ app.listen(webPort, () => {
 });
 
 
-const chatWebsocket = new WebSocketServer.Server({port: chatPort})
+const chatWebsocket = new WebSocketServer.Server({port: Number(chatPort)})
 chatWebsocket.on("connection", async (ws: WebSocket) => {
     console.log("new chat client connected");
 
@@ -67,7 +68,7 @@ chatWebsocket.on("connection", async (ws: WebSocket) => {
 });
 
 console.log(`⚡️[server]: Copilot Websocket server is running at ws://localhost:${copilotPort}`);
-const suggestionWebsocket = new WebSocketServer.Server({port: copilotPort})
+const suggestionWebsocket = new WebSocketServer.Server({port: Number(copilotPort)})
 suggestionWebsocket.on("connection", async (ws: WebSocket) => {
     console.log("new copilot client connected");
 
@@ -101,7 +102,7 @@ suggestionWebsocket.on("connection", async (ws: WebSocket) => {
 });
 
 console.log(`⚡️[server]: Copilot Websocket server is running at ws://localhost:${copilotPort}`);
-const advisoryWebsocket = new WebSocketServer.Server({port: advisoryPort})
+const advisoryWebsocket = new WebSocketServer.Server({port: Number(advisoryPort)})
 advisoryWebsocket.on("connection", async (ws: WebSocket) => {
     console.log("new advisory client connected");
 
@@ -140,7 +141,7 @@ advisoryWebsocket.on("connection", async (ws: WebSocket) => {
 
 console.log(`⚡️[server]: Debugging Websocket server is running at ws://localhost:${debugPort}`);
 
-const debugWebsocket = new WebSocketServer.Server({port: debugPort})
+const debugWebsocket = new WebSocketServer.Server({port: Number(debugPort)})
 debugWebsocket.on("connection", async (ws: WebSocket) => {
     console.log("new debug client connected");
 

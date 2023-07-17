@@ -1,6 +1,6 @@
 import {ApplicationPdf} from "./application-pdf";
 
-const fs = require("fs")
+import fs from "fs";
 
 it('should extract pdf text', async () => {
     const data = fs.readFileSync("./__test-data__/data-loader/pdf/git.pdf")

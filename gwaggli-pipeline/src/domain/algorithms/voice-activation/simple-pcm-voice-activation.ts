@@ -103,10 +103,8 @@ export const averageLevel = (buffer: Buffer, bitsPerSample: number, resolution: 
     const dataView = new DataView(buffer.buffer);
     const getUint = getUintN(dataView, bitsPerSample);
 
-    // @ts-ignore
-    let total: bigint = 0n;
-    // @ts-ignore
-    let count: bigint = 0n;
+    let total: bigint = BigInt(0);
+    let count: bigint = BigInt(0);
 
     for (let i = 0; i < buffer.length - bitsPerSample; i += bitsPerSample / 8 * lookAtEveryNthSample) {
         total += BigInt(getUint.call(dataView, i, true));

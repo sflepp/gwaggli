@@ -1,13 +1,12 @@
 import axios from "axios";
 
-const fs = require("fs")
-
+import fs from "fs";
 
 interface ElevenLabsConfig {
     apiKey: string;
 }
 
-const elevenLabsConfig = (JSON.parse(fs.readFileSync(".elevenlabs/config.json"))) as ElevenLabsConfig
+const elevenLabsConfig = (JSON.parse(fs.readFileSync(".elevenlabs/config.json", "utf-8"))) as ElevenLabsConfig
 
 
 const elevenLabsApi = axios.create({

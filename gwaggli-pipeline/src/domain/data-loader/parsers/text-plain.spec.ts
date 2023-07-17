@@ -1,6 +1,7 @@
 import {TextPlain} from "./text-plain";
 
-const fs = require("fs")
+import fs from "fs";
+
 it('should extract plain text', async () => {
     const data = fs.readFileSync("./__test-data__/data-loader/txt/rfc1149.txt")
 

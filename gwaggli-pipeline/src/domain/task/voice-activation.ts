@@ -8,7 +8,8 @@ import {SubPipelineConfig} from "../../pipeline";
 import {SimplePcmVoiceActivation} from "../algorithms/voice-activation/simple-pcm-voice-activation";
 import {AudioChunk} from "@gwaggli/events/dist/events/client-events";
 
-const {v4: uuidv4} = require('uuid')
+import {v4 as uuidv4} from "uuid";
+
 
 export const registerVoiceActivationDetection = (eventSystem: EventSystem, config: SubPipelineConfig) => {
     const voiceActivation = new SimplePcmVoiceActivation({

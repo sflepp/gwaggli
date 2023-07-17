@@ -2,7 +2,7 @@ import {Loader, LoaderRequest, LoaderResult} from "../loader";
 import {parserByFileName} from "../parser-factory";
 import {Duplex, Stream} from "stream";
 
-const unzipper = require('unzipper');
+import unzipper from "unzipper";
 
 export class InlineZipLoader extends Loader {
     async load(event: LoaderRequest): Promise<LoaderResult[]> {
