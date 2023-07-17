@@ -2,22 +2,18 @@
     "name": "gwaggli",
     "version": "0.1.0",
     "description": "Gwaggli is a simple voice processing tool",
-    "workspaces": [
-        "gwaggli-events",
-        "gwaggli-insights",
-        "gwaggli-pipeline"
-    ],
     "scripts": {
-        "lint": "concurrently npm:*:lint --group --prefix-colors \"red,green,blue\" --timings",
-        "lint:fix": "concurrently npm:*:lint:fix --group --prefix-colors \"red,green,blue\" --timings",
+        "install": "concurrently \"npm:gwaggli-* -- install\" --group --prefix-colors \"red,green,blue\" --timings",
+        "build": "concurrently \"npm:gwaggli-* -- run build\" --group --prefix-colors \"red,green,blue\" --timings",
+        "start": "concurrently \"npm:gwaggli-* -- run start\" --prefix-colors \"red,green,blue\" --timings",
+        "dev": "concurrently \"npm:gwaggli-* -- run dev\" --prefix-colors \"red,green,blue\" --timings",
+        "lint": "concurrently \"npm:gwaggli-* -- run lint\" --group --prefix-colors \"red,green,blue\" --timings",
+        "lint:fix": "concurrently \"npm:gwaggli-* -- run lint:fix\" --group --prefix-colors \"red,green,blue\" --timings",
         "prettier": "npx prettier . --check",
         "prettier:fix": "npx prettier . --write",
-        "gwaggli-events:lint": "npm run lint -w gwaggli-events",
-        "gwaggli-events:lint:fix": "npm run lint:fix -w gwaggli-events",
-        "gwaggli-insights:lint": "npm run lint -w gwaggli-insights",
-        "gwaggli-insights:lint:fix": "npm run lint:fix -w gwaggli-insights",
-        "gwaggli-pipeline:lint": "npm run lint -w gwaggli-pipeline",
-        "gwaggli-pipeline:lint:fix": "npm run lint:fix -w gwaggli-pipeline"
+        "gwaggli-events": "npm --prefix gwaggli-events",
+        "gwaggli-insights": "npm --prefix gwaggli-insights",
+        "gwaggli-pipeline": "npm --prefix gwaggli-pipeline"
     },
     "author": "Simon Flepp",
     "license": "ISC",

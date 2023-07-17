@@ -9,6 +9,8 @@
     ],
     "scripts": {
         "build": "tsc",
+        "dev": "tsc -w",
+        "start": "echo \"Nothing to do here.\" && exit 0",
         "lint": "eslint .",
         "lint:fix": "eslint . --fix"
     },

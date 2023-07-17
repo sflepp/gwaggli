@@ -8,31 +8,7 @@ Gwaggli is a simple voice processing tool. It consists of the following componen
 
 ## Installation & Usage
 
-### gwaggli-events
-
-Build the gwaggli-events library with the following command:
-
-```bash
-cd gwaggli-events && npm install && npm run build
-```
-
-### gwaggli-insights
-
-The web application is a simple React application. To install and run it, do the following:
-
-```bash
-cd gwaggli-insights && npm install && npm start
-```
-
-### gwaggli-pipeline
-
-The pipeline is a NodeJS application. To install and run it, do the following:
-
-```bash
-cd gwaggli-pipeline && npm install && npm run dev
-```
-
-#### Preparation
+### Preparation
 
 Setup an AWS account with permissions to run [Amazon Polly](https://aws.amazon.com/de/polly/) and add the credentials into the following file:
 
@@ -74,4 +50,27 @@ Add the [elevenlabs.io API-Key](https://elevenlabs.io/) to the following file:
 {
   "apiKey": "<YOUR-API-KEY>
 }
+```
+
+### Running the project
+
+Run the following command to install all dependencies:
+
+```bash
+npm install && npm run install
+```
+
+Run the following command to build components:
+```bash
+npm run build
+```
+
+Run the following command to start the application:
+```bash
+npm run start
+```
+
+If you want to start the application with live-reload, run the following command:
+```bash
+npm run dev
 ```
