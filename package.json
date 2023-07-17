@@ -13,12 +13,29 @@
         "prettier:fix": "npx prettier . --write",
         "gwaggli-events": "npm --prefix gwaggli-events",
         "gwaggli-insights": "npm --prefix gwaggli-insights",
-        "gwaggli-pipeline": "npm --prefix gwaggli-pipeline"
+        "gwaggli-pipeline": "npm --prefix gwaggli-pipeline",
+        "prepare": "husky install"
     },
     "author": "Simon Flepp",
     "license": "ISC",
     "devDependencies": {
         "concurrently": "^8.2.0",
+        "husky": "^8.0.3",
+        "lint-staged": "^13.2.3",
         "prettier": "^3.0.0"
+    },
+    "lint-staged": {
+        "**/*": [
+            "npx prettier --write"
+        ],
+        "gwaggli-events/**/*": [
+            "npx eslint -c gwaggli-events/.eslintrc.js --fix"
+        ],
+        "gwaggli-insights/**/*": [
+            "npx eslint -c gwaggli-insights/.eslintrc.js --fix"
+        ],
+        "gwaggli-pipeline/**/*": [
+            "npx eslint -c gwaggli-pipeline/.eslintrc.js --fix"
+        ]
     }
 }

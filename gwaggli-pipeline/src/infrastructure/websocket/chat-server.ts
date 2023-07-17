@@ -43,5 +43,4 @@ export const startChatServer = () => {
         registerChatPipeline(eventSystem);
         registerClientView(eventSystem);
     });
-}
-
+};

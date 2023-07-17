@@ -5,13 +5,11 @@ import { v4 as uuidv4 } from 'uuid';
 import { dispatchClientMessage } from '../../client-view';
 import { registerDebugPipeline } from '../../pipeline';
 
-
 export const startDebuggingServer = () => {
     const debugPort = process.env.WEBSOCKET_DEBUG_PORT;
 
     const debugWebsocket = new WebSocketServer.Server({ port: Number(debugPort) });
     console.log(`⚡️[server]: Debugging Websocket server is running at ws://localhost:${debugPort}`);
-
 
     debugWebsocket.on('connection', async (ws: WebSocket) => {
         console.log('new debug client connected');
@@ -51,4 +49,3 @@ export const startDebuggingServer = () => {
         registerDebugPipeline(eventSystem);
     });
 };
-

@@ -41,6 +41,4 @@ export const startCopilotServer = () => {
 
         registerCopilotPipeline(eventSystem);
     });
-
-}
-
+};

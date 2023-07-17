@@ -1,3 +1,5 @@
 **/dist
 **/build
 **/test-data
+.husky
+.prettierignore
