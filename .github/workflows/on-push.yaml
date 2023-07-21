@@ -1,0 +1,21 @@
+name: On push for any branch
+on: push
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+
+        steps:
+            - uses: actions/checkout@v3
+
+            - name: Install dependencies
+              run: npm i concurrently && npm i
+
+            - name: Check formatting
+              run: npm run prettier
+
+            - name: Lint
+              run: npm run lint
+
+            - name: Build
+              run: npm run build
