@@ -5,7 +5,14 @@ import { AxiosError } from 'axios';
 import { encode } from 'gpt-tokenizer';
 import api from 'gpt-tokenizer';
 
-const openAiConfig = JSON.parse(fs.readFileSync('.openai/config.json', 'utf8'));
+let openAiConfig;
+if (fs.existsSync('.openai/config.json')) {
+    openAiConfig = JSON.parse(fs.readFileSync('.openai/config.json', 'utf8'));
+} else {
+    openAiConfig = {
+        apiKey: process.env.OPENAI_API_KEY,
+    };
+}
 
 const configuration = new Configuration({
     apiKey: openAiConfig.apiKey,

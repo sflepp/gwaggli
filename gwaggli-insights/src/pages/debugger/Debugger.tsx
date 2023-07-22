@@ -38,7 +38,6 @@ const Debugger = () => {
 
     const items = events
         .map((event, index) => {
-
             return {
                 key: index,
                 id: event.meta.id,
@@ -99,7 +98,7 @@ const TimestampRenderer = (value: string) => {
 };
 
 const UUIDv4Renderer = (value: string | undefined) => {
-    if(!value) return <></>;
+    if (!value) return <></>;
     return (
         <>
             <UuidVisualize uuid={value}></UuidVisualize>

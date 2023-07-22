@@ -5,13 +5,13 @@ it('should encode an ArrayBuffer to base64', () => {
 
     const string = encodeBase64(stringToArrayBuffer(testString));
 
-    expect(string).toEqual('SABlAGwAbABvACwAIABXAG8AcgBsAGQAIQA=');
+    expect(string).toEqual('SGVsbG8sIFdvcmxkIQ==');
     expect(atob(string)).toEqual(testString);
 });
 
 const stringToArrayBuffer = (value: string): ArrayBuffer => {
-    const buffer = new ArrayBuffer(value.length * 2); // 2 bytes for each char
-    const bufferView = new Uint16Array(buffer);
+    const buffer = new ArrayBuffer(value.length);
+    const bufferView = new Uint8Array(buffer);
     const length = value.length;
     for (let i = 0; i < length; i++) {
         bufferView[i] = value.charCodeAt(i);
