@@ -11,6 +11,7 @@
         "lint:fix": "concurrently \"npm:gwaggli-* -- run lint:fix\" --group --prefix-colors \"red,green,blue\" --timings",
         "prettier": "npx prettier . --check",
         "prettier:fix": "npx prettier . --write",
+        "test": "concurrently \"npm:gwaggli-* -- run test\" --group --prefix-colors \"red,green,blue\" --timings",
         "gwaggli-events": "npm --prefix gwaggli-events",
         "gwaggli-insights": "npm --prefix gwaggli-insights",
         "gwaggli-pipeline": "npm --prefix gwaggli-pipeline",

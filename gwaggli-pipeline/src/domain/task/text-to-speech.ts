@@ -1,7 +1,7 @@
 import fs from 'fs';
 import { Buffer } from 'buffer';
 import { textToSpeechAwsPolly } from '../../integration/aws/aws-client';
-import { EventSystem, GwaggliEventType, TextCompletionFinish, TextToVoiceFinish } from '@gwaggli/events';
+import { EventSystem, GwaggliEventType, TextCompletionFinish, TextToVoiceFinish, withTrace } from '@gwaggli/events';
 
 export const registerPollyTextToSpeech = (eventSystem: EventSystem) => {
     eventSystem.on<TextCompletionFinish>(GwaggliEventType.TextCompletionFinish, async (event) => {
@@ -9,11 +9,8 @@ export const registerPollyTextToSpeech = (eventSystem: EventSystem) => {
         const audio = await textToSpeechAwsPolly(event.text, speakerForLanguage(event.language));
 
         eventSystem.dispatch({
+            meta: withTrace(event),
             type: GwaggliEventType.TextToVoiceFinish,
-            subsystem: 'pipeline',
-            sid: event.sid,
-            timestamp: Date.now(),
-            trackId: event.trackId,
             language: event.language,
             voiceId: voiceId,
             audio: audio.buffer.toString('base64'),
@@ -33,11 +30,8 @@ export const registerTextToSpeechPersist = (eventSystem: EventSystem) => {
 
         fs.writeFile(path, Buffer.from(event.audio, 'base64'), (err) => {
             eventSystem.dispatch({
+                meta: withTrace(event),
                 type: GwaggliEventType.VoicePersist,
-                subsystem: 'pipeline',
-                timestamp: Date.now(),
-                sid: event.sid,
-                trackId: event.trackId,
                 fileName: fileName,
             });
 

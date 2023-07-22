@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import useWebSocket from 'react-use-websocket';
-import { GwaggliEvent, GwaggliEventType, VoiceActivationStart } from '@gwaggli/events';
+import { GwaggliEvent, GwaggliEventType } from '@gwaggli/events';
 import { Table, TableColumnsType, Typography } from 'antd';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { docco } from 'react-syntax-highlighter/dist/esm/styles/hljs';
@@ -14,6 +14,7 @@ const { Text } = Typography;
 interface DataType {
     key: React.Key;
     event: GwaggliEvent;
+    id: string;
     sid: string;
     trackId?: string;
     timestamp: number;
@@ -37,11 +38,13 @@ const Debugger = () => {
 
     const items = events
         .map((event, index) => {
+
             return {
                 key: index,
-                sid: event.sid,
-                timestamp: event.timestamp,
-                deltaTime: event.timestamp - events[Math.max(0, index - 1)].timestamp,
+                id: event.meta.id,
+                sid: event.meta.sid,
+                timestamp: event.meta.time,
+                deltaTime: event.meta.time || 0 - events[Math.max(0, index - 1)].meta.time,
                 type: event.type,
                 trackId: 'trackId' in event ? event.trackId : undefined,
                 event: event,
@@ -56,11 +59,11 @@ const Debugger = () => {
         .reverse();
 
     const columns: TableColumnsType<DataType> = [
-        { title: 'SID', dataIndex: 'sid', key: 'sid', render: SidRenderer },
+        { title: 'ID', dataIndex: 'id', key: 'id', render: UUIDv4Renderer },
+        { title: 'SID', dataIndex: 'sid', key: 'sid', render: UUIDv4Renderer },
         { title: 'Time', dataIndex: 'timestamp', key: 'timestamp', render: TimestampRenderer },
         { title: 'Event', dataIndex: 'type', key: 'type', render: EventRenderer },
         { title: 'Delta Time', dataIndex: 'deltaTime', key: 'deltaTime', render: DeltaTime },
-        { title: 'Track ID', dataIndex: 'trackId', key: 'trackId', render: TrackIdRenderer },
         { title: 'Details', dataIndex: 'details', key: 'details', render: Details },
     ];
 
@@ -95,7 +98,8 @@ const TimestampRenderer = (value: string) => {
     return <>{time}</>;
 };
 
-const SidRenderer = (value: string) => {
+const UUIDv4Renderer = (value: string | undefined) => {
+    if(!value) return <></>;
     return (
         <>
             <UuidVisualize uuid={value}></UuidVisualize>
@@ -103,10 +107,6 @@ const SidRenderer = (value: string) => {
     );
 };
 
-const TrackIdRenderer = (value: string, record: DataType) => {
-    const event = record.event as VoiceActivationStart;
-    return event.trackId ? <UuidVisualize uuid={event.trackId}></UuidVisualize> : <></>;
-};
 const EventRenderer = (value: unknown, record: DataType) => {
     return (
         <>
@@ -148,14 +148,14 @@ const Details = (value: unknown, record: DataType) => {
             return (
                 <>
                     <Text code>trackId</Text>
-                    <Text type="secondary">{record.event.trackId}</Text>
+                    <Text type="secondary">{record.event.meta.tid}</Text>
                 </>
             );
         case GwaggliEventType.VoiceActivationEnd:
             return (
                 <>
                     <Text code>trackId</Text>
-                    <Text type="secondary">{record.event.trackId}</Text>
+                    <Text type="secondary">{record.event.meta.tid}</Text>
                 </>
             );
         case GwaggliEventType.VoiceActivationPersist:

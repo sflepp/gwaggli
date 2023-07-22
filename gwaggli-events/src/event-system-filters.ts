@@ -1,19 +1,13 @@
-import { GwaggliEvents, GwaggliEventType, Subsystem } from './events';
+import { GwaggliEvent, GwaggliEventType } from './events';
 import { EventFilter } from './event-system';
 
 export const byType =
     (type: GwaggliEventType): EventFilter =>
-    (event: GwaggliEvents) =>
+    (event: GwaggliEvent) =>
         event.type === type;
 
 export const bySid =
     (sid: string): EventFilter =>
-    (event: GwaggliEvents) =>
-        event.sid === sid;
-
-export const bySubsystem =
-    (subsystem: Subsystem): EventFilter =>
-    (event: GwaggliEvents) =>
-        event.subsystem === subsystem;
-
+    (event: GwaggliEvent) =>
+        event.meta.sid === sid;
 export const none = (): EventFilter => () => true;

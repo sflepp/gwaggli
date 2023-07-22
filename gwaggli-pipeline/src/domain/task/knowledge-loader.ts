@@ -9,6 +9,7 @@ import {
     KnowledgeEmbeddingAvailable,
     KnowledgeLocationAvailable,
     KnowledgeTextAvailable,
+    withTrace,
 } from '@gwaggli/events';
 
 const splitters = [new NoopSplitter(), new ChunkSplitter(1500)];
@@ -24,10 +25,8 @@ export const registerKnowledgeLoader = (eventSystem: EventSystem) => {
 
         for (const result of results) {
             eventSystem.dispatch({
+                meta: withTrace(event),
                 type: GwaggliEventType.KnowledgeTextAvailable,
-                subsystem: 'pipeline',
-                sid: event.sid,
-                timestamp: Date.now(),
                 source: result.location,
                 text: result.text,
             });
@@ -50,10 +49,8 @@ export const registerKnowledgeLoader = (eventSystem: EventSystem) => {
                 }
 
                 eventSystem.dispatch({
+                    meta: withTrace(event),
                     type: GwaggliEventType.KnowledgeEmbeddingAvailable,
-                    subsystem: 'pipeline',
-                    sid: event.sid,
-                    timestamp: Date.now(),
                     source: event.source,
                     text: embedding.text,
                     embedding: embedding.embedding,

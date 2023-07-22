@@ -2,6 +2,7 @@ import openAi, { createChatCompletion, generateEmbedding } from '../../integrati
 import { ChatCompletionRequestMessage } from 'openai/api';
 import { knowledgeBase } from './knowledge-loader';
 import { EventSystem, GwaggliEventType, PipelineError, TranscriptionComplete } from '@gwaggli/events';
+import { withTrace } from '@gwaggli/events/dist/event-system';
 
 const chatModel = 'gpt-3.5-turbo';
 
@@ -29,7 +30,7 @@ export const registerChatStyleTextCompletion = (eventSystem: EventSystem) => {
 
         let answer;
         try {
-            answer = await createChatCompletion(event.sid || '', [
+            answer = await createChatCompletion([
                 {
                     role: 'system',
                     content:
@@ -51,11 +52,8 @@ export const registerChatStyleTextCompletion = (eventSystem: EventSystem) => {
         console.log(history);
 
         eventSystem.dispatch({
+            meta: withTrace(event),
             type: GwaggliEventType.TextCompletionFinish,
-            subsystem: 'pipeline',
-            sid: event.sid,
-            timestamp: Date.now(),
-            trackId: event.trackId,
             language: event.language,
             text: answer,
         });
@@ -82,11 +80,8 @@ export const registerCopilotStyleTextCompletion = (eventSystem: EventSystem) => 
             ]);
 
             eventSystem.dispatch({
+                meta: withTrace(event),
                 type: GwaggliEventType.CopilotProcessingComplete,
-                subsystem: 'pipeline',
-                sid: event.sid,
-                timestamp: Date.now(),
-                trackId: event.trackId,
                 language: event.language,
                 history: historyText,
                 summary: summary,

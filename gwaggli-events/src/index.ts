@@ -1,3 +1,3 @@
-export { EventSystem } from './event-system';
-export { byType, bySid, bySubsystem, none } from './event-system-filters';
+export { EventSystem, getGlobalEventSystem, dispatchWithoutMeta, withTrace } from './event-system';
+export { byType, bySid, none } from './event-system-filters';
 export * from './events';

@@ -9,4 +9,5 @@ dist
 .elevenlabs/config.json
 
 generated
+coverage
 

@@ -21,10 +21,13 @@ beforeEach(() => {
 
 it('should create an embedding', async () => {
     eventSystem.dispatch({
+        meta: {
+            id: 'aaa',
+            sid: '123',
+            tid: [],
+            time: Date.now(),
+        },
         type: GwaggliEventType.KnowledgeTextAvailable,
-        subsystem: 'pipeline',
-        sid: '123',
-        timestamp: Date.now(),
         source: 'test-data',
         text: 'This is an example text',
     });
@@ -35,8 +38,8 @@ it('should create an embedding', async () => {
 
     expect(event).toBeDefined();
     expect(event.type).toBe(GwaggliEventType.KnowledgeEmbeddingAvailable);
-    expect(event.sid).toBe('123');
-    expect(event.timestamp).toBeGreaterThan(0);
+    expect(event.meta.sid).toBe('123');
+    expect(event.meta.time).toBeGreaterThan(0);
     expect(event.source).toBe('test-data');
     expect(event.text).toBe('This is an example text');
     expect(event.embedding).toBeDefined();

@@ -15,10 +15,7 @@ const openAi = new OpenAIApi(configuration);
 
 export default openAi;
 
-export const createChatCompletion = async (
-    sid: string,
-    messages: Array<ChatCompletionRequestMessage>
-): Promise<string> => {
+export const createChatCompletion = async (messages: Array<ChatCompletionRequestMessage>): Promise<string> => {
     try {
         const maxTokens = 8000;
         const model = 'gpt-3.5-turbo';

@@ -11,6 +11,7 @@ import {
     EventSystem,
     GwaggliEventType,
     VoiceActivationLevelUpdate,
+    WithoutMeta,
 } from '@gwaggli/events';
 
 const Copilot = () => {
@@ -26,9 +27,8 @@ const Copilot = () => {
     });
 
     const sendAudio = (data: ArrayBuffer) => {
-        const message: AudioChunk = {
+        const message: WithoutMeta<AudioChunk> = {
             type: GwaggliEventType.AudioChunk,
-            timestamp: Date.now(),
             audio: encodeBase64(data),
         };
 

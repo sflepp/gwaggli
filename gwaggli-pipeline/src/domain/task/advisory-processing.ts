@@ -11,6 +11,7 @@ import {
     JoinAdvisoryEvent,
     PipelineError,
     TranscriptionComplete,
+    withTrace,
 } from '@gwaggli/events';
 
 export const registerAdvisoryProcessing = (eventSystem: EventSystem) => {
@@ -25,13 +26,13 @@ export const registerAdvisoryProcessing = (eventSystem: EventSystem) => {
             };
         }
 
-        advisory.sids.push(event.sid || '');
+        advisory.sids.push(event.meta.sid);
 
         advisoryRepository.save(advisory);
     });
 
     eventSystem.on<AddAdvisorEvent>(GwaggliEventType.AddAdvisor, (event) => {
-        const advisory = advisoryRepository.findBySid(event.sid || '');
+        const advisory = advisoryRepository.findBySid(event.meta.sid);
         if (advisory === undefined) {
             return;
         }
@@ -40,7 +41,7 @@ export const registerAdvisoryProcessing = (eventSystem: EventSystem) => {
 
         if (predefinedConfig === undefined) {
             advisory.advisors.push({
-                sid: event.sid || '',
+                sid: event.meta.sid,
                 id: event.name,
                 name: event.name,
                 voice: event.voice,
@@ -49,7 +50,7 @@ export const registerAdvisoryProcessing = (eventSystem: EventSystem) => {
             });
         } else {
             advisory.advisors.push({
-                sid: event.sid || '',
+                sid: event.meta.sid,
                 id: event.name,
                 ...predefinedConfig,
             });
@@ -60,13 +61,13 @@ export const registerAdvisoryProcessing = (eventSystem: EventSystem) => {
 
     eventSystem.on<TranscriptionComplete>(GwaggliEventType.TranscriptionComplete, async (event) => {
         try {
-            const advisory = advisoryRepository.findBySid(event.sid || '');
+            const advisory = advisoryRepository.findBySid(event.meta.sid);
 
             if (advisory === undefined) {
                 return;
             }
 
-            const advisor = advisory.advisors.find((advisor) => advisor.sid === event.sid);
+            const advisor = advisory.advisors.find((advisor) => advisor.sid === event.meta.sid);
 
             if (advisor === undefined) {
                 return;
@@ -103,7 +104,7 @@ export const registerAdvisoryProcessing = (eventSystem: EventSystem) => {
 
             let answer;
             try {
-                answer = await createChatCompletion(event.sid || '', prompt);
+                answer = await createChatCompletion(prompt);
             } catch (e: unknown) {
                 eventSystem.dispatch(e as PipelineError);
                 answer =
@@ -136,10 +137,8 @@ export const registerAdvisoryProcessing = (eventSystem: EventSystem) => {
             }
 
             eventSystem.dispatch({
+                meta: withTrace(event),
                 type: GwaggliEventType.AdvisorAnswer,
-                subsystem: 'domain',
-                sid: event.sid,
-                timestamp: Date.now(),
                 advisorId: advisor.id,
                 text: answer,
                 audio: audio,

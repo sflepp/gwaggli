@@ -1,9 +1,14 @@
 import WebSocketServer from 'ws';
-import { getGlobalEventSystem } from '@gwaggli/events/dist/event-system';
 import { v4 as uuidv4 } from 'uuid';
-import { dispatchClientMessage } from '../../client-view';
 import { registerDebugPipeline } from '../../pipeline';
-import { EventSystem, GwaggliEvent, GwaggliEventType } from '@gwaggli/events';
+import {
+    dispatchWithoutMeta,
+    EventSystem,
+    getGlobalEventSystem,
+    GwaggliEvent,
+    GwaggliEventType,
+    WithoutMeta,
+} from '@gwaggli/events';
 
 export const startDebuggingServer = () => {
     const debugPort = process.env.WEBSOCKET_DEBUG_PORT;
@@ -19,9 +24,7 @@ export const startDebuggingServer = () => {
 
         const sid = uuidv4();
         const filterDebugger = (event: GwaggliEvent) =>
-            event.type !== GwaggliEventType.AudioChunk &&
-            event.type !== GwaggliEventType.ClientViewVoiceActivation &&
-            event.type !== GwaggliEventType.VoiceActivationLevelUpdate;
+            event.type !== GwaggliEventType.AudioChunk && event.type !== GwaggliEventType.VoiceActivationLevelUpdate;
 
         const listener = eventSystem.filter(filterDebugger, (event) => {
             ws.send(JSON.stringify(event));
@@ -29,7 +32,8 @@ export const startDebuggingServer = () => {
 
         ws.addEventListener('message', (event: MessageEvent<string>) => {
             try {
-                dispatchClientMessage(eventSystem, sid, event.data);
+                const gwaggliEvent = JSON.parse(event.data) as WithoutMeta<GwaggliEvent>;
+                dispatchWithoutMeta(eventSystem, sid, gwaggliEvent);
             } catch (e) {
                 console.error(e);
             }

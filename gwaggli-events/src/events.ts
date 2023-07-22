@@ -1,8 +1,16 @@
-export interface BaseGwaggliEvent {
-    type: GwaggliEventType;
-    timestamp: number;
-    sid?: string;
+export interface Metadata {
+    time: number;
+    id: string;
+    sid: string;
+    tid: string[];
 }
+
+export interface BaseGwaggliEvent {
+    meta: Metadata;
+    type: GwaggliEventType;
+}
+
+export type WithoutMeta<T extends BaseGwaggliEvent> = Omit<T, 'meta'>;
 
 export enum GwaggliEventType {
     AudioChunk = 'audio-chunk',
@@ -57,12 +65,13 @@ export interface AudioChunk extends BaseGwaggliEvent {
 }
 
 export interface ClientViewUpdate extends BaseGwaggliEvent {
+    sid: string;
     type: GwaggliEventType.ClientViewUpdate;
     data: ClientViewState;
 }
 
 export interface ClientViewState {
-    sid: string;
+    meta: Metadata;
     conversation: ConversationChunk[];
 }
 
@@ -111,49 +120,41 @@ export interface VoiceActivationLevelUpdate extends BaseGwaggliEvent {
 
 export interface VoiceActivationStart extends BaseGwaggliEvent {
     type: GwaggliEventType.VoiceActivationStart;
-    trackId: string;
 }
 
 export interface VoiceActivationEnd extends BaseGwaggliEvent {
     type: GwaggliEventType.VoiceActivationEnd;
-    trackId: string;
 }
 
 export interface VoiceActivationDataAvailable extends BaseGwaggliEvent {
     type: GwaggliEventType.VoiceActivationDataAvailable;
-    trackId: string;
     audio: string;
 }
 
 export interface VoiceActivationPersist extends BaseGwaggliEvent {
     type: GwaggliEventType.VoiceActivationPersist;
-    trackId: string;
     fileName: string;
 }
 
 export interface TranscriptionProcessing extends BaseGwaggliEvent {
     type: GwaggliEventType.TranscriptionProcessing;
-    trackId: string;
     status: string;
 }
 
 export interface TranscriptionComplete extends BaseGwaggliEvent {
     type: GwaggliEventType.TranscriptionComplete;
-    trackId: string;
     language: string;
     text: string;
 }
 
 export interface TextCompletionFinish extends BaseGwaggliEvent {
     type: GwaggliEventType.TextCompletionFinish;
-    trackId: string;
     language: string;
     text: string;
 }
 
 export interface CopilotProcessingComplete extends BaseGwaggliEvent {
     type: GwaggliEventType.CopilotProcessingComplete;
-    trackId: string;
     language: string;
     history: string;
     summary: string;
@@ -164,7 +165,6 @@ export interface CopilotProcessingComplete extends BaseGwaggliEvent {
 
 export interface TextToVoiceFinish extends BaseGwaggliEvent {
     type: GwaggliEventType.TextToVoiceFinish;
-    trackId: string;
     audio: string;
     language: string;
     voiceId: string;
@@ -172,7 +172,6 @@ export interface TextToVoiceFinish extends BaseGwaggliEvent {
 
 export interface VoicePersist extends BaseGwaggliEvent {
     type: GwaggliEventType.VoicePersist;
-    trackId: string;
     fileName: string;
 }
 

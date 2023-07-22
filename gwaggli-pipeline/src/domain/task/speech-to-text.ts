@@ -2,7 +2,7 @@ import { transcribeUsingWhisper } from '../../integration/replicate/whisper';
 import openAi from '../../integration/openai/open-ai-client';
 import { Buffer } from 'buffer';
 import { Readable } from 'stream';
-import { EventSystem, GwaggliEventType, VoiceActivationDataAvailable } from '@gwaggli/events';
+import { EventSystem, GwaggliEventType, VoiceActivationDataAvailable, withTrace } from '@gwaggli/events';
 
 export const registerReplicateWhisper = (eventSystem: EventSystem) => {
     eventSystem.on<VoiceActivationDataAvailable>(GwaggliEventType.VoiceActivationDataAvailable, async (event) => {
@@ -11,21 +11,15 @@ export const registerReplicateWhisper = (eventSystem: EventSystem) => {
         for await (const transcriptionEvent of generator) {
             if (transcriptionEvent.status === 'succeeded' && transcriptionEvent.output !== undefined) {
                 eventSystem.dispatch({
+                    meta: withTrace(event),
                     type: GwaggliEventType.TranscriptionComplete,
-                    subsystem: 'pipeline',
-                    sid: event.sid,
-                    timestamp: Date.now(),
-                    trackId: event.trackId,
                     language: transcriptionEvent.output.detected_language,
                     text: transcriptionEvent.output.transcription,
                 });
             } else {
                 eventSystem.dispatch({
+                    meta: withTrace(event),
                     type: GwaggliEventType.TranscriptionProcessing,
-                    subsystem: 'pipeline',
-                    sid: event.sid,
-                    timestamp: Date.now(),
-                    trackId: event.trackId,
                     status: transcriptionEvent.status,
                 });
             }
@@ -53,21 +47,15 @@ export const registerOpenaiWhisper = (eventSystem: EventSystem) => {
             );
 
             eventSystem.dispatch({
+                meta: withTrace(event),
                 type: GwaggliEventType.TranscriptionComplete,
-                subsystem: 'pipeline',
-                sid: event.sid,
-                timestamp: Date.now(),
-                trackId: event.trackId,
                 language: language,
                 text: transcription.data.text,
             });
         } catch (e) {
             eventSystem.dispatch({
+                meta: withTrace(event),
                 type: GwaggliEventType.TranscriptionComplete,
-                subsystem: 'pipeline',
-                sid: event.sid,
-                timestamp: Date.now(),
-                trackId: event.trackId,
                 language: language,
                 text: 'Failed to process audio.',
             });

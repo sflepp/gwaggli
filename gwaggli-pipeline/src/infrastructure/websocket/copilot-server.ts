@@ -1,9 +1,14 @@
 import WebSocketServer from 'ws';
-import { getGlobalEventSystem } from '@gwaggli/events/dist/event-system';
 import { v4 as uuidv4 } from 'uuid';
-import { dispatchClientMessage } from '../../client-view';
 import { registerCopilotPipeline } from '../../pipeline';
-import { EventSystem, GwaggliEvent, GwaggliEventType } from '@gwaggli/events';
+import {
+    dispatchWithoutMeta,
+    EventSystem,
+    getGlobalEventSystem,
+    GwaggliEvent,
+    GwaggliEventType,
+    WithoutMeta,
+} from '@gwaggli/events';
 
 export const startCopilotServer = () => {
     const copilotPort = process.env.WEBSOCKET_COPILOT_PORT;
@@ -19,14 +24,20 @@ export const startCopilotServer = () => {
 
         const sid = uuidv4();
 
-        const clientFilter = (event: GwaggliEvent) => event.sid === sid && event.type !== GwaggliEventType.AudioChunk;
+        const clientFilter = (event: GwaggliEvent) =>
+            event.meta.sid === sid && event.type !== GwaggliEventType.AudioChunk;
 
         const listener = eventSystem.filter(clientFilter, (event) => {
             ws.send(JSON.stringify(event));
         });
 
-        ws.addEventListener('message', (event: MessageEvent<string>) => {
-            dispatchClientMessage(eventSystem, sid, event.data);
+        ws.addEventListener('message', (websocketEvent: MessageEvent<string>) => {
+            try {
+                const event = JSON.parse(websocketEvent.data) as WithoutMeta<GwaggliEvent>;
+                dispatchWithoutMeta(eventSystem, sid, event);
+            } catch (e) {
+                console.error(e);
+            }
         });
 
         ws.addEventListener('close', () => {

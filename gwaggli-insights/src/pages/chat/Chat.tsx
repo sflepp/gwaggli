@@ -2,17 +2,25 @@ import useWebSocket, { ReadyState } from 'react-use-websocket';
 import React, { useEffect, useState } from 'react';
 import {
     AudioChunk,
-    ClientViewState,
-    ClientViewUpdate,
-    ClientViewVoiceActivation,
     EventSystem,
     GwaggliEventType,
+    TextCompletionFinish,
+    TranscriptionComplete,
+    VoiceActivationLevelUpdate,
+    VoiceActivationStart,
+    WithoutMeta,
 } from '@gwaggli/events';
 import { encodeBase64 } from '../../encoder/base64';
 import Microphone from '../../ui-components/microphone';
 import ConnectionStatus from '../../ui-components/connection-status';
 import { Avatar, List, Progress, Skeleton } from 'antd';
 import { pipelineHost } from '../../env';
+
+interface ConversationItem {
+    loading: boolean;
+    title: string;
+    description: string;
+}
 
 const Chat = () => {
     const [eventSystem] = useState(new EventSystem());
@@ -27,52 +35,60 @@ const Chat = () => {
     });
 
     const sendAudio = (data: ArrayBuffer) => {
-        const message: AudioChunk = {
+        const message: WithoutMeta<AudioChunk> = {
             type: GwaggliEventType.AudioChunk,
-            timestamp: Date.now(),
             audio: encodeBase64(data),
         };
 
         sendMessage(JSON.stringify(message));
     };
 
-    const [viewState, setViewState] = useState<ClientViewState>();
     const [voiceActivationLevel, setVoiceActivationLevel] = useState<number>(0);
+    const [conversation, setConversation] = useState<ConversationItem[]>([]);
 
     useEffect(() => {
-        const voiceActivationListener = eventSystem.on<ClientViewVoiceActivation>(
-            GwaggliEventType.ClientViewVoiceActivation,
+        const voiceActivationListener = eventSystem.on<VoiceActivationLevelUpdate>(
+            GwaggliEventType.VoiceActivationLevelUpdate,
             (event) => {
                 setVoiceActivationLevel(event.level);
             }
         );
 
-        const viewListener = eventSystem.on<ClientViewUpdate>(GwaggliEventType.ClientViewUpdate, (event) => {
-            setViewState(event.data);
-        });
+        const voiceActivationStartListener = eventSystem.on<VoiceActivationStart>(
+            GwaggliEventType.VoiceActivationStart,
+            () => {
+                setConversation([...conversation, { loading: true, title: 'You', description: 'Loading...' }]);
+            }
+        );
+
+        const transcriptionCompleteListener = eventSystem.on<TranscriptionComplete>(
+            GwaggliEventType.TranscriptionComplete,
+            (event) => {
+                setConversation([
+                    ...conversation.filter((item) => !item.loading),
+                    { loading: false, title: 'You', description: event.text },
+                    { loading: true, title: 'Gwaggli', description: 'Loading...' },
+                ]);
+            }
+        );
+
+        const textCompletionFinishListener = eventSystem.on<TextCompletionFinish>(
+            GwaggliEventType.TextCompletionFinish,
+            (event) => {
+                setConversation([
+                    ...conversation.filter((item) => !item.loading),
+                    { loading: false, title: 'Gwaggli', description: event.text },
+                ]);
+            }
+        );
 
         return () => {
             eventSystem.off(voiceActivationListener);
-            eventSystem.off(viewListener);
+            eventSystem.off(voiceActivationStartListener);
+            eventSystem.off(transcriptionCompleteListener);
+            eventSystem.off(textCompletionFinishListener);
         };
-    }, [setViewState, setVoiceActivationLevel]);
-
-    const conversations = viewState?.conversation.sort((a, b) => a.timestamp - b.timestamp) || [];
-
-    const data = conversations.flatMap((chunk) => {
-        return [
-            {
-                loading: chunk.prompt === undefined,
-                title: 'You',
-                description: chunk.prompt,
-            },
-            {
-                loading: chunk.answer === undefined,
-                title: 'Gwaggli',
-                description: chunk.answer,
-            },
-        ];
-    });
+    }, [setVoiceActivationLevel, conversation, setConversation, eventSystem]);
 
     return (
         <>
@@ -84,10 +100,10 @@ const Chat = () => {
                 <Microphone onAudioData={sendAudio}></Microphone>
 
                 <div>
-                    {data.length > 0 ? (
+                    {conversation.length > 0 ? (
                         <List
                             itemLayout="horizontal"
-                            dataSource={data}
+                            dataSource={conversation}
                             renderItem={(item) => (
                                 <List.Item>
                                     <Skeleton avatar={true} title={false} loading={item.loading} active>
@@ -96,7 +112,7 @@ const Chat = () => {
                                                 <Avatar
                                                     src={
                                                         item.title === 'Gwaggli'
-                                                            ? ''
+                                                            ? '/gwaggli.jpg'
                                                             : 'https://joesch.moe/api/v1/random'
                                                     }
                                                 />
