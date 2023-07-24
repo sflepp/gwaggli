@@ -1,21 +1,5 @@
-export interface Metadata {
-    time: number;
-    id: string;
-    sid: string;
-    tid: string[];
-}
-
-export interface BaseGwaggliEvent {
-    meta: Metadata;
-    type: GwaggliEventType;
-}
-
-export type WithoutMeta<T extends BaseGwaggliEvent> = Omit<T, 'meta'>;
-
 export enum GwaggliEventType {
     AudioChunk = 'audio-chunk',
-    ClientViewUpdate = 'client-view-update',
-    ClientViewVoiceActivation = 'client-view-voice-activation',
     JoinAdvisory = 'join-advisory',
     AddAdvisor = 'add-advisor',
     AdvisorAnswer = 'advisor-answer',
@@ -38,8 +22,6 @@ export enum GwaggliEventType {
 
 export type GwaggliEvent =
     | AudioChunk
-    | ClientViewUpdate
-    | ClientViewVoiceActivation
     | JoinAdvisoryEvent
     | AddAdvisorEvent
     | AdvisorAnswerEvent
@@ -59,37 +41,23 @@ export type GwaggliEvent =
     | KnowledgeEmbeddingAvailable
     | PipelineError;
 
+export interface Metadata {
+    time: number;
+    id: string;
+    sid: string;
+    tid: string[];
+}
+
+export interface BaseGwaggliEvent {
+    meta: Metadata;
+    type: GwaggliEventType;
+}
+
+export type WithoutMeta<T extends BaseGwaggliEvent> = Omit<T, 'meta'>;
+
 export interface AudioChunk extends BaseGwaggliEvent {
     type: GwaggliEventType.AudioChunk;
     audio: string;
-}
-
-export interface ClientViewUpdate extends BaseGwaggliEvent {
-    sid: string;
-    type: GwaggliEventType.ClientViewUpdate;
-    data: ClientViewState;
-}
-
-export interface ClientViewState {
-    meta: Metadata;
-    conversation: ConversationChunk[];
-}
-
-export interface ConversationChunk {
-    id: string;
-    timestamp: number;
-    currentStep: string;
-    voiceActivationActive: boolean;
-    promptLanguage?: string;
-    prompt?: string;
-    answerLanguage?: string;
-    answer?: string;
-    answerAudioUrl?: string;
-}
-
-export interface ClientViewVoiceActivation extends BaseGwaggliEvent {
-    type: GwaggliEventType.ClientViewVoiceActivation;
-    level: number;
 }
 
 export interface JoinAdvisoryEvent extends BaseGwaggliEvent {
