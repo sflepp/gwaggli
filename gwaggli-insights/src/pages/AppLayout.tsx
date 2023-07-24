@@ -35,6 +35,11 @@ const AppLayout: React.FC = () => {
                             onClick: () => navigate('/copilot'),
                         },
                         {
+                            key: 'Trace',
+                            label: 'Trace',
+                            onClick: () => navigate('/trace'),
+                        },
+                        {
                             key: 'Debugger',
                             label: 'Debugger',
                             onClick: () => navigate('/debugger'),

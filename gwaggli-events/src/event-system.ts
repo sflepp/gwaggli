@@ -42,6 +42,16 @@ export class EventSystem {
         return listener;
     }
 
+    any(callback: (event: GwaggliEvent) => void): (event: GwaggliEvent) => void {
+        const listener = (event: GwaggliEvent) => {
+            callback(event);
+        };
+
+        this.eventEmitter.on('message', listener);
+
+        return listener;
+    }
+
     await<T extends GwaggliEvent>(filter: EventFilter): Promise<T> {
         return new Promise<T>((resolve) => {
             const listener = (event: GwaggliEvent) => {
@@ -83,7 +93,7 @@ export const withTrace = (other: GwaggliEvent): Metadata => {
     return {
         id: id,
         sid: other.meta.sid,
-        tid: [...other.meta.tid, id],
+        tid: [other.meta.id],
         time: Date.now(),
     };
 };

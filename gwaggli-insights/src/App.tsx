@@ -7,6 +7,7 @@ import AppLayout from './pages/AppLayout';
 import Copilot from './pages/copilot/Copilot';
 import Debugger from './pages/debugger/Debugger';
 import DataLoader from './pages/data-loader/DataLoader';
+import Trace from './pages/trace/Trace';
 
 export default function App() {
     return (
@@ -16,6 +17,7 @@ export default function App() {
                     <Route index element={<Home />} />
                     <Route path="chat" element={<Chat />} />
                     <Route path="copilot" element={<Copilot />} />
+                    <Route path="trace" element={<Trace></Trace>} />
                     <Route path="debugger" element={<Debugger />} />
                     <Route path="data-loader" element={<DataLoader />} />
                 </Route>
