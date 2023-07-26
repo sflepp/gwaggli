@@ -51,9 +51,7 @@ const Debugger = () => {
         })
         .filter(
             (event) =>
-                event.type !== GwaggliEventType.ClientViewUpdate &&
-                event.type !== GwaggliEventType.VoicePersist &&
-                event.type !== GwaggliEventType.VoiceActivationPersist
+                event.type !== GwaggliEventType.VoicePersist && event.type !== GwaggliEventType.VoiceActivationPersist
         )
         .reverse();
 
