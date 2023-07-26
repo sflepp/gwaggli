@@ -45,7 +45,7 @@
         "@aws-sdk/client-transcribe-streaming": "3.259.0",
         "@aws-sdk/credential-provider-cognito-identity": "3.259.0",
         "@gwaggli/events": "file:../gwaggli-events",
-        "aws-sdk": "2.1277.0",
+        "aws-sdk": "2.1420.0",
         "axios": "1.3.4",
         "dotenv": "16.0.3",
         "express": "4.18.2",
