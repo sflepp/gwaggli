@@ -24,14 +24,11 @@ export default openAi;
 
 export const createChatCompletion = async (messages: Array<ChatCompletionRequestMessage>): Promise<string> => {
     try {
-        const maxTokens = 8000;
-        const model = 'gpt-3.5-turbo';
-
-        const massagesWithinTokenLimit = await fitIntoTokenLimit(model, maxTokens, messages);
+        const model = 'gpt-4-turbo-preview';
 
         const response = await openAi.createChatCompletion({
             model: model,
-            messages: massagesWithinTokenLimit,
+            messages: messages,
             temperature: 0.2,
         });
 
